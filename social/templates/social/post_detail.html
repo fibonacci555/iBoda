@@ -1,0 +1,158 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
+        </div>
+    </div>
+    <div class="row justify-content-center border-bottom mt-3">
+        <div class="col-md-5 col-sm-12 ">
+            <p>
+                <div>
+                    <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
+                </div><p><strong>{{ post.title }}</strong> - {{ post.city }}
+                
+                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red;" title="unreport"> </i>
+                            {% else %}<i class="fa-regular fa-flag" title="report"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                </p>
+                <p><strong>Data do evento: </strong>  {{ post.date }}</p>
+                <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
+                <p><strong>Idade recomendada: </strong>  {{ post.age }}</p>
+
+                {% if request.user == post.author %}
+                    <a href="{% url 'post-edit' post.pk %}" style="color:#333;"><i class="far fa-edit"></i></a>
+                    <a href="{% url 'post-delete' post.pk %}" style="color:#333;"><i class="fas fa-trash"></i></a>
+                {% endif%}
+            </p>
+            <p>{{ post.body }}</p>
+            {% if post.image %}
+                        <img class="modal-content" id="img01" src="{{ post.image.url }}" style="max-width: 100%; height: auto; border-radius: 10px;margin-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" />
+                        {% endif %}
+                        <br><small><strong><a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none">~{{ post.author }}</a>{% if post.author.profile.verified  %}
+                            <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                            {% endif %}<br><br>
+            <div class="col-md-5 col-sm-12 mb-2">    
+                {% if post.url %}
+                            <p><strong>Podes comprar bilhetes aqui: </strong>  <a href="{{ post.url }}">{{ post.url }}</a></p>
+                        {% endif %}
+            <form method="POST" action="{% url 'like' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                       
+                        {% if request.user in post.likes.all %}<i class="fa fa-check" title="Eu Vou!" id="like-dado" style="color:rgb(60,255,60)" > </i>
+                        {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style="color:rgb(69,69,69)"> </i>
+                        {% endif %}
+                        <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
+                            <strong>{{ post.likes.all.count }} Pessoas vão</strong></span>
+                        {% elif post.likes.all.count != 0 %}
+                            <strong>{{ post.likes.all.count }} Pessoa vai</strong></span>
+                        {% else %}
+                        {% endif %}
+                        </button>
+                    </form>
+            </div>    
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5 col-sm-12">
+            <h5>Add a Comment!</h5>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3 mb-5">
+        <div class="col-md-5 col-sm-12">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success mt-3">Submit!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% for comment in comments %}
+    {% if comment.is_parent %}
+    <div class="row justify-content-center mt-3 mb-5">
+        <div class="col-md-5 col-sm-12 border-bottom">
+            <p>
+                <div>
+                    <a href="{% url 'profile' comment.author.profile.pk %}">
+                        <img class="round-circle post-img" height="30" width="30" src="{{ comment.author.profile.picture.url }}" />
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' comment.author.profile.pk %}">@{{ comment.author }}</a>{% if comment.author.profile.verified  %}
+                            <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                            {% endif %}<br><br>{{ child_comment.created_on }} {{ comment.created_on }}
+                    
+                
+                {% if request.user == comment.author %}
+                    <a href="{% url 'comment-delete' post.pk comment.pk %}" class="edit-color "><i class="fas fa-trash ml-5"></i></a>
+                {% endif %}</p></div>
+            </p>
+            <p>{{ comment.comment }}</p>
+
+            <div class="d-flex flex-row">
+                <div>
+                    <button class="remove-default-btn"><i class="far fa-comment-dots" onclick="commentReplyToggle('{{ comment.pk }}')"></i></button>
+                </div>
+        </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3 mb-5 d-none" id="{{ comment.pk }}">
+        <div class="col-md-5 col-sm-12">
+            <form method="POST" action="{% url 'comment-reply' post.pk comment.pk %}">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success mt-3">Submit!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% for child_comment in comment.children %}
+    <div class="row justify-content-center mt-3 mb-5 child-comment">
+        <div class="col-md-5 col-sm-12 border-bottom">
+            <p>
+                <div>
+                    <a href="{% url 'profile' child_comment.author.profile.pk %}">
+                        <img class="round-circle post-img" height="30" width="30" src="{{ child_comment.author.profile.picture.url }}" />
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' child_comment.author.profile.pk %}">@{{ child_comment.author }}   </a> 
+                        {% if child_comment.author.profile.verified  %}
+                            <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                            {% endif %}<br><br>{{ child_comment.created_on }}
+                    
+                
+                {% if request.user == child_comment.author %}
+                    <a href="{% url 'comment-delete' post.pk child_comment.pk %}" class="edit-color"><i class="fas fa-trash ml-5"></i></a>
+                {% endif %}</p></div>
+            </p>
+            <p>in response to <a class="text-primary post-link" href="{% url 'profile' child_comment.author.profile.pk %}">@{{ child_comment.parent.author }} 
+                {% if child_comment.author.profile.verified  %}
+                            <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                {% endif %}<br><br></a></p>
+            <p>{{ child_comment.comment }}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

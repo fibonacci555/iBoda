@@ -1,0 +1,63 @@
+.remove-default-btn {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+#like-dado{
+	color:rgb(60,255,60);
+	transition-duration: 0.4s;
+}
+#like-dado:hover{
+	padding-right: 24px;
+  	padding-left:100px;
+  	color:rgb(230, 36, 9);
+
+}
+#like-dado:after {
+	font-family: "Lucida Console", "Courier New", monospace;
+  content: 'Não Vou!';
+  position: absolute;
+  opacity: 0;  
+  left: -40px;
+  color:rgb(230, 36, 9);
+  transition: 0.5s;
+}
+
+#like-dado:hover:after {
+  opacity: 1;
+  left: 10px;
+  color:rgb(230, 36, 9);
+}
+
+
+#sem-like{
+	color: grey;
+	transition-duration: 0.4s;
+}
+#sem-like:hover{
+	padding-right: 24px;
+  	padding-left:50px;
+  	color:rgb(80,200,80);
+
+}
+#sem-like:after {
+	font-family: "Lucida Console", "Courier New", monospace;
+  content: 'Vou!';
+  position: absolute;
+  opacity: 0;  
+  left: -40px;
+  color:rgb(80,200,80);
+  transition: 0.5s;
+}
+
+#sem-like:hover:after {
+  opacity: 1;
+  left: 10px;
+  color:rgb(80,200,80);
+}
+
+
+
+
+

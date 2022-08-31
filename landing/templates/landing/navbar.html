@@ -1,0 +1,121 @@
+
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" 
+    {% if user.is_authenticated %}
+    href="{% url 'post-list' %}"
+    {% else %}
+    href="{% url 'index' %}"
+    {% endif %}
+
+    > 🎉 iBoda</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+      </ul>
+      <form class="d-flex" method="GET" action="{% url 'all-search' %}">
+        <div class="input-group">
+          
+          <input  class="form-control" placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
+          <!--<input type="text" class="form-control" placeholder="Local" aria-label="Username" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">-->
+          <select name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
+            <option value="Alcobaça">Alcobaça</option>
+            <option value="Almada">Almada</option>
+            <option value="Amadora">Amadora</option>
+            <option value="Aveiro">Aveiro</option>
+            <option value="Barreiro">Barreiro</option>
+            <option value="Beja">Beja</option>
+            <option value="Braga">Braga</option>
+            <option value="Bragança">Bragança</option>
+            <option value="Cartaxo">Cartaxo</option>
+            <option value="Chaves">Chaves</option>
+            <option value="Coimbra">Coimbra</option>
+            <option value="Elvas">Elvas</option>
+            <option value="Espinhos">Espinhos</option>
+            <option value="Évora">Évora</option>
+            <option value="Faro">Faro</option>
+            <option value="Fátima">Fátima</option>
+            <option value="Funchal">Funchal</option>
+            <option value="Fundão">Fundão</option>
+            <option value="Gouveia">Gouveia</option>
+            <option value="Guarda">Guarda</option>
+            <option value="Leiria">Leiria</option>
+            <option value="Lisboa">Lisboa</option>
+            <option value="Loures">Loures</option>
+            <option value="Maia">Maia</option>
+            <option value="Mirandela">Mirandela</option>
+            <option value="Moura">Moura</option>
+            <option value="Penafiel">Penafiel</option>
+            <option value="Pinhel">Pinhel</option>
+            <option value="Portalegre">Portalegre</option>
+            <option value="Portimão">Portimão</option>
+            <option value="Porto">Porto</option>
+            <option value="Praia da Vitória">Praia da Vitória</option>
+            <option value="Queluz">Queluz</option>
+            <option value="Ribeira Grande">Ribeira Grande</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+            <option value="Santana">Santana</option>
+            <option value="São Pedro do Sul">São Pedro do Sul</option>
+            <option value="Seia">Seia</option>
+            <option value="Setúbal">Setúbal</option>
+            <option value="Sintra">Sintra</option>
+            <option value="Tavira">Tavira</option>
+            <option value="Tomar">Tomar</option>
+            <option value="Trancoso">Trancoso</option>
+            <option value="Trofa">Trofa</option>
+            <option value="Viana do Castelo">Viana do Castelo</option>
+            <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+            <option value="Vila Real">Vila Real</option>
+          </select>
+          <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+      {% if user.is_authenticated %}
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="buton" aria-expanded="false"><i class="fas fa-user"></i></a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{% url 'profile' request.user.profile.pk %}">Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+        </ul>
+      </div>
+      <div class="nav-item">
+        <div class="dropdown">
+    <span class="badge bg-primary notification-badge" onclick="showNotifications()">{{ notifications.count }}</span>
+    <div class="dropdown-content d-none" id="notification-container">
+        {% for notification in notifications %}
+            {% if notification.post %}
+                {% if notification.notification_type == 1 %}
+                <div class="dropdown-item-parent">
+                    <a href="{% url 'post-notification' notification.pk notification.post.pk %}">@{{ notification.from_user }} liked your post</a>
+                    <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
+                </div>
+                {% elif notification.notification_type == 2 %}
+                <div class="dropdown-item-parent">
+                    <a href="{% url 'post-notification' notification.pk notification.post.pk %}">@{{ notification.from_user }} commented on your post</a>
+                    <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
+                </div>
+                {% endif %}
+            {% elif notification.comment %}
+                {% if notification.notification_type == 2 %}
+                <div class="dropdown-item-parent">
+                    <a href="{% url 'post-notification' notification.pk notification.comment.post.pk %}">@{{ notification.from_user }} replied to your comment</a>
+                    <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
+                </div>  
+                {% endif %}
+            {% else %}
+                <div class="dropdown-item-parent">
+                    <a href="{% url 'follow-notification' notification.pk notification.from_user.profile.pk %}">@{{ notification.from_user }} has started following you</a>
+                    <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk %}`, `{{ request.path }}`)">&times;</span>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+</div>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+</div>
