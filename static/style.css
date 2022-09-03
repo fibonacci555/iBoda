@@ -59,5 +59,189 @@
 
 
 
+#fullscreen-container{
+  background-image: url('bg.jpg') ;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+#login-user,
+#login-pass{
+  font-size: 1.1rem;
+  padding: 8px;
+  text-align: center;
+  background: hsl(264, 70%, 100%, 0.7);
+  color:rgb(255,255,255);
+  border: none;
+  outline: none;
+  border-radius: 25px;
+  width: 80%;
+  margin: 0 auto;
+  color: red;
+}
+
+#login-user::placeholder,
+#login-pass::placeholder {
+  color: rgb(0,0,0);
+  font-weight: bold;
+}
+
+#login-user:focus::placeholder,
+#login-pass:focus::placeholder{
+  color: transparent;
+}
+
+
+
+#login-button:focus,
+#login-button:hover {
+  box-shadow: 0 0 0 4px rgba(110, 110, 110, 0.40);
+
+}
+
+
+#waviy {
+  position: relative;
+}
+#waviy span {
+  position: relative;
+  display: inline-block;
+  font-size: 40px;
+  color: #fff;
+  
+  animation: flip 2s infinite;
+  animation-delay: calc(.2s * var(--i))
+}
+@keyframes flip {
+  0%,80% {
+    transform: rotateY(360deg) 
+  }
+}
+
+#container {
+  
+  margin-left: 25%;
+  display: flex;
+  margin-bottom: 10%;
+  
+}
+#container>span{
+  animation: shake 0.5s infinite;
+  font-size: 4rem;
+  color: black;
+  text-align: center;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+  10% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  100% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+}
+
+
+:root {
+ --black: #1B1927;
+ --indigo: #956FFF;
+ --indigo-faded: rgba(149, 111, 255, 0.5);
+ --pink: #E57CF2;
+ --font-color: #DDD;
+ --main-font: 'Roboto', sans-serif;
+}
+#body-login {
+ padding:0;
+ margin: 0;
+ font-family: var(--main-font);
+ background: var(--black);
+ transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+ scroll-behavior: smooth;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ width: 100vw;
+ background-image: url('https://i.pinimg.com/originals/45/3d/81/453d816d7d25d5a4aa075a8c64c79818.jpg');
+ background-repeat: no-repeat;
+ background-position: center;
+ background-size: cover;
+ animation: bg 10s linear infinite;
+}
+
+#body-signup {
+ padding:0;
+ margin: 0;
+ font-family: var(--main-font);
+ background: var(--black);
+ transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+ scroll-behavior: smooth;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ width: 100vw;
+ background-image: url('https://i.pinimg.com/originals/45/3d/81/453d816d7d25d5a4aa075a8c64c79818.jpg');
+ background-repeat: no-repeat;
+ background-position: center;
+ background-size: cover;
+ animation: bg 10s linear infinite;
+}
+
+
+#name-demo {
+ color: #FF0000;
+}
+
+
+@keyframes bg {
+
+0% {
+ background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2016/06/09/980778/198ff9cc76f5a86ad1de61447a01a57b.jpg');
+}
+50% {
+ background-image: url('https://widefuture.com/wp-content/uploads/2019/02/hearthands.jpg');
+}
+100% {
+background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2016/06/09/980778/198ff9cc76f5a86ad1de61447a01a57b.jpg');
+}}
+
+
+
+
+
+
+
+
+
 
 

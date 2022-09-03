@@ -1,22 +1,41 @@
-{% extends "account/base.html" %}
+{% load static %}
 
 {% load i18n %}
 {% load account socialaccount %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
 
-{% load crispy_forms_tags %}
+
+
+ <link href="{% static 'style.css' %}" rel="stylesheet">
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6 col-sm-12">
-    <h1>{% trans "Sign In" %}</h1>
 
-    {% get_providers as socialaccount_providers %}
+
+
+<body id="body-login" style="margin: 0; text-align: center; font-family: Montserrat, sans-serif;">
+
+  
+
+  <div id="home-page-wrapper" style="height: 100vh;width: 100vw;display: flex;justify-content: center;align-items: center;">
+    
+    <div id="login-container" style="padding: 70px 40px;border-radius: 25px;background: #FAFAFA;box-shadow: 3px 5px 25px #888888;width: 80%;max-width: 500px;
+    background: rgba( 255, 255, 255, 0.7 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 8.5px );
+    -webkit-backdrop-filter: blur( 8.5px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );">
+      
+
+
+      <div id="container" style="font-family: 'Roboto', sans-serif; font-size: bolder;text-align: center;"><span style="font-size: 4rem;text-align: center;"><strong>[ iBoda ]</strong></span></div>
+
+      <h2 style="text-align: center; color: black; font-family: Gill Sans, sans-serif; ">Sign In</h2>
+      {% get_providers as socialaccount_providers %}
     
     {% if socialaccount_providers %}
-    <p>{% blocktrans with site.name as site_name %}Please sign in with one
-    of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+    <p style="font-family: Gill Sans, sans-serif;">{% blocktrans with site.name as site_name %}Please sign in with one
+    of your existing third party accounts. Or, 
     for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
     
     <div class="socialaccount_ballot">
@@ -32,26 +51,48 @@
     {% include "socialaccount/snippets/login_extra.html" %}
     
     {% else %}
-    <p>{% blocktrans %}If you have not created an account yet, then please
-    <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+    <p style="color: darkgrey;">{% blocktrans %}
+    <a href="{{ signup_url }}" style="
+  background: #5E5DF0;
+  border-radius: 999px;
+  box-shadow: #5E5DF0 0 10px 20px -10px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;">SIGN UP</a> {% endblocktrans %}</p>
     {% endif %}    
-  </div>
-</div>
+      <form class="login" method="POST" action="{% url 'account_login' %}" style="margin-top: 25px;display: flex;flex-direction: column;gap: 15px;">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="input-group" style="display: flex;flex-direction: column;margin: 10px 0;">
+          <input type="text" id="login-user" placeholder="Username" id="text" name="login" class="input-username" 
+          style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 60%, 94%, 0.7);color: rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;"> 
+        </div>        
+        <div id="input-group">
+          <input id="login-pass" type="password" placeholder="Password" id="password" name="password" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
+        </div>      
+        <button id="login-button" class="btn btn-dark primaryAction" type="submit" 
+        style="cursor: pointer;font-size: .9rem;margin: 10px auto 0;padding: 12px 5px;width: 35%;border-radius: 100px;border: none;outline: none;color: white;background: linear-gradient(90deg, rgba(214,129,93,1) 0%, rgba(255,149,88,1) 71%);font-weight: bold; transition:0.3s;">
+          {% trans "Sign In" %}</button>       
+        <a href="{% url 'account_reset_password' %}" class="forgot-password" style="text-align: center;margin: 20px auto 20px;text-decoration: none;color: rgb(69, 69, 69);">{% trans "Forgot Password?" %}
+        </a>  
+      </form>    
+    </div>
 
-<div class="row justify-content-center">
-  <div class="col-md-6 col-sm-12">
-    <form class="login" method="POST" action="{% url 'account_login' %}">
-      {% csrf_token %}
-      {{ form|crispy }}
-      {% if redirect_field_value %}
-      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-      {% endif %}
-      <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-      <div class="mt-3 d-grid gap-2">
-        <button class="btn btn-dark primaryAction" type="submit">{% trans "Sign In" %}</button>
-      </div>
-    </form>
   </div>
-</div>
-
+</body>
 {% endblock %}
