@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+
+
+
+*{
+  font-family: 'Exo', sans-serif;
+}
+
 .remove-default-btn {
 	background-color: transparent;
 	border: none;
@@ -63,7 +73,7 @@
   background-image: url('bg.jpg') ;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center;
   background-attachment: fixed;
 }
 
@@ -234,6 +244,125 @@
 100% {
 background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2016/06/09/980778/198ff9cc76f5a86ad1de61447a01a57b.jpg');
 }}
+
+
+#post-list-bg{
+  /*background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 1000000% 100000%;
+  animation: gradient 15s ease infinite;
+  height: auto;
+  font-family: 'Exo', sans-serif;
+  
+  background-repeat: no-repeat;*/
+  background-color: rgb(235, 236, 240);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+
+#post-label {
+display: block;
+margin-bottom: 24px;
+width: 100%;
+border-radius: 50%;
+}
+#post-button,
+#post-input{
+  border: 0;
+  outline: 0;
+  font-size: 13px;
+  border-radius: 320px;
+  padding: 16px;
+  background-color: #EBECF0;
+  text-shadow: 1px 1px 0 #FFF;
+}
+
+
+#post-input {
+
+margin-right: 8px;
+box-shadow: inset 2px 2px 5px #BABECC, inset -5px -5px 10px #FFF;
+width: 100%;
+border-radius: 20 px;
+box-sizing: border-box;
+transition: all 0.2s ease-in-out;
+appearance: none;
+-webkit-appearance: none;
+border: none;
+}
+#post-input:focus {
+box-shadow: inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
+outline: none;
+}
+#post-button {
+color: #61677C;
+font-weight: bold;
+box-shadow: -5px -5px 20px #FFF, 5px 5px 20px #BABECC;
+transition: all 0.2s ease-in-out;
+cursor: pointer;
+font-weight: 600;
+border: none;
+outline: none;
+}
+#post-button:hover {
+box-shadow: -2px -2px 5px #FFF, 2px 2px 5px #BABECC;
+}
+#post-button:active {
+box-shadow: inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
+}
+
+#modal-button{
+  color:#666;
+  height:50px;
+  width:100%;
+  font-size: 13px;
+  margin-bottom: 20px;
+  border-radius: 50px;
+  border:0;
+  box-shadow: 0px 3px 8px #aaa,
+  inset 5px 5px 15px 2px #fff,
+  inset -3px -5px 10px  #aaa,
+  0px -5px 10px 3px #fff;
+  background-color: #f2f2f2;
+  outline: none;
+  border: none;
+}
+#modal-button:active{
+  animation-name: pressed;
+  animation-duration: 0.1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+  outline: none;
+  border: none;
+}
+
+@keyframes pressed{
+  50%{
+    box-shadow: none;
+    outline: none;
+  border: none;
+  }
+  100%{
+    box-shadow: inset 3px 3px 15px #aaa,
+    inset -5px -5px 5px 2px #fff,
+     0px 1px 3px #aaa;
+    color:#7a7a7a;
+    outline: none;
+  border: none;
+  }
+}
 
 
 

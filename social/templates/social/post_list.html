@@ -2,29 +2,135 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="container">
+<body id="post-list-bg">
+    <div class="container" >
         <div class="row justify-content-center mt-3">
             <div class="col-md-5 col-sm-12">
-                <h5>Add a Post!</h5>
+                <h5>Criar um novo evento</h5>
             </div>
         </div>
         <div class="row justify-content-center mt-3 mb-5">
-            <div class="col-md-5 col-sm-12">
-                <form method="POST" enctype="multipart/form-data">
+            <div class="col-md-5 col-sm-12" >
+                <!--<div id="modal-button"> <span>Criar um evento!</span></div>-->
+                <form method="POST" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px;">
                     {% csrf_token %}
-                    {{ form | crispy }}
+                    
+                    
+
+                    <label id="post-label">
+                    <input id ="post-input"  type="text" placeholder="Título do Evento" name="title"/>
+                    </label>
+
+                    <label id="post-label">
+                    <input id ="post-input" type="textarea" placeholder="Descrição do Evento" name="body"/>
+                    </label>
+
+                    <label id="post-label" id="post-input">
+                        <p><strong>Selecione uma cidade:</strong></p>
+                      <select name="city" placeholder="Local do Evento" id="post-input" >
+                        <option value="Alcobaça">Alcobaça</option>
+                        <option value="Almada">Almada</option>
+                        <option value="Amadora">Amadora</option>
+                        <option value="Aveiro">Aveiro</option>
+                        <option value="Barreiro">Barreiro</option>
+                        <option value="Beja">Beja</option>
+                        <option value="Braga">Braga</option>
+                        <option value="Bragança">Bragança</option>
+                        <option value="Cartaxo">Cartaxo</option>
+                        <option value="Chaves">Chaves</option>
+                        <option value="Coimbra">Coimbra</option>
+                        <option value="Elvas">Elvas</option>
+                        <option value="Espinhos">Espinhos</option>
+                        <option value="Évora">Évora</option>
+                        <option value="Faro">Faro</option>
+                        <option value="Fátima">Fátima</option>
+                        <option value="Funchal">Funchal</option>
+                        <option value="Fundão">Fundão</option>
+                        <option value="Gouveia">Gouveia</option>
+                        <option value="Guarda">Guarda</option>
+                        <option value="Leiria">Leiria</option>
+                        <option value="Lisboa">Lisboa</option>
+                        <option value="Loures">Loures</option>
+                        <option value="Maia">Maia</option>
+                        <option value="Mirandela">Mirandela</option>
+                        <option value="Moura">Moura</option>
+                        <option value="Penafiel">Penafiel</option>
+                        <option value="Pinhel">Pinhel</option>
+                        <option value="Portalegre">Portalegre</option>
+                        <option value="Portimão">Portimão</option>
+                        <option value="Porto">Porto</option>
+                        <option value="Praia da Vitória">Praia da Vitória</option>
+                        <option value="Queluz">Queluz</option>
+                        <option value="Ribeira Grande">Ribeira Grande</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                        <option value="Santana">Santana</option>
+                        <option value="São Pedro do Sul">São Pedro do Sul</option>
+                        <option value="Seia">Seia</option>
+                        <option value="Setúbal">Setúbal</option>
+                        <option value="Sintra">Sintra</option>
+                        <option value="Tavira">Tavira</option>
+                        <option value="Tomar">Tomar</option>
+                        <option value="Trancoso">Trancoso</option>
+                        <option value="Trofa">Trofa</option>
+                        <option value="Viana do Castelo">Viana do Castelo</option>
+                        <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+                        <option value="Vila Real">Vila Real</option>
+                      </select>
+                    </label>
+
+                    <label id="post-label" id="post-input">
+                        <p><strong>Selecione um grupo de idades do público alvo: </strong></p>
+                      <select name="age" placeholder="Idade do Público Alvo"  id="post-input">
+                        <option value="Todas as idades">Todas as idades</option>
+                        <option value="+18">+18</option>
+                        <option value="+25">+25</option>
+                        <option value="+40">+40</option>
+                      </select>
+                    </label>
+
+                    <label id="post-label" id="post-input">
+                        <p><strong>Selecione um tipo de música: </strong></p>
+                      <select name="music" placeholder="Tipo de Música do Evento"  id="post-input">
+                        <option value="Todos os géneros">Todos os géneros</option>
+                        <option value="Techno">Techno</option>
+                        <option value="Jazz">Jazz</option>
+                        <option value="80's">80's</option>
+                        <option value="Hip-Hop">Hip-Hop</option>
+                        <option value="Funk">Funk</option>
+                      </select>
+                    </label>
+
+                    <label id="post-label">
+
+                    <input id ="post-input"  type="file" placeholder="Foto do Cartaz" name="image"/>
+                    </label>
+
+                    <label id="post-label">
+
+                    <input id ="post-input"  type="url" placeholder="URL para compra de bilhetes" name="url"/>
+                    </label>
+
+                    <label  id="post-label"style="margin-bottom: 10 % ;">
+
+                    <input id ="post-input"  type="date" placeholder="Data do Evento" name="date"/>
+                    </label>
+
+
                     
                     <div class="d-grid gap-2">
-                        <button class="btn btn-success mt-3">Submit!</button>
+                        <button id="post-button" style="background-color: lightblue;">Criar</button>
                     </div>
                 </form>
             </div>
         </div>
         {% for post in post_list %}
         {% if post.approved %}
-        <div class="row justify-content-center mt-3 ">
-            <div class="col-md-5 col-sm-12 border-bottom position-relative">
-                <div>
+        <div class="row justify-content-center mt-10 " style="margin-top: 25px;">
+            <div class="col-md-5 col-sm-12 position-relative" style="border-radius: 21px;
+background: #ebecf0;
+box-shadow:  -14px 14px 95px #868789,
+             14px -14px 95px #ffffff;">
+                <div style="margin-top: 20px">
                     <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
                 </div>
                 <p><strong>{{ post.title }}</strong> - {{ post.city }}
@@ -34,8 +140,8 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
                                            
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red;" title="unreport"> </i>
-                            {% else %}<i class="fa-regular fa-flag" title="report"></i>
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red; align-self: right;" title="unreport"> </i>
+                            {% else %}<i class="fa-regular fa-flag" title="report" style="align-self: right;"></i>
                             {% endif %}
                             </button>
                     </form>
@@ -92,5 +198,16 @@
         {% endif %}
         {% endfor %}
     </div>
-    
+</body>
 {% endblock content %}
+
+<script type="text/javascript">
+    const btn = document.getElementById('modal-button');
+    const box = document.getElementById('post-form');
+
+    btn.onclick = function(){
+        box.style.display="none";
+    }
+    
+    
+</script>

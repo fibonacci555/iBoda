@@ -24,6 +24,7 @@ class Post(models.Model):
     age = models.CharField(default="",max_length=70)
     approved = models.BooleanField(default=True)
     reports = models.ManyToManyField(User, blank=True, related_name='reports')
+    
 
 
 
