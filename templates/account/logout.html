@@ -1,31 +1,42 @@
-{% extends "account/base.html" %}
+{% load static %}
 
 {% load i18n %}
 
-{% block head_title %}{% trans "Sign Out" %}{% endblock %}
-
+<link href="{% static 'style.css' %}" rel="stylesheet">
 {% block content %}
 
-<div class="row justify-content-center">
-  <div class="col-md-6 col-sm-12 text-center pb-3">
-    <h1>{% trans "Sign Out" %}</h1>
-    <p>{% trans 'Are you sure you want to sign out?' %}</p>
-  </div>
-</div>
 
-<div class="row justify-content-center">
-  <div class="col-md-6 col-sm-12">
-    <form method="post" action="{% url 'account_logout' %}">
-      {% csrf_token %}
-      {% if redirect_field_value %}
-      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-      {% endif %}
-      <div class="mt-3 d-grid gap-2">
-        <button class="btn btn-dark" type="submit">{% trans 'Sign Out' %}</button>
-      </div>
-    </form>
+<body id="body-login" style="margin: 0; text-align: center; font-family: Montserrat, sans-serif;">  
+    <div id="home-page-wrapper" style="height: 100vh;width: 100vw;display: flex;justify-content: center;align-items: center;">>
+      <div id="login-container" style="padding: 70px 40px;border-radius: 25px;background: #FAFAFA;box-shadow: 3px 5px 25px #888888;width: 80%;max-width: 500px;
+    background: rgba( 255, 255, 255, 0.7 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 8.5px );
+    -webkit-backdrop-filter: blur( 8.5px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );">
+        <div id="container" style="font-family: 'Roboto', sans-serif; font-size: bolder;text-align: center;"><span style="font-size: 4rem;text-align: center;"><strong>[ iBoda ]</strong></span></div>
+        <h1>{% trans "Sign Out" %}</h1>
+        <p>{% trans 'Are you sure you want to sign out?' %}</p>
+      
+  
+
+  
+    
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        
+          <button id="login-button" type="submit" style="cursor: pointer;font-size: .9rem;margin: 10px auto 0;padding: 12px 5px;width: 35%;border-radius: 100px;border: none;outline: none;color: white;background: linear-gradient(90deg, rgba(214,129,93,1) 0%, rgba(255,149,88,1) 71%);font-weight: bold; transition:0.3s;">{% trans 'Sign Out' %}</button>
+        
+      </form>
+    </div>
   </div>
-</div>
+</body>
+
 
 
 {% endblock %}
+
