@@ -1,26 +1,21 @@
-<div class="container">
-<nav class="navbar navbar-expand-lg navbar-light">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" 
-    {% if user.is_authenticated %}
-    href="{% url 'post-list' %}"
-    {% else %}
-    href="{% url 'index' %}"
-    {% endif %}
+{% load static %}
 
-    > 🎉 iBoda</a>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-      </ul>
-      <form class="d-flex" method="GET" action="{% url 'all-search' %}">
-        <div class="input-group">
-          <input  class="form-control" placeholder="Artistas, Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
-          <input  class="form-control" placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
-          <!--<input type="text" class="form-control" placeholder="Local" aria-label="Username" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">-->
-          <select name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
+<link href="{% static 'navbar.css' %}" rel="stylesheet">
+
+<script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
+
+
+
+
+<nav class="site" >
+    <span class="header"></span> <a href="/social/" style="text-decoration:none"><h2>iBoda</h2></a>
+    <div id="search">
+        <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="">
+        <div class="input-group" >
+          <input  style=" "class="form-control" placeholder="Artistas, Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
+          <input style="margin-left:5px; border-radius: 5px" class="form-control" placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
+          
+          <select style="margin-left:5px; background-color: rgb(238,238,238);border:none; border-radius:5px" id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
             <option value="">Cidade</option>
             <option value="Alcobaça">Alcobaça</option>
             <option value="Almada">Almada</option>
@@ -73,17 +68,19 @@
           <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>
         </div>
       </form>
-      {% if user.is_authenticated %}
-      <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="buton" aria-expanded="false"><i class="fas fa-user"></i></a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="{% url 'profile' request.user.profile.pk %}">Profile</a></li>
-          <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
-        </ul>
-      </div>
-    
-      {% endif %}
     </div>
-  </div>
+    {% if user.is_authenticated %}
+    <div> 
+      <a href="/social/"><i class="fas fa-home"></i></a>
+      
+      <span id="span-nav"></span>
+      <a href="/social/go-posts"><i style="color:gold" class="fas fa-star"></i></a>
+      <a href="/social/saved-posts"><i class="fa fa-bookmark-o"></i></a>    
+      <a href="{% url 'profile' request.user.profile.pk %}"><i class="fa fa-user-o"></i></a>  
+      
+    </div>
+    {% endif %}
 </nav>
-</div>
+
+
+
