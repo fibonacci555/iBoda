@@ -1,18 +1,23 @@
-{% extends 'landing/base.html' %}
-{% load crispy_forms_tags %}
+{% load static %}
+{% include 'landing/navbar.html' %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<link href="{% static 'style.css' %}" rel="stylesheet">
+<script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
 
 {% block content %}
 <body id="post-list-bg">
     <div class="container" >
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-5 col-sm-12">
-                <h5>Criar um novo evento</h5>
-            </div>
-        </div>
-        <div class="row justify-content-center mt-3 mb-5">
-            <div class="col-md-5 col-sm-12" >
-                <!--<div id="modal-button"> <span>Criar um evento!</span></div>-->
-                <form method="POST" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px;">
+        
+
+        <div class="row justify-content-center mt-5 mb-10">
+            <div class="col-md-6 col-sm-12" >
+                {% if user.is_authenticated %}
+                <button id="modal-button" > <span>Criar um evento!</span></button>
+                {% else %}
+                <button id="modal-button-no-login" onclick="window.location.href='/accounts/signup'">Criar um evento!</button>
+                {% endif %}
+                <form method="POST" class="post-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; display: none;">
                     {% csrf_token %}
                     
                     
@@ -25,9 +30,9 @@
                     <input id ="post-input" type="textarea" placeholder="Descrição do Evento" name="body"/>
                     </label>
 
-                    <label id="post-label" id="post-input">
-                        <p><strong>Selecione uma cidade:</strong></p>
-                      <select name="city" placeholder="Local do Evento" id="post-input" >
+                    <label id="post-label" id="post-input-dropdown">
+                        <p style=" content: '\25b6'"><strong>Selecione uma cidade:</strong></p>
+                      <select name="city" placeholder="Local do Evento" id="post-input-dropdown" >
                         <option value="Alcobaça">Alcobaça</option>
                         <option value="Almada">Almada</option>
                         <option value="Amadora">Amadora</option>
@@ -78,9 +83,9 @@
                       </select>
                     </label>
 
-                    <label id="post-label" id="post-input">
+                    <label id="post-label" id="post-input~post-input-dropdown">
                         <p><strong>Selecione um grupo de idades do público alvo: </strong></p>
-                      <select name="age" placeholder="Idade do Público Alvo"  id="post-input">
+                      <select name="age" placeholder="Idade do Público Alvo"  id="post-input-dropdown">
                         <option value="Todas as idades">Todas as idades</option>
                         <option value="+18">+18</option>
                         <option value="+25">+25</option>
@@ -88,9 +93,9 @@
                       </select>
                     </label>
 
-                    <label id="post-label" id="post-input">
+                    <label id="post-label" id="post-input-dropdown">
                         <p><strong>Selecione um tipo de música: </strong></p>
-                      <select name="music" placeholder="Tipo de Música do Evento"  id="post-input">
+                      <select name="music" placeholder="Tipo de Música do Evento"  id="post-input-dropdown">
                         <option value="Todos os géneros">Todos os géneros</option>
                         <option value="Techno">Techno</option>
                         <option value="Jazz">Jazz</option>
@@ -118,7 +123,20 @@
 
                     
                     <div class="d-grid gap-2">
-                        <button id="post-button" style="background-color: lightblue;">Criar</button>
+                        <button id="post-button" style="color:#666;
+                                                      height:50px;
+                                                      width:100%;
+                                                      font-size: 13px;
+                                                      margin-bottom: 20px;
+                                                      border-radius: 50px;
+                                                      border:0;
+                                                      box-shadow: 0px 3px 8px #aaa,
+                                                      inset 5px 5px 15px 2px #fff,
+                                                      inset -3px -5px 10px  #aaa,
+                                                      0px -5px 10px 3px #fff;
+                                                      background-color: #f2f2f2;
+                                                      outline: none;
+                                                      border: none;">Criar</button>
                     </div>
                 </form>
             </div>
@@ -126,10 +144,10 @@
         {% for post in post_list %}
         {% if post.approved %}
         <div class="row justify-content-center mt-10 " style="margin-top: 25px;">
-            <div class="col-md-5 col-sm-12 position-relative" style="border-radius: 21px;
-background: #ebecf0;
-box-shadow:  -14px 14px 95px #868789,
-             14px -14px 95px #ffffff;">
+            <div class="col-md-6 col-sm-12 position-relative" style="border-radius: 21px;
+                                                                    background: #ebecf0;
+                                                                    box-shadow:  -14px 14px 95px #868789,
+                                                                                 14px -14px 95px #ffffff;">
                 <div style="margin-top: 20px">
                     <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
                 </div>
@@ -199,15 +217,17 @@ box-shadow:  -14px 14px 95px #868789,
         {% endfor %}
     </div>
 </body>
-{% endblock content %}
-
-<script type="text/javascript">
-    const btn = document.getElementById('modal-button');
-    const box = document.getElementById('post-form');
-
-    btn.onclick = function(){
-        box.style.display="none";
+<script>
+    var modal = document.getElementById("modal-button")
+    var form = document.getElementById("post-form")
+    modal.onclick = function(){
+        if (form.style.display != "none"){
+            form.style.display = "none";
+        }else{
+            form.style.display = "block"
+        }
+        
     }
-    
-    
 </script>
+
+{% endblock content %}

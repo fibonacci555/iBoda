@@ -12,34 +12,14 @@ from django.utils import timezone
 
 
 
-def is_username(query):
-    if "@" in query: 
-        return True
-    else:
-        return False
-
-def is_date(query):
-    lista = list(query)
-    if len(lista) == 10:
-        if lista[0].isnumeric() and lista[1].isnumeric and lista[2] == "-" and lista[3].isnumeric() and lista[4].isnumeric() and lista[5] == "-" and lista[6].isnumeric() and lista[7].isnumeric() and lista[8].isnumeric() and lista[9].isnumeric():
-            return True
-        else:
-            return False
-    else:
-        return False
-
-def is_local(query):
-    if not is_username(query) and not is_date(query):
-        return True
-    else:
-        return False
 
 
 
 
 
 
-class PostListView(LoginRequiredMixin,View):
+
+class PostListView(View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         all_posts = Post.objects.all()
@@ -182,10 +162,6 @@ class ProfileView(View):
                 break
             else:
                 is_following = False
-
-        #--------------------------------------------
-        # fazer função para saber se seguem mutamente
-        #--------------------------------------------
         
         context = {
             'user' : user,
@@ -271,62 +247,40 @@ class AddReport(LoginRequiredMixin, View):
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
 
-"""class AllSearch(View):
-    def get(self,request,*args,**kwargs):
-        query = self.request.GET.get('query')
-        user = False
-        print("user : " , (is_username(query)))
-        print("date : " , (is_date(query)))
-        print("local : ", (is_local(query)))
-        
-        if is_username(query):
-            new = ""
-            for char in query:
-                if char == "@":
-                    pass
-                else:
-                    new = new + char
-            user = True
-            profile_list = UserProfile.objects.filter(
-                    Q(user__username__icontains=new)
-                ).order_by('-created_on')
-            context = {
-            'profile_list' : profile_list,
-            #'post_list' : post_list,
-            'is_user' : user,
-            }
-            
-        elif is_local(query):
-            user = False
-            post_list = Post.objects.filter(
-                    Q(city__icontains=query)
-                ).order_by('-created_on')
-            post_list_new = post_list.filter(
-                    Q(date__icontains=timezone.now)
-                ).order_by('-created_on')
-            context = {
-            #'profile_list' : profile_list,
-            'post_list' : post_list,
-            'is_user' : user,
-            }
-        elif is_date(query):
-            user = False
-            query = query[6]+query[7]+query[8]+query[9]+"-"+query[3]+query[4]+"-"+query[0]+query[1]
-            
 
-        
-
-        return render(request, 'social/search.html' , context)"""
 
 class AllSearch(View):
     def get(self,request,*args,**kwargs):
         date = self.request.GET.get('date')
-        date = date[6]+date[7]+date[8]+date[9]+"-"+date[3]+date[4]+"-"+date[0]+date[1]
+        
         city = self.request.GET.get('city')
+        
+        words = self.request.GET.get('words')
         user = False
-        print(date, city)
-        post_list = Post.objects.filter(Q(date=date) and Q(city__icontains=city)).order_by('-created_on')
-            
+        
+
+        if date != "" and city != "" and words != "" :
+            post_list = Post.objects.filter(Q(date=date) and Q(city__icontains=city) and Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
+
+        if date == "" and city != "" and words == "":
+            post_list = Post.objects.filter(Q(city__icontains=city)).order_by('-created_on')
+
+        if date == "" and city != "" and words != "":
+            post_list = Post.objects.filter(Q(city__icontains=city) and Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
+
+        if date == "" and city == "" and words != "":
+            post_list = Post.objects.filter( Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
+
+        if date != "" and city == "" and words == "":
+            post_list = Post.objects.filter(Q(date=date)).order_by('-created_on')
+
+        if date != "" and city != "" and words == "" :
+            post_list = Post.objects.filter(Q(date=date) and Q(city__icontains=city) ).order_by('-created_on')
+
+        if date != "" and city == "" and words != "" :
+            post_list = Post.objects.filter(Q(date=date) and (Q(title__icontains=words) and Q(body__icontains=words)) ).order_by('-created_on')
+
+
         context = {
             'post_list' : post_list,
              'is_user' : user,

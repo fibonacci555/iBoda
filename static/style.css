@@ -289,6 +289,64 @@ border-radius: 50%;
 }
 
 
+#post-input-dropdown{
+  margin-right: 8px;
+  box-shadow: inset 2px 2px 5px #BABECC, inset -5px -5px 10px #FFF;
+  width: 100%;
+  border-radius: 20 px;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border: 0;
+  outline: 0;
+  font-size: 13px;
+  border-radius: 320px;
+  padding: 16px;
+  background-color: #EBECF0;
+  text-shadow: 1px 1px 0 #FFF;
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    radial-gradient(#ddd 70%, transparent 72%);
+  background-position:
+    calc(100% - 15px) calc(1.5em + 2.5px),
+    calc(100% - 10px) calc(1.5em + 2.5px),
+    calc(100% - .5em) 1em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+
+}
+
+#post-input-dropdown:focus {
+  background-image:
+    linear-gradient(45deg, white 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, white 50%),
+    radial-gradient(gray 70%, transparent 72%);
+  background-position:
+    calc(100% - 10px) 1.5em,
+    calc(100% - 15px) 1.5em,
+    calc(100% - .5em) 1em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+  border-color: green;
+  outline: 0;
+  box-shadow: inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
+outline: none;
+}
+
+#post-input-dropdown::after { content: "\25b6"; }
+
+
+
+
 #post-input {
 
 margin-right: 8px;
@@ -322,7 +380,8 @@ box-shadow: -2px -2px 5px #FFF, 2px 2px 5px #BABECC;
 box-shadow: inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
 }
 
-#modal-button{
+#modal-button,
+#modal-button-no-login{
   color:#666;
   height:50px;
   width:100%;
@@ -338,7 +397,8 @@ box-shadow: inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
   outline: none;
   border: none;
 }
-#modal-button:active{
+#modal-button:active,
+#modal-button-no-login:active{
   animation-name: pressed;
   animation-duration: 0.1s;
   animation-fill-mode: forwards;
