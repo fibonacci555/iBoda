@@ -1,4 +1,4 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,500&display=swap');
 
 
 
@@ -13,7 +13,9 @@ nav {
           box-sizing: border-box;
    -webkit-box-shadow: 1px 1px 1px 1px #eee;
            box-shadow: 1px 1px 1px 1px #eee;
+  background-color: purple;
 }
+
 
 .site {
   -webkit-box-orient: horizontal;
@@ -35,12 +37,15 @@ nav {
 
 
 nav h2 {
-   color: #aaa;
+   color: black;
    margin-left: 10%;
    font-size: 25px;
    margin-top: 5px;
    margin-left: 10px;
    margin-right: 20px;
+   font-family: 'Roboto Serif', serif; 
+   font-size: bolder;
+   text-align: center;
 }
 
 
