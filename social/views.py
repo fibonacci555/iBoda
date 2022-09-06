@@ -359,7 +359,43 @@ class AddSave(LoginRequiredMixin, View):
         return HttpResponseRedirect(next)
 
 
+class AddFav(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+ 
+        print(post.favs.all())
+        is_fav = False
 
+        for fav in post.favs.all():
+            if fav == request.user:
+                is_fav = True
+                break
+
+        if not is_fav:
+            post.favs.add(request.user)
+            
+
+        if is_fav:
+            post.favs.remove(request.user)
+
+
+
+        next = request.POST.get('next', '/')
+        return HttpResponseRedirect(next)
+
+class ListFavPosts(LoginRequiredMixin,View):
+    def get(self,request,pk,*args,**kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        posts = Post.objects.all().order_by('-created_on')
+
+
+
+
+        context = {
+            'post_list' : posts,
+        }
+        
+        return render(request, 'social/fav_posts.html' , context)
 
 
         

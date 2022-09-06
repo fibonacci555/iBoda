@@ -71,14 +71,14 @@
     </div>
     {% if user.is_authenticated %}
     <div> 
-      <a title="Feed" href="/social/"><i  class="fas fa-home"></i></a>
-      <a title="Eventos Populares" href="/popular-posts/"><i  style="color:orangered;" class="fa-solid fa-fire"></i></a>
+      <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
+      <a title="Eventos Populares" href="/popular-posts/"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
-      <a title="Eventos Favoritos" href=""><i style="color:gold" class="fas fa-star"></i></a>
-      <a title="Eventos Guardados" href="{% url 'saved-posts' request.user.profile.pk %}"><i class="fa fa-bookmark-o"></i></a>
-      <a title="Eventos Que Fui" href="{% url 'liked-posts' request.user.profile.pk %}"><i class="fa-solid fa-circle-check" style="color:green"></i></a><a title="Log Out" href="/accounts/logout"><i class="fa-solid fa-right-from-bracket"></i></a>
-      <a title="Perfil" href="{% url 'profile' request.user.profile.pk %}"><i   class="fa fa-user-o"></i></a>
+      <a title="Eventos Favoritos" href="{% url 'fav-posts' request.user.profile.pk %}"><i style="color:yellow ;" class="fas fa-star"></i></a>
+      <a title="Eventos Guardados" href="{% url 'saved-posts' request.user.profile.pk %}"><i style="color:black"class="fa fa-bookmark-o"></i></a>
+      <a title="Eventos Que Fui" href="{% url 'liked-posts' request.user.profile.pk %}"><i class="fa-solid fa-circle-check" style="color:green"></i></a><a title="Log Out" href="/accounts/logout"><i class="fa-solid fa-right-from-bracket" style="color:black"></i></a>
+      <a title="Perfil" href="{% url 'profile' request.user.profile.pk %}"><i  style="color:black" class="fa fa-user-o"></i></a>
 
       
     </div>

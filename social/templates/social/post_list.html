@@ -219,6 +219,17 @@
                             {% endif %}
                             </button>
                     </form>
+                    <form method="POST" action="{% url 'fav' post.pk %}" id="fav-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.favs.all %}<i style="color:gold ;" class="fas fa-star"></i>
+                            {% else %}<i style="color:gray ;" class="fas fa-star"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+
                     
                 </div>
                 
@@ -240,6 +251,7 @@
         }
         
     }
+
 </script>
 
 {% endblock content %}

@@ -23,7 +23,7 @@ class Post(models.Model):
     approved = models.BooleanField(default=True)
     reports = models.ManyToManyField(User, blank=True, related_name='reports')
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
-
+    favs = models.ManyToManyField(User, blank=True, related_name='favs')
    
 
     
