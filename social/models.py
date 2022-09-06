@@ -4,11 +4,17 @@ from django.contrib.auth.models import User
 import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
-
-
+RATE_CHOICES = [
+    (1,'1'),
+    (2,'2'),
+    (3,'3'),
+    (4,'4'),
+    (5,'5')
+]
 
 class Post(models.Model):
     title = models.CharField(default="",max_length=70)
@@ -24,6 +30,8 @@ class Post(models.Model):
     age = models.CharField(default="",max_length=70)
     approved = models.BooleanField(default=True)
     reports = models.ManyToManyField(User, blank=True, related_name='reports')
+    saves = models.ManyToManyField(User, blank=True, related_name='saves')
+
     
 
 

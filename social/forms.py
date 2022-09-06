@@ -72,7 +72,6 @@ CITIES = (("Alcobaça", "Alcobaça"),
 
 
 
-
 class PostForm(forms.ModelForm):
     body = forms.CharField(
         label='',

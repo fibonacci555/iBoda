@@ -153,16 +153,7 @@
                 </div>
                 <p><strong>{{ post.title }}</strong> - {{ post.city }}
                 
-                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                           
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red; align-self: right;" title="unreport"> </i>
-                            {% else %}<i class="fa-regular fa-flag" title="report" style="align-self: right;"></i>
-                            {% endif %}
-                            </button>
-                    </form>
+                    
                 </p>
                 <p><strong>Data do evento: </strong>  {{ post.date }}</p>
                 <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
@@ -206,6 +197,26 @@
                         {% else %}
                         {% endif %}
                         </button>
+                    </form>
+                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red; align-self: right;" title="unreport"> </i>
+                            {% else %}<i class="fa-regular fa-flag" title="report" style="align-self: right;"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    <form method="POST" action="{% url 'save' post.pk %}" id="save-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.saves.all %}<i class="fa-solid fa-bookmark" title="Não Guardar" style="color: gold;"></i>
+                            {% else %}<i class="fa-solid fa-bookmark" title="Guardar" style="color: gray;"></i>
+                            {% endif %}
+                            </button>
                     </form>
                     
                 </div>

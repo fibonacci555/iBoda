@@ -1,0 +1,134 @@
+{% load static %}
+{% include 'landing/navbar.html' %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<link href="{% static 'style.css' %}" rel="stylesheet">
+<script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
+{%block content%}
+<div class="container">
+	<div class="row mt-5">
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
+        </div>
+    </div>
+<body id="post-list-bg">
+    {% if is_user == True %}
+    	{%for profile in profile_list%}
+    		   <div class="row justify-content-center mt-3">
+    		       <div class="col-md-5 col-sm-12 border-bottom position-relative">
+    		          	<p><a style="text-decoration: none;" class="text-primary" href="{% url 'profile' profile.pk %}">
+    		            @{{profile.user}}</a></p>
+    		            {%if profile.location%}<p>{{profile.location}}</p>{%endif%}       
+    		            <p>Followers:{{profile.followers.all.count}}</p>
+    		            <div class="mb-3">
+                    	{% if n_followers != 1 %}
+                    	<p><strong>{{ n_followers }} Followers </strong></p>
+                    	{% else %}
+                    	<p><strong>{{ n_followers }} Follower </strong></p>
+                    	{% endif %}
+                    	{% if user == request.user %}
+                    
+                    	{% elif is_following%}
+                    		<form method="POST" action="{% url 'remove-follower' profile.pk %}">
+                        		{% csrf_token %}
+                        		<button class="btn btn-outline-danger" type="submit">Unfollow</button>
+                    		</form>
+                    	{% else %}
+                    		<form method="POST" action="{% url 'add-follower' profile.pk %}">
+                        		{% csrf_token %}
+                        		<button class="btn btn-outline-success" type="submit">Follow</button>
+                    		</form>
+                    	{% endif %}
+    		        </div>
+    		    </div>      
+    		</div>
+    	{%endfor%}
+
+
+    {% else %}
+    	 {% for post in post_list %}
+            {% if request.user in post.saves.all %}
+                {% if post.approved %}
+                
+                <div class="row justify-content-center mt-10 " style="margin-top: 25px;">
+                    <div class="col-md-5 col-sm-12 position-relative" style="border-radius: 21px;
+                                                                            background: #ebecf0;
+                                                                            box-shadow:  -14px 14px 95px #868789,
+                                                                                         14px -14px 95px #ffffff;">
+                        <div style="margin-top: 20px">
+                            <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
+                        </div>
+                        <p><strong>{{ post.title }}</strong> - {{ post.city }}
+                        
+                            <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                                   
+                                    {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red; align-self: right;" title="unreport"> </i>
+                                    {% else %}<i class="fa-regular fa-flag" title="report" style="align-self: right;"></i>
+                                    {% endif %}
+                                    </button>
+                            </form>
+                        </p>
+                        <p><strong>Data do evento: </strong>  {{ post.date }}</p>
+                        <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
+                        <p><strong>Idade recomendada: </strong>  {{ post.age }}</p>
+
+                            
+                                
+                                
+                        <div class="position-relative">
+                                <p>{{ post.body }}</p>
+                                {% if post.image %}
+                                <img class="modal-content" id="img01" src="{{ post.image.url }}" style="max-width: 100%; height: auto; border-radius: 10px;margin-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" />
+                                {% endif %}
+                                <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
+                                
+                                <br><small><strong><a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none">~{{ post.author }}</a>
+                                    {% if post.author.profile.verified  %}
+                                    <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                                    {% endif %}
+                                    
+                                </small></strong><br><br>
+
+                        </div>
+                            {% if post.url %}
+                                    <p><strong>Podes comprar bilhetes aqui: </strong>  <a href="{{ post.url }}">{{ post.url }}</a></p>
+                                {% endif %}
+
+                        <div class="d-flex flex-row">
+                            <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                               
+                                {% if request.user in post.likes.all %}<i class="fa fa-check" title="Eu Vou!" id="like-dado" > </i>
+                                {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style=""></i>
+                                {% endif %}
+                                <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
+                                    <strong>{{ post.likes.all.count }} Pessoas vão</strong></span><br>
+                                {% elif post.likes.all.count != 0 %}
+                                    <strong>{{ post.likes.all.count }} Pessoa vai</strong></span><br>
+                                {% else %}
+                                {% endif %}
+                                </button>
+                            </form>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                {% endif %}
+            {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+
+
+
+{%endblock content%}

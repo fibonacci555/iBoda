@@ -4,11 +4,12 @@ from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views import View
-from .models import Post, Comment, UserProfile, Notification
+from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
+
 
 
 
@@ -301,34 +302,47 @@ class ListFollowers(View):
 
         return render(request , 'social/followers_list.html',context)
 
-class PostNotification(View):
-    def get(self, request, notification_pk, post_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
-        post = Post.objects.get(pk=post_pk)
 
-        notification.user_has_seen = True
-        notification.save()
+class ListSavedPosts(LoginRequiredMixin, View):
+    def get(self,request,pk,*args,**kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        posts = Post.objects.all().order_by('-created_on')
 
-        return redirect('post-detail', pk=post_pk)
 
-class FollowNotification(View):
-    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
-        profile = UserProfile.objects.get(pk=profile_pk)
 
-        notification.user_has_seen = True
-        notification.save()
 
-        return redirect('profile', pk=profile_pk)
+        context = {
+            'post_list' : posts,
+        }
+        
+        return render(request, 'social/saved_posts.html' , context)
 
-class RemoveNotification(View):
-    def delete(self, request, notification_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
 
-        notification.user_has_seen = True
-        notification.save()
+class AddSave(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+ 
 
-        return HttpResponse('Success', content_type='text/plain')
+        is_saved = False
+
+        for save in post.saves.all():
+            if save == request.user:
+                is_saved = True
+                break
+
+        if not is_saved:
+            post.saves.add(request.user)
+            
+
+        if is_saved:
+            post.saves.remove(request.user)
+
+        next = request.POST.get('next', '/')
+        return HttpResponseRedirect(next)
+
+
+
+
 
         
 

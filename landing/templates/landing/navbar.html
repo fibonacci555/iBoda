@@ -71,12 +71,15 @@
     </div>
     {% if user.is_authenticated %}
     <div> 
-      <a href="/social/"><i class="fas fa-home"></i></a>
+      <a href="/social/"><i title="Feed" class="fas fa-home"></i></a>
+      <a href="/popular-posts/"><i title="Eventos Populares" style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
-      <a href="/social/go-posts"><i style="color:gold" class="fas fa-star"></i></a>
-      <a href="/social/saved-posts"><i class="fa fa-bookmark-o"></i></a>    
-      <a href="{% url 'profile' request.user.profile.pk %}"><i class="fa fa-user-o"></i></a>  
+      <a href=""><i title="Eventos Favoritos"style="color:gold" class="fas fa-star"></i></a>
+      <a href="{% url 'saved-posts' request.user.profile.pk %}"><i title="Eventos Guardados" class="fa fa-bookmark-o"></i></a>
+        
+      <a href="{% url 'profile' request.user.profile.pk %}"><i title="Perfil"  class="fa fa-user-o"></i></a>
+
       
     </div>
     {% endif %}
