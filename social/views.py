@@ -84,7 +84,7 @@ class PostDetailView(LoginRequiredMixin, View):
 
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
-        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=post.author, post=post)
+        
 
         context = {
             'post': post,
@@ -108,7 +108,7 @@ class CommentReplyView(LoginRequiredMixin, View):
             new_comment.post = post
             new_comment.parent = parent_comment
             new_comment.save()
-        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=parent_comment.author, comment=new_comment)
+        
 
         return redirect('post-detail', pk=post_pk)
 
@@ -193,7 +193,7 @@ class AddFollower(LoginRequiredMixin, View):
     def post(self,request,pk,*args,**kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.followers.add(request.user)
-        notification = Notification.objects.create(notification_type=3, from_user=request.user, to_user=profile.user)
+        
         return redirect('profile',pk=profile.pk)
 
 class RemoveFollower(LoginRequiredMixin,View):
@@ -218,7 +218,7 @@ class AddLike(LoginRequiredMixin, View):
 
         if not is_like:
             post.likes.add(request.user)
-            notification = Notification.objects.create(notification_type=1, from_user=request.user, to_user=post.author, post=post)
+            
 
         if is_like:
             post.likes.remove(request.user)
@@ -229,8 +229,12 @@ class AddLike(LoginRequiredMixin, View):
 class AddReport(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
- 
-
+        print((post.reports.all()))
+        print(post.approved)
+        if len(post.reports.all())>=25:
+            post.approved=False
+            post.save()
+        
         is_reported = False
 
         for report in post.reports.all():
@@ -316,6 +320,20 @@ class ListSavedPosts(LoginRequiredMixin, View):
         }
         
         return render(request, 'social/saved_posts.html' , context)
+
+class ListLikedPosts(LoginRequiredMixin,View):
+    def get(self,request,pk,*args,**kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        posts = Post.objects.all().order_by('-created_on')
+
+
+
+
+        context = {
+            'post_list' : posts,
+        }
+        
+        return render(request, 'social/liked_posts.html' , context)
 
 
 class AddSave(LoginRequiredMixin, View):

@@ -27,7 +27,8 @@
                     </label>
 
                     <label id="post-label">
-                    <input id ="post-input" type="textarea" placeholder="Descrição do Evento" name="body"/>
+                    <textarea name="body" id="post-input" style="height: 170px; border-radius:7px" form="post-form" placeholder="Descrição do Evento"></textarea>
+                    
                     </label>
 
                     <label id="post-label" id="post-input-dropdown">
@@ -203,8 +204,8 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
                                            
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red; align-self: right;" title="unreport"> </i>
-                            {% else %}<i class="fa-regular fa-flag" title="report" style="align-self: right;"></i>
+                            {% if request.user in post.reports.all %}<i class="fa-regular fa-flag"  title="report"> </i>
+                            {% else %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
                             {% endif %}
                             </button>
                     </form>

@@ -8,14 +8,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
-RATE_CHOICES = [
-    (1,'1'),
-    (2,'2'),
-    (3,'3'),
-    (4,'4'),
-    (5,'5')
-]
-
 class Post(models.Model):
     title = models.CharField(default="",max_length=70)
     city = models.CharField(default="",max_length=40)
@@ -31,6 +23,8 @@ class Post(models.Model):
     approved = models.BooleanField(default=True)
     reports = models.ManyToManyField(User, blank=True, related_name='reports')
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
+
+   
 
     
 

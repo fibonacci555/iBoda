@@ -8,11 +8,11 @@
 
 
 <nav class="site" >
-    <span class="header"></span> <a href="/social/" style="text-decoration:none"><h2>iBoda</h2></a>
-    <div id="search">
-        <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="">
+    <span class="header"></span> <a href="/social/" style="text-decoration:none; margin-left: 10%; margin-right: 5%;"><h2>iBoda</h2></a>
+    <div id="search" style="margin: auto">
+        <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="margin: auto">
         <div class="input-group" >
-          <input  style=" "class="form-control" placeholder="Artistas, Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
+          <input  style=" "class="form-control" placeholder="Artistas & Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
           <input style="margin-left:5px; border-radius: 5px" class="form-control" placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
           
           <select style="margin-left:5px; background-color: rgb(238,238,238);border:none; border-radius:5px" id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
@@ -71,14 +71,14 @@
     </div>
     {% if user.is_authenticated %}
     <div> 
-      <a href="/social/"><i title="Feed" class="fas fa-home"></i></a>
-      <a href="/popular-posts/"><i title="Eventos Populares" style="color:orangered;" class="fa-solid fa-fire"></i></a>
+      <a title="Feed" href="/social/"><i  class="fas fa-home"></i></a>
+      <a title="Eventos Populares" href="/popular-posts/"><i  style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
-      <a href=""><i title="Eventos Favoritos"style="color:gold" class="fas fa-star"></i></a>
-      <a href="{% url 'saved-posts' request.user.profile.pk %}"><i title="Eventos Guardados" class="fa fa-bookmark-o"></i></a>
-        
-      <a href="{% url 'profile' request.user.profile.pk %}"><i title="Perfil"  class="fa fa-user-o"></i></a>
+      <a title="Eventos Favoritos" href=""><i style="color:gold" class="fas fa-star"></i></a>
+      <a title="Eventos Guardados" href="{% url 'saved-posts' request.user.profile.pk %}"><i class="fa fa-bookmark-o"></i></a>
+      <a title="Eventos Que Fui" href="{% url 'liked-posts' request.user.profile.pk %}"><i class="fa-solid fa-circle-check" style="color:green"></i></a><a title="Log Out" href="/accounts/logout"><i class="fa-solid fa-right-from-bracket"></i></a>
+      <a title="Perfil" href="{% url 'profile' request.user.profile.pk %}"><i   class="fa fa-user-o"></i></a>
 
       
     </div>

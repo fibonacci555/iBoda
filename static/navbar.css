@@ -4,7 +4,7 @@
 
 nav {
    width: 100%;
-   top: 0;
+   
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -21,7 +21,7 @@ nav {
       -ms-flex-direction: row;
           flex-direction: row;
   height: 80px;
-  padding: 20px;
+  
   background: #fff;
   -ms-flex-pack: distribute;
       justify-content: space-around;
@@ -32,23 +32,18 @@ nav {
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
 }
-nav img {
-   margin-left: -2px;
-   margin-top: -1px;
-   height: 60px;
-}
+
 
 nav h2 {
    color: #aaa;
+   margin-left: 10%;
    font-size: 25px;
    margin-top: 5px;
    margin-left: 10px;
    margin-right: 20px;
 }
 
-.header {
-   margin-left: 20px;
-}
+
 #span-nav {
    width: 2px;
    height: 45px;
@@ -57,37 +52,41 @@ nav h2 {
    background: #ddd;  
 } 
 .site #search {
+  margin: 0 auto;
+  justify-content: center;
  -webkit-box-flex: 9;
      -ms-flex: 9;
          flex: 3;
  height: 60px;
- margin: 10px;
- -webkit-box-pack: start;
-     -ms-flex-pack: start;
-         justify-content: flex-start;
+ 
+ 
 }
 
 
 .site #search input{
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  
   font-size: 15px;
   background: #eee;
   border: none;
 }
-#search input[type="text"] {
-   padding-left: 26px;
+#search input[type="text"],
+#search input[type="date"],
+#search select {
+   
    border-radius: 4px;
    -webkit-transition: 400ms ease-in-out;
    -o-transition: 400ms ease-in-out;
    transition: 400ms ease-in-out;
 }
-#search input[type="text"]:hover{
+#search input[type="text"]:hover,
+#search input[type="date"]:hover,
+#search select: hover{
    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
 }
-#search input[type="text"]:focus{
+#search input[type="text"]:focus,
+#search input[type="date"]:focus,
+#search select: focus{
    color: #999;
    background: #222;
    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
@@ -99,7 +98,7 @@ nav h2 {
 
 input:focus::-webkit-input-placeholder {
    font-weight: 900;
-   text-align: left;
+   text-align: center;
 }
 
 .site div {
