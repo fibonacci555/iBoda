@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import ListFavPosts, AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('profile/<int:pk>/fav-posts/', ListFavPosts.as_view(), name='fav-posts'),
     path('profile/<int:pk>/liked-posts/', ListLikedPosts.as_view(), name='liked-posts'),
     path('profile/<int:pk>/saved-posts/', ListSavedPosts.as_view(), name='saved-posts'),
+    path('popular-posts/', ListPopularPosts.as_view(), name='popular-posts'),
 
     path('post/<int:post_pk>/comment/<int:pk>/reply', CommentReplyView.as_view(), name='comment-reply'),
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),

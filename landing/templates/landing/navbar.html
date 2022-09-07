@@ -72,7 +72,7 @@
     {% if user.is_authenticated %}
     <div> 
       <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
-      <a title="Eventos Populares" href="/popular-posts/"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
+      <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
       <a title="Eventos Favoritos" href="{% url 'fav-posts' request.user.profile.pk %}"><i style="color:yellow ;" class="fas fa-star"></i></a>

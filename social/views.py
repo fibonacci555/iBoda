@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views import View
@@ -218,10 +218,13 @@ class AddLike(LoginRequiredMixin, View):
 
         if not is_like:
             post.likes.add(request.user)
+            post.likes_count = post.likes_count +1
             
 
         if is_like:
             post.likes.remove(request.user)
+            post.likes_count = post.likes_count -1
+        post.save()
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
@@ -396,6 +399,20 @@ class ListFavPosts(LoginRequiredMixin,View):
         }
         
         return render(request, 'social/fav_posts.html' , context)
+
+class ListPopularPosts(View):
+    def get(self,request,*args,**kwargs):
+        
+
+
+        posts = Post.objects.all().order_by('-likes_count')
+        print(posts)
+
+        context = {
+            'post_list' : posts,
+        }
+        
+        return render(request, 'social/popular_posts.html' , context)
 
 
         

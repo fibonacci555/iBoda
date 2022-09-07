@@ -178,9 +178,7 @@
                         </small></strong><br><br>
 
                 </div>
-                    {% if post.url %}
-                            <p><strong>Podes comprar bilhetes aqui: </strong>  <a href="{{ post.url }}">{{ post.url }}</a></p>
-                        {% endif %}
+                    
 
                 <div class="d-flex flex-row">
                     <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
@@ -204,8 +202,8 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
                                            
-                            {% if request.user in post.reports.all %}<i class="fa-regular fa-flag"  title="report"> </i>
-                            {% else %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
+                            {% else %}<i class="fa-solid fa-flag" style="color: gray" title="report"> </i>
                             {% endif %}
                             </button>
                     </form>
@@ -229,6 +227,16 @@
                             {% endif %}
                             </button>
                     </form>
+                    {% if post.url %}
+                    
+                            
+                            
+                            <button id="bilhetes" title="Bilhetes" style="border: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
+                                           
+                            <i class="fa-solid fa-ticket"></i>
+                            </button>
+                    
+                    {% endif %}
 
                     
                 </div>

@@ -96,24 +96,65 @@
                             {% endif %}
 
                     <div class="d-flex flex-row">
-                        <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
+                    <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                       
+                        {% if request.user in post.likes.all %}<i class="fa fa-check" title="Eu Vou!" id="like-dado" > </i>
+                        {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style=""></i>
+                        {% endif %}
+                        <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
+                            <strong>{{ post.likes.all.count }} Pessoas vão</strong></span><br>
+                        {% elif post.likes.all.count != 0 %}
+                            <strong>{{ post.likes.all.count }} Pessoa vai</strong></span><br>
+                        {% else %}
+                        {% endif %}
+                        </button>
+                    </form>
+                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
                                            
-                            {% if request.user in post.likes.all %}<i class="fa fa-check" title="Eu Vou!" id="like-dado" > </i>
-                            {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style=""></i>
-                            {% endif %}
-                            <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
-                                <strong>{{ post.likes.all.count }} Pessoas vão</strong></span><br>
-                            {% elif post.likes.all.count != 0 %}
-                                <strong>{{ post.likes.all.count }} Pessoa vai</strong></span><br>
-                            {% else %}
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
+                            {% else %}<i class="fa-solid fa-flag" style="color: gray" title="report"> </i>
                             {% endif %}
                             </button>
-                        </form>
-                        
-                    </div>
+                    </form>
+                    <form method="POST" action="{% url 'save' post.pk %}" id="save-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.saves.all %}<i class="fa-solid fa-bookmark" title="Não Guardar" style="color: gold;"></i>
+                            {% else %}<i class="fa-solid fa-bookmark" title="Guardar" style="color: gray;"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    <form method="POST" action="{% url 'fav' post.pk %}" id="fav-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.favs.all %}<i style="color:gold ;" class="fas fa-star"></i>
+                            {% else %}<i style="color:gray ;" class="fas fa-star"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    {% if post.url %}
+                    
+                            
+                            
+                            <button id="bilhetes" title="Bilhetes" style="border: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
+                                           
+                            <i class="fa-solid fa-ticket"></i>
+                            </button>
+                    
+                    {% endif %}
+
+                    
+                </div>
                     
                 </div>
                 

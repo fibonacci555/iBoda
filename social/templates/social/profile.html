@@ -1,6 +1,7 @@
 {% extends 'landing/base.html' %}
 
 {% block content %}
+<body id="post-list-bg">
     <div class="container">
         <div class="row  mt-3">
             <div class="col-md-3 col-sm-6">
@@ -69,39 +70,44 @@
         </div>
         {% for post in posts %}
         {% if post.approved %}
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-8 col-sm-12 position-relative">
-                <div>
+        <div class="row justify-content-center mt-10 " style="margin-top: 25px;">
+            <div class="col-md-6 col-sm-12 position-relative" style="border-radius: 21px;
+                                                                    background: #ebecf0;
+                                                                    box-shadow:  -14px 14px 95px #868789,
+                                                                                 14px -14px 95px #ffffff;">
+                <div style="margin-top: 20px">
                     <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
                 </div>
                 <p><strong>{{ post.title }}</strong> - {{ post.city }}
                 
-                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                           
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red;" title="unreport"> </i>
-                            {% else %}<i class="fa-regular fa-flag" title="report"></i>
-                            {% endif %}
-                            </button>
-                    </form>
+                    
                 </p>
                 <p><strong>Data do evento: </strong>  {{ post.date }}</p>
                 <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
                 <p><strong>Idade recomendada: </strong>  {{ post.age }}</p>
-                <p>{{ post.body }}</p>
-                {% if post.image %}
+
+                    
+                        
+                        
+                <div class="position-relative">
+                        <p>{{ post.body }}</p>
+                        {% if post.image %}
                         <img class="modal-content" id="img01" src="{{ post.image.url }}" style="max-width: 100%; height: auto; border-radius: 10px;margin-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" />
                         {% endif %}
-                <a class="stretched-link" href="{% url 'post-detail' post.pk %}"></a> 
-                {% if post.url %}
-                            <p><strong>Podes comprar bilhetes aqui: </strong>  <a href="{{ post.url }}">{{ post.url }}</a></p>
-                        {% endif %}
-            </div>
+                        <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
+                        
+                        <br><small><strong><a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none">~{{ post.author }}</a>
+                            {% if post.author.profile.verified  %}
+                            <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+                            {% endif %}
+                            
+                        </small></strong><br><br>
 
-            <div class="col-md-8 col-sm-12 border-bottom mt-3 position-relative">
-                    <form method="POST" action="{% url 'like' post.pk %}">
+                </div>
+                    
+
+                <div class="d-flex flex-row">
+                    <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.path }}">
                         <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
@@ -110,17 +116,63 @@
                         {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style=""></i>
                         {% endif %}
                         <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
-                            <strong>{{ post.likes.all.count }} Pessoas vao</strong></span>
+                            <strong>{{ post.likes.all.count }} Pessoas vão</strong></span><br>
                         {% elif post.likes.all.count != 0 %}
-                            <strong>{{ post.likes.all.count }} Pessoa vai</strong></span>
+                            <strong>{{ post.likes.all.count }} Pessoa vai</strong></span><br>
                         {% else %}
                         {% endif %}
                         </button>
                     </form>
+                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
+                            {% else %}<i class="fa-solid fa-flag" style="color: gray" title="report"> </i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    <form method="POST" action="{% url 'save' post.pk %}" id="save-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.saves.all %}<i class="fa-solid fa-bookmark" title="Não Guardar" style="color: gold;"></i>
+                            {% else %}<i class="fa-solid fa-bookmark" title="Guardar" style="color: gray;"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    <form method="POST" action="{% url 'fav' post.pk %}" id="fav-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                                           
+                            {% if request.user in post.favs.all %}<i style="color:gold ;" class="fas fa-star"></i>
+                            {% else %}<i style="color:gray ;" class="fas fa-star"></i>
+                            {% endif %}
+                            </button>
+                    </form>
+                    {% if post.url %}
+                    
+                            
+                            
+                            <button id="bilhetes" title="Bilhetes" style="border: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
+                                           
+                            <i class="fa-solid fa-ticket"></i>
+                            </button>
+                    
+                    {% endif %}
+
+                    
                 </div>
+                
+            </div>
+            
         </div>
         {% endif %}
         {% endfor %}
     </div>
+</body>
     
 {% endblock content %}

@@ -24,6 +24,7 @@ class Post(models.Model):
     reports = models.ManyToManyField(User, blank=True, related_name='reports')
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
+    likes_count = models.IntegerField(default=0)
    
 
     
