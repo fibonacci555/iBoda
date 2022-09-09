@@ -181,12 +181,13 @@
     });
 
     // Botão de Ir
-
+    
     $(document).on('submit','#like-post',function(e){
         e.preventDefault();
         
-        pkey = $(this).children('input')[2].value;
         
+        pkey = $(this).children('input')[2].value;
+        click_count = 0;
         $.ajax({
             type:'POST',
             url:"/social/post/"+pkey+"/like",
@@ -195,24 +196,44 @@
             },
             
             success: function(response){
-                
-               
-                console.log(pkey, count);
+                console.log(pkey);
             },
             error: function(response){
                 console.log(pkey);
             }
         });
+
     count = parseInt($(this).children('input')[3].value);
+    count1 = document.getElementById('count'+pkey);
+    count2 = document.getElementById('count'+pkey+'2');
+    
     if (document.getElementById("no-like" + pkey).style.display == "none"){
-            document.getElementById("no-like" + pkey).style.display = "block"
-            document.getElementById("liked" + pkey).style.display = 'none';     
-            document.getElementById('count'+pkey).innerHTML = count - 1;
+            document.getElementById("no-like" + pkey).style.display = "flex"
+            document.getElementById("liked" + pkey).style.display = 'none';
+            count1.style.display = 'none';     
+            count2.style.display = 'flex';
+            if (count == 0){
+                count2.innerHTML = 0
+            }else{
+                count2.innerHTML = count - 1;
+            }
+            
+            
     } else {      
             document.getElementById("no-like" + pkey ).style.display = "none";
-            document.getElementById("liked" + pkey).style.display = 'block';       
-            document.getElementById('count'+pkey).innerHTML = count + 1;
-                    
+            document.getElementById("liked" + pkey).style.display = 'flex';     
+            count1.style.display = 'none';  
+            count2.style.display = 'flex';
+            
+            if (count == 0 ){
+                count2.innerHTML = 1;
+            }else{
+                count2.innerHTML = count ;
+            }
+            
+            
+            
+            
         }
 
     });

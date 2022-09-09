@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views import View
@@ -218,12 +218,12 @@ class AddLike(LoginRequiredMixin, View):
 
         if not is_like:
             post.likes.add(request.user)
-            post.likes_count = post.likes_count +1
+            post.likes_count = F('likes_count') + 1
             
 
         if is_like:
             post.likes.remove(request.user)
-            post.likes_count = post.likes_count -1
+            post.likes_count = F('likes_count') - 1
         post.save()
 
         next = request.POST.get('next', '/')

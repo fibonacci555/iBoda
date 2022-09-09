@@ -35,23 +35,32 @@
                             <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
                             {% endif %}<br><br>
             <div class="d-flex flex-row" style="justify-content: space-between;">
-                    <form method="POST"  id="like-post">
+                    <form method="POST"  id="like-post" style="margin-left:2%" style="justify-content: space-between;">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <input type="hidden" name="pk" value="{{ post.pk }}">
                             <input type="hidden" name="like-count" value="{{ post.likes_count }}">
+                            
+                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
 
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-
+                            
                             {% if request.user in post.likes.all %}
-                            <span id="count{{ post.pk }}" ></span>
-                            <i id="no-like{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-champagne-glasses"></i>
-                            <i id="liked{{ post.pk }}" style="color:green ;" class="fa-solid fa-champagne-glasses"></i>
+                            
+                            <i id="no-like{{ post.pk }}" style="color:gray ;display: none;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
+                            <i id="liked{{ post.pk }}" style="color:green ;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
                             {% else %}
-                            <span id="count{{ post.pk }}" ></span>
-                            <i id="liked{{ post.pk }}" style="color:green ;display: none;" class="fa-solid fa-champagne-glasses"></i>
-                            <i id="no-like{{ post.pk }}" style="color:gray ; " class="fa-solid fa-champagne-glasses"></i>
+                            
+                            <i id="liked{{ post.pk }}" style="color:green ;display: none;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
+                            <i id="no-like{{ post.pk }}" style="color:gray ; flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
                             {% endif %}
+
+                            <div>
+                                <span style="display: left; justify-content:center;" id="count{{ post.pk }}" >{{ post.likes_count }}</span>
+                                <span style="display: none; justify-content:center;" id="count{{ post.pk }}2" ></span>
+                            </div>
+
+
+
                             </button>
                     </form>
 
@@ -60,7 +69,7 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <input type="hidden" name="pk" value="{{ post.pk }}">
 
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
 
                                            
 
@@ -79,7 +88,7 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <input type="hidden" name="pk" value="{{ post.pk }}">
 
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
                                            
 
                             {% if request.user in post.saves.all %}
@@ -97,7 +106,7 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <input type="hidden" name="pk" value="{{ post.pk }}">
 
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
 
                             {% if request.user in post.favs.all %}
                             <i id="no-fav{{ post.pk }}" style="color:gray ;display: none;" class="fas fa-star"></i>
@@ -113,7 +122,7 @@
                     
                             
                             
-                            <button id="bilhetes" title="Bilhetes" style="border: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
+                            <button id="bilhetes" title="Bilhetes" style="border: none;outline: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
                                            
                             <i class="fa-solid fa-ticket"></i>
                             </button>
