@@ -16,16 +16,7 @@
                     <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
                 </div><p><strong>{{ post.title }}</strong> - {{ post.city }}
                 
-                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                           
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" style="color:red;" title="unreport"> </i>
-                            {% else %}<i class="fa-regular fa-flag" title="report"></i>
-                            {% endif %}
-                            </button>
-                    </form>
+                    
                 </p>
                 <p><strong>Data do evento: </strong>  {{ post.date }}</p>
                 <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
@@ -43,51 +34,79 @@
                         <br><small><strong><a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none">~{{ post.author }}</a>{% if post.author.profile.verified  %}
                             <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
                             {% endif %}<br><br>
-            <div class="d-flex flex-row">
-                    <form method="POST" action="{% url 'like' post.pk %}" id="like-post">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.path }}">
-                        <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                       
-                        {% if request.user in post.likes.all %}<i class="fa fa-check" title="Eu Vou!" id="like-dado" > </i>
-                        {% else %}<i class="fa fa-check" title="Eu Vou!" id="sem-like" style=""></i>
-                        {% endif %}
-                        <span style="font-family: 'Trebuchet MS', sans-serif;">{% if post.likes.all.count != 1 and post.likes.all.count != 0 %}
-                            <strong>{{ post.likes.all.count }} Pessoas vão</strong></span><br>
-                        {% elif post.likes.all.count != 0 %}
-                            <strong>{{ post.likes.all.count }} Pessoa vai</strong></span><br>
-                        {% else %}
-                        {% endif %}
-                        </button>
-                    </form>
-                    <form method="POST" action="{% url 'report' post.pk %}" id="report-post">
+            <div class="d-flex flex-row" style="justify-content: space-between;">
+                    <form method="POST"  id="like-post">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="pk" value="{{ post.pk }}">
+                            <input type="hidden" name="like-count" value="{{ post.likes_count }}">
+
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                           
-                            {% if request.user in post.reports.all %}<i class="fa-solid fa-flag" title="unreport" style="color:red;" style="align-self: right;"></i>
-                            {% else %}<i class="fa-solid fa-flag" style="color: gray" title="report"> </i>
+
+                            {% if request.user in post.likes.all %}
+                            <span id="count{{ post.pk }}" ></span>
+                            <i id="no-like{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-champagne-glasses"></i>
+                            <i id="liked{{ post.pk }}" style="color:green ;" class="fa-solid fa-champagne-glasses"></i>
+                            {% else %}
+                            <span id="count{{ post.pk }}" ></span>
+                            <i id="liked{{ post.pk }}" style="color:green ;display: none;" class="fa-solid fa-champagne-glasses"></i>
+                            <i id="no-like{{ post.pk }}" style="color:gray ; " class="fa-solid fa-champagne-glasses"></i>
                             {% endif %}
                             </button>
                     </form>
-                    <form method="POST" action="{% url 'save' post.pk %}" id="save-post">
+
+                    <form method="POST" id="report-post">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="pk" value="{{ post.pk }}">
+
+                            <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
+
+                                           
+
+                            {% if request.user in post.reports.all %}
+                            <i id="no-report{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-flag"></i>
+                            <i id="reported{{ post.pk }}" style="color:darkred ;" class="fa-solid fa-flag"></i>
+                            {% else %}
+                            <i id="reported{{ post.pk }}" style="color:darkred ;display: none;" class="fa-solid fa-flag"></i>
+                            <i id="no-report{{ post.pk }}" style="color:gray ; " class="fa-solid fa-flag"></i>
+                            {% endif %}
+                            </button>        
+                    </form>
+
+                    <form method="POST" id="save-post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="pk" value="{{ post.pk }}">
+
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
                                            
-                            {% if request.user in post.saves.all %}<i class="fa-solid fa-bookmark" title="Não Guardar" style="color: gold;"></i>
-                            {% else %}<i class="fa-solid fa-bookmark" title="Guardar" style="color: gray;"></i>
+
+                            {% if request.user in post.saves.all %}
+                            <i id="no-save{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-bookmark"></i>
+                            <i id="saved{{ post.pk }}" style="color:gold ;" class="fa-solid fa-bookmark"></i>
+                            {% else %}
+                            <i id="saved{{ post.pk }}" style="color:gold ;display: none;" class="fa-solid fa-bookmark"></i>
+                            <i id="no-save{{ post.pk }}" style="color:gray ; " class="fa-solid fa-bookmark"></i>
                             {% endif %}
                             </button>
                     </form>
-                    <form method="POST" action="{% url 'fav' post.pk %}" id="fav-post">
+
+                    <form method="POST"  id="fav-post">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="pk" value="{{ post.pk }}">
+
                             <button style="background-color: transparent; border: none; box-shadow: none;" type="submit">
-                                           
-                            {% if request.user in post.favs.all %}<i style="color:gold ;" class="fas fa-star"></i>
-                            {% else %}<i style="color:gray ;" class="fas fa-star"></i>
+
+                            {% if request.user in post.favs.all %}
+                            <i id="no-fav{{ post.pk }}" style="color:gray ;display: none;" class="fas fa-star"></i>
+                            <i id="faved{{ post.pk }}" style="color:gold ;" class="fas fa-star"></i>
+                            {% else %}
+                            <i id="faved{{ post.pk }}" style="color:gold ;display: none;" class="fas fa-star"></i>
+                            <i id="no-fav{{ post.pk }}" style="color:gray ; " class="fas fa-star"></i>
                             {% endif %}
+                            
                             </button>
                     </form>
                     {% if post.url %}
@@ -192,6 +211,7 @@
     {% endif %}
     {% endfor %}
 </div>
+
 
 
 {% endblock content %}

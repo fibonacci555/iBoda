@@ -5,6 +5,9 @@
 <script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
 
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
+
 
 
 <nav class="site" style="background-color: lightgray" >
@@ -84,6 +87,139 @@
     </div>
     {% endif %}
 </nav>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    // Botão de Fav
+    $(document).on('submit','#fav-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/fav",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-fav" + pkey).style.display == "none"){
+                    document.getElementById("no-fav" + pkey).style.display = "block"
+                    document.getElementById("faved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-fav" + pkey ).style.display = "none"
+                    document.getElementById("faved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Save
+
+    $(document).on('submit','#save-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/save",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-save" + pkey).style.display == "none"){
+                    document.getElementById("no-save" + pkey).style.display = "block"
+                    document.getElementById("saved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-save" + pkey ).style.display = "none"
+                    document.getElementById("saved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Report
+
+
+    $(document).on('submit','#report-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/report",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-report" + pkey).style.display == "none"){
+                    document.getElementById("no-report" + pkey).style.display = "block"
+                    document.getElementById("reported" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-report" + pkey ).style.display = "none"
+                    document.getElementById("reported" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Ir
+
+    $(document).on('submit','#like-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/like",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            success: function(response){
+                
+               
+                console.log(pkey, count);
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    count = parseInt($(this).children('input')[3].value);
+    if (document.getElementById("no-like" + pkey).style.display == "none"){
+            document.getElementById("no-like" + pkey).style.display = "block"
+            document.getElementById("liked" + pkey).style.display = 'none';     
+            document.getElementById('count'+pkey).innerHTML = count - 1;
+    } else {      
+            document.getElementById("no-like" + pkey ).style.display = "none";
+            document.getElementById("liked" + pkey).style.display = 'block';       
+            document.getElementById('count'+pkey).innerHTML = count + 1;
+                    
+        }
+
+    });
+
+
+
+</script>
 
 
 

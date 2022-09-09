@@ -251,6 +251,7 @@ class AddReport(LoginRequiredMixin, View):
 
         if is_reported:
             post.reports.remove(request.user)
+        print(post.reports.all())
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
