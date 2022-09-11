@@ -26,6 +26,8 @@ class Post(models.Model):
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
     
+
+    
    
 
     
@@ -58,6 +60,8 @@ class UserProfile(models.Model):
     verified = models.BooleanField(default=False)
     picture = models.ImageField(upload_to = 'uploads/profile_pictures' ,default='uploads/profile_pictures/default.jpg', blank=True)
     followers = models.ManyToManyField(User,blank=True,related_name='followers')
+    public = models.BooleanField(default=True)
+    favs_count = models.PositiveIntegerField(default = 0)
     
     def calculate_age(self):
         import datetime

@@ -282,7 +282,18 @@
         {% endfor %}
     </div>
 </body>
-
+<script>
+    var modal = document.getElementById("modal-button")
+    var form = document.getElementById("post-form")
+    modal.onclick = function(){
+        if (form.style.display != "none"){
+            form.style.display = "none";
+        }else{
+            form.style.display = "block"
+        }
+        
+    }
+</script>
 
 
 

@@ -212,8 +212,8 @@
             document.getElementById("liked" + pkey).style.display = 'none';
             count1.style.display = 'none';     
             count2.style.display = 'flex';
-            if (count == 0){
-                count2.innerHTML = 0
+            if (count == 0 || parseInt(count2) == 0){
+                count2.innerHTML = 0;
             }else{
                 count2.innerHTML = count - 1;
             }
@@ -225,10 +225,21 @@
             count1.style.display = 'none';  
             count2.style.display = 'flex';
             
-            if (count == 0 ){
-                count2.innerHTML = 1;
+            if (count == 0){
+                count = parseInt($(this).children('input')[3].value);
+                count2.innerHTML = count + 1;
+            if(parseInt(count2) == 0 ){
+                count = parseInt($(this).children('input')[3].value);
+                count2.innerHTML = count + 1;
+            }
+
+            }if (count == 1){
+                count2.innerHTML = 2;
+            
+            }if ( parseInt(count2) == 1){
+                count2.innerHTML = 1 ;
             }else{
-                count2.innerHTML = count ;
+                count2.innerHTML = count;
             }
             
             

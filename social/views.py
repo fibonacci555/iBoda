@@ -153,8 +153,21 @@ class ProfileView(View):
     def get(self,request,pk,*args,**kwargs):
         profile = UserProfile.objects.get(pk=pk)
         user = profile.user
+
         posts = Post.objects.filter(author=user).order_by('-created_on')
+
+
+
+
+        for post in posts:
+            print(post.favs.all())
+            for user in post.favs.all():
+
+                profile.favs_count = profile.favs_count + 1
+
         followers = profile.followers.all()
+
+
         n_followers = len(followers)
         is_following = False
         for follower in followers:
@@ -163,13 +176,15 @@ class ProfileView(View):
                 break
             else:
                 is_following = False
-        
+        fav_counter = profile.favs_count
         context = {
             'user' : user,
             'profile' : profile,
             'posts' : posts,
             'n_followers' : n_followers,
+            'followers' : followers,
             'is_following' : is_following,
+            'fav_counter' : fav_counter,
         }
 
         return render(request, 'social/profile.html', context)
