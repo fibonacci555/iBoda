@@ -10,7 +10,7 @@
 
 
 
-<nav class="site" style="background-color: lightgray" >
+<nav class="site" style="background-color: lightgray " >
     <span class="header"></span> <a href="/social/" style="text-decoration:none; margin-left: 8%; margin-right: 5%;"><h2>[ iBoda ]</h2></a>
     <div id="search" style="margin: auto">
         <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="margin: auto">
@@ -196,27 +196,43 @@
             },
             
             success: function(response){
-                console.log(pkey);
+                console.log('success');
             },
             error: function(response){
-                console.log(pkey);
+                console.log('error');
+                
             }
         });
 
     count = parseInt($(this).children('input')[3].value);
     count1 = document.getElementById('count'+pkey);
     count2 = document.getElementById('count'+pkey+'2');
+    newcount = count;
+    console.log(newcount)
     
     if (document.getElementById("no-like" + pkey).style.display == "none"){
+            
             document.getElementById("no-like" + pkey).style.display = "flex"
             document.getElementById("liked" + pkey).style.display = 'none';
             count1.style.display = 'none';     
             count2.style.display = 'flex';
-            if (count == 0 || parseInt(count2) == 0){
-                count2.innerHTML = 0;
-            }else{
-                count2.innerHTML = count - 1;
+            console.log(newcount + ' -')
+            if (newcount-1 > 0){
+                if(newcount == 1){
+                    newcount = 1
+                }else{
+                    newcount = newcount - 1;
+                }
+                
+
+                if (newcount == count -2){
+                    newcount = newcount + 2
             }
+            }else{
+                newcount = 0
+            }
+            count2.innerHTML = newcount
+            
             
             
     } else {      
@@ -224,24 +240,21 @@
             document.getElementById("liked" + pkey).style.display = 'flex';     
             count1.style.display = 'none';  
             count2.style.display = 'flex';
-            
-            if (count == 0){
-                count = parseInt($(this).children('input')[3].value);
-                count2.innerHTML = count + 1;
-            if(parseInt(count2) == 0 ){
-                count = parseInt($(this).children('input')[3].value);
-                count2.innerHTML = count + 1;
+            console.log(newcount + ' +')
+            if (newcount == count +2){
+                newcount = newcount - 1
             }
+            if(newcount == 1){
+                newcount = newcount+1
+            }
+            else{
+                newcount++;
+            }
+            count2.innerHTML = newcount
+            
 
-            }if (count == 1){
-                count2.innerHTML = 2;
-            
-            }if ( parseInt(count2) == 1){
-                count2.innerHTML = 1 ;
-            }else{
-                count2.innerHTML = count;
-            }
-            
+
+                       
             
             
             
