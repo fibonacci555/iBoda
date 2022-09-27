@@ -9,6 +9,7 @@ from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
+from djstripe.models import Product
 
 
 
@@ -24,17 +25,18 @@ class PostListView(View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         all_posts = Post.objects.all()
-
+        
         posts = all_posts
 
         if len(posts) != 0: 
             posts = Post.objects.all().order_by('-created_on')
 
         form = PostForm()
-
+        
         context = {
             'post_list': posts,
             'form': form,
+            
         }
         return render(request, 'social/post_list.html', context)
 
@@ -429,6 +431,13 @@ class ListPopularPosts(View):
         }
         
         return render(request, 'social/popular_posts.html' , context)
+
+class Checkout(View,LoginRequiredMixin):
+    def get(self,request,*args,**kwargs):
+        
+        products = Product.objects.all()
+        
+        return render(request,"social/checkout.html",{"products": products})
 
 
         

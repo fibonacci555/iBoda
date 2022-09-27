@@ -19,8 +19,10 @@
                 {% endif %}
                 <form method="POST" class="post-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; display: none;">
                     {% csrf_token %}
-                    
-                    
+                    <p>Criar um evento!</p>
+                    {% if forms.errors %}
+
+                    {% endif %}
 
                     <label id="post-label">
                     <input id ="post-input"  type="text" placeholder="Título do Evento" name="title"/>
@@ -119,6 +121,15 @@
                     <label  id="post-label"style="margin-bottom: 10 % ;">
 
                     <input id ="post-input"  type="date" placeholder="Data do Evento" name="date"/>
+                    </label>
+
+                    <label id="post-label" id="post-input-dropdown">
+                        <p><strong>Selecione os convidados: </strong></p>
+                      <select name="convidados" placeholder="Convidados"  id="post-input-dropdown">
+                        {% for follower in followers %}
+                        <option value="{{ follower }}">{{follower}}</option>
+                        {% endfor %}
+                      </select>
                     </label>
 
 
