@@ -10,6 +10,9 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
 from djstripe.models import Product
+from django.contrib.auth.decorators import login_required
+import stripe
+from django.http import JsonResponse
 
 
 
@@ -431,16 +434,4 @@ class ListPopularPosts(View):
         }
         
         return render(request, 'social/popular_posts.html' , context)
-
-class Checkout(View,LoginRequiredMixin):
-    def get(self,request,*args,**kwargs):
-        
-        products = Product.objects.all()
-        
-        return render(request,"social/checkout.html",{"products": products})
-
-
-        
-
-
 

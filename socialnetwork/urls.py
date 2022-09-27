@@ -24,6 +24,8 @@ urlpatterns = [
     path('', include('landing.urls')),
     path('social/', include('social.urls')),
     path("stripe/", include("djstripe.urls", namespace="djstripe")),
+    
+    
 
 ]
 

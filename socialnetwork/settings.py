@@ -156,3 +156,4 @@ STRIPE_TEST_SECRET_KEY = 'sk_test_51LmOuoIj6lJiEXAkc96JLVlJrmBHiMYLyBBaPNvR75zti
 STRIPE_LIVE_MODE = False  # Change to True in production
 DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+
