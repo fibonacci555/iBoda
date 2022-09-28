@@ -5,7 +5,6 @@ import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
 
 
 
@@ -15,8 +14,7 @@ from django.db import models
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    price = models.IntegerField(default=0) #centimos
-    
+    price = models.IntegerField(default = 0) # em centimos
 
     def __str__(self):
         return self.name
@@ -24,34 +22,31 @@ class Product(models.Model):
 
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    name = models.CharField(max_length = 30, blank=True, null=True)
-    verified = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to = 'uploads/profile_pictures' ,default='uploads/profile_pictures/default.jpg', blank=True)
-    followers = models.ManyToManyField(User,blank=True,related_name='followers')
-    public = models.BooleanField(default=True)
-    favs_count = models.PositiveIntegerField(default = 0)
-    
-    def calculate_age(self):
-        import datetime
-        return int((datetime.datetime.now().date() - self.birthday).days / 365.25  )
-
-    age = property(calculate_age)
 
 
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender,instance,created,**kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
-        
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender,instance, **kwargs):
-        instance.profile.save()
 
-    def __str__(self):
-        return self.name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -72,12 +67,10 @@ class Post(models.Model):
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
-    convidados = models.ForeignKey('UserProfile', on_delete=models.CASCADE, related_name='convidados', null=True)
-    public = models.BooleanField(default=False)
     
-   
 
     
+   
 
 
 
@@ -101,10 +94,31 @@ class Comment(models.Model):
     
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, primary_key=True,verbose_name='user',related_name='profile',on_delete=models.CASCADE)
+    name = models.CharField(max_length = 30, blank=True, null=True)
+    verified = models.BooleanField(default=False)
+    picture = models.ImageField(upload_to = 'uploads/profile_pictures' ,default='uploads/profile_pictures/default.jpg', blank=True)
+    followers = models.ManyToManyField(User,blank=True,related_name='followers')
+    public = models.BooleanField(default=True)
+    favs_count = models.PositiveIntegerField(default = 0)
+    
+    def calculate_age(self):
+        import datetime
+        return int((datetime.datetime.now().date() - self.birthday).days / 365.25  )
+
+    age = property(calculate_age)
 
 
 
-
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender,instance,created,**kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+        
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender,instance, **kwargs):
+        instance.profile.save()
 
 
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.views import View
 from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
@@ -20,26 +20,21 @@ from django.utils import timezone
 
 
 
-
-
-
-
 class PostListView(View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         all_posts = Post.objects.all()
-        
+
         posts = all_posts
 
         if len(posts) != 0: 
             posts = Post.objects.all().order_by('-created_on')
 
         form = PostForm()
-        
+
         context = {
             'post_list': posts,
             'form': form,
-            
         }
         return render(request, 'social/post_list.html', context)
 
@@ -434,4 +429,9 @@ class ListPopularPosts(View):
         }
         
         return render(request, 'social/popular_posts.html' , context)
+
+
+        
+
+
 

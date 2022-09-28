@@ -1,6 +1,5 @@
 from django import forms
 from .models import Post, Comment
-from django.db import models
 
 AGE_CHOICES =(
     ("Todas as idades", "Todas as idades"),
@@ -84,14 +83,11 @@ class PostForm(forms.ModelForm):
     music = forms.ChoiceField(choices = MUSIC_CHOICES)
     age = forms.ChoiceField(choices = AGE_CHOICES)
     city = forms.ChoiceField(choices=CITIES)
-    convidados = models.ForeignKey('UserProfile.followers', on_delete=models.CASCADE)
-
-
     
 
     class Meta:
         model = Post
-        fields = ['convidados','public','title','city','body','music','date','age','image','url']
+        fields = ['title','city','body','music','date','age','image','url']
 
 class CommentForm(forms.ModelForm):
     comment = forms.CharField(

@@ -56,32 +56,26 @@
        
       <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}" style="margin-top: 25px;display: flex;flex-direction: column;gap: 15px;">
         {% csrf_token %}
-
-        {% if form.errors %}
-
-        <p style="color: red;"><small>   Algo correu mal no registo!</small><br>
-        <small><small>    O username tem de ter mais de 8 caracteres assim como a palavra-passe, palavras-passe demasiado fáceis também não serão aceites, nem semelhantes ao username! </small></p>
-        {% endif %}
         
         <div class="input-group" style="display: flex;flex-direction: column;margin: 10px 0;">
           <input type="text" id="login-user" placeholder="Email" id="text" name="email" class="input-username" 
-          style="font-size: 1rem;padding: px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
+          style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
         </div>
 
         <div class="input-group" style="display: flex;flex-direction: column;margin: 10px 0;">
           <input type="text" id="login-user" placeholder="Username" id="text" name="username" class="input-username" 
-          style="font-size: 1rem;padding: 5px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
+          style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
         </div>
 
         <div class="input-group" style="display: flex;flex-direction: column;margin: 10px 0;">
-          <input type="password" placeholder="Password" id="password" name="password1" class="input-password1" 
-          style="font-size: 1rem;padding: 5px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
+          <input type="password" id="login-user" placeholder="Password" id="text" name="password1" class="input-username" 
+          style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"> 
         </div>   
 
         <div id="input-group">
-          <input  type="password" placeholder="Confirm Password" id="conf-password" name="password2" class="input-password2" style="font-size: 1rem;padding: 5px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;"><br><br><br><input type="checkbox" onclick="myFunction()" >Mostrar Passwords
-        </div> 
-        
+          <input id="login-pass" type="password" placeholder="Confirm Password" id="password" name="password2" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
+        </div>
+
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
@@ -95,21 +89,3 @@
   </div>
 </body>
 {% endblock %}
-<script type="text/javascript">
-function myFunction() {
-  var pwd = document.getElementById("password");
-  var cpwd = document.getElementById("conf-password");
-  
-
-  if(pwd.type === "password"){
-    pwd.type = "text";
-    cpwd.type = "text"
-
-  }else{
-    pwd.type = "password";
-    cpwd.type = "password";
-  }
-
-  
-}
-</script>

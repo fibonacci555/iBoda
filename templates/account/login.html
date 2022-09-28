@@ -73,13 +73,8 @@
   word-break: break-word;
   border: 0;">SIGN UP</a> {% endblocktrans %}</p>
     {% endif %}    
-      <form class="login" onsubmit="verifyPassword()" method="POST" action="{% url 'account_login' %}" style="margin-top: 25px;display: flex;flex-direction: column;gap: 15px;">
+      <form class="login" method="POST" action="{% url 'account_login' %}" style="margin-top: 25px;display: flex;flex-direction: column;gap: 15px;">
         {% csrf_token %}
-
-        {% if form.errors %}
-
-        <p style="color: red;"> - Nome de utilizador ou password incorretos! </p>
-        {% endif %}
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
@@ -89,8 +84,7 @@
         </div>        
         <div id="input-group">
           <input id="login-pass" type="password" placeholder="Password" id="password" name="password" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
-        </div>
-        <div id="message1"></div>
+        </div>      
         <button id="login-button" class="btn btn-dark primaryAction" type="submit" 
         style="cursor: pointer;font-size: .9rem;margin: 10px auto 0;padding: 12px 5px;width: 35%;border-radius: 100px;border: none;outline: none;color: white;background: linear-gradient(90deg, rgba(214,129,93,1) 0%, rgba(255,149,88,1) 71%);font-weight: bold; transition:0.3s;">
           {% trans "Sign In" %}</button>       
@@ -102,6 +96,3 @@
   </div>
 </body>
 {% endblock %}
-
-
- 

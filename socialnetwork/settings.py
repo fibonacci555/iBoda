@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
-    
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -149,11 +148,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'post-list'
 ACCOUNT_EMAIL_REQUIRED = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
-#STRIPE_TEST_PUBLIC_KEY ='pk_test_51LmOuoIj6lJiEXAkgryo5JgBTkCQlRwdMgAsAS6gk5HIvTL2bZPt3tvxBjm26wRCzVadZhJxnXT1CSu0ALcSHH3v00uFPwnMQV'
-#STRIPE_TEST_SECRET_KEY = 'sk_test_51LmOuoIj6lJiEXAkc96JLVlJrmBHiMYLyBBaPNvR75zti9pd1k7Ivtv2E9PKMjVA5c4lo6xcSs36ttJqG4zIsrxz00oztP4JKr'
-#STRIPE_LIVE_MODE = False  # Change to True in production
-#DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
-#DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-
