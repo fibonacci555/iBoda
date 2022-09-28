@@ -13,10 +13,19 @@ from django.db import models
 
 
 
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=0) #centimos
+    
+
+    def __str__(self):
+        return self.name
+
+
 
 
 class UserProfile(models.Model):
-    
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     name = models.CharField(max_length = 30, blank=True, null=True)
     verified = models.BooleanField(default=False)
     picture = models.ImageField(upload_to = 'uploads/profile_pictures' ,default='uploads/profile_pictures/default.jpg', blank=True)
@@ -40,6 +49,9 @@ class UserProfile(models.Model):
     @receiver(post_save, sender=User)
     def save_user_profile(sender,instance, **kwargs):
         instance.profile.save()
+
+    def __str__(self):
+        return self.name
 
 
 

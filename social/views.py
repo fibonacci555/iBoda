@@ -2,17 +2,17 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views import View
 from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
-from djstripe.models import Product
-from django.contrib.auth.decorators import login_required
-import stripe
-from django.http import JsonResponse
+
+
+
+
 
 
 
