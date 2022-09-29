@@ -14,36 +14,15 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    price = models.IntegerField(default = 0) # em centimos
+    price = models.IntegerField(default=0)  # cents
+    file = models.FileField(upload_to="product_files/", blank=True, null=True)
+    url = models.URLField(default="")
 
     def __str__(self):
         return self.name
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def get_display_price(self):
+        return "{0:.2f}".format(self.price / 100)
 
 
 
@@ -67,7 +46,7 @@ class Post(models.Model):
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
-    
+    public = models.BooleanField(default=True)
 
     
    
@@ -102,10 +81,13 @@ class UserProfile(models.Model):
     followers = models.ManyToManyField(User,blank=True,related_name='followers')
     public = models.BooleanField(default=True)
     favs_count = models.PositiveIntegerField(default = 0)
+    birth = models.DateField(default="2002-09-03",blank=False,null=False)
+    city = models.CharField(default="",max_length=40)
+
     
     def calculate_age(self):
         import datetime
-        return int((datetime.datetime.now().date() - self.birthday).days / 365.25  )
+        return int((datetime.datetime.now().date() - self.birth).days / 365.25  )
 
     age = property(calculate_age)
 

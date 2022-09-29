@@ -2,13 +2,24 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views import View
-from .models import Post, Comment, UserProfile
+from .models import Post, Comment, UserProfile, Product
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
+import stripe
+from django.conf import settings
+from django.core.mail import send_mail
+from django.conf import settings
+from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponse
+from django.views import View
+from .models import Product
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 
@@ -433,5 +444,173 @@ class ListPopularPosts(View):
 
         
 
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        YOUR_DOMAIN = "http://127.0.0.1:8000"
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'eur',
+                        'unit_amount': 2000,
+                        'product_data': {
+                            'name': 'product name',
+                            # 'images': ['https://i.imgur.com/EHyR2nP.png'],
+                        },
+                    },
+                    'quantity': 1,
+                },
+            ],
+            
+            mode='payment',
+            success_url=YOUR_DOMAIN + 'social/success/',
+            cancel_url=YOUR_DOMAIN + 'social/cancel/',
+        )
+        return JsonResponse({
+            'id': checkout_session.id
+            })
+        
 
 
+
+class ProductLandingView(TemplateView):
+    template_name = "social/products.html"
+    def get_context_data(self, **kwargs):
+        product = Product.objects.get()
+        context = super(ProductLandingView, self).get_context_data(**kwargs)
+        context.update({
+            "product": product,
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+        })
+        return context
+    
+        
+        
+
+
+class SuccessView(View):
+    def get(self,request,*args,**kwargs):
+        return render(request, 'social/success.html', context)
+
+
+class  CancelView(View):
+    def get(self,request,*args,**kwargs):
+        return render(request, 'social/cancel.html', context)
+
+
+
+
+
+
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+
+        customer_email = session["customer_details"]["email"]
+        product_id = session["metadata"]["product_id"]
+
+        product = Product.objects.get(id=product_id)
+
+        send_mail(
+            subject="Here is your product",
+            message=f"Thanks for your purchase. Here is the product you ordered. The URL is {product.url}",
+            recipient_list=[customer_email],
+            from_email="matt@test.com"
+        )
+
+        # TODO - decide whether you want to send the file or the URL
+    
+    elif event["type"] == "payment_intent.succeeded":
+        intent = event['data']['object']
+
+        stripe_customer_id = intent["customer"]
+        stripe_customer = stripe.Customer.retrieve(stripe_customer_id)
+
+        customer_email = stripe_customer['email']
+        product_id = intent["metadata"]["product_id"]
+
+        product = Product.objects.get(id=product_id)
+
+        send_mail(
+            subject="Here is your product",
+            message=f"Thanks for your purchase. Here is the product you ordered. The URL is {product.url}",
+            recipient_list=[customer_email],
+            from_email="matt@test.com"
+        )
+
+    return HttpResponse(status=200)
+
+
+class StripeIntentView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            req_json = json.loads(request.body)
+            customer = stripe.Customer.create(email=req_json['email'])
+            product_id = self.kwargs["pk"]
+            product = Product.objects.get(id=product_id)
+            intent = stripe.PaymentIntent.create(
+                amount=product.price,
+                currency='eur',
+                customer=customer['id'],
+                metadata={
+                    "product_id": product.id
+                }
+            )
+            return JsonResponse({
+                'clientSecret': intent['client_secret']
+            })
+        except Exception as e:
+            return JsonResponse({ 'error': str(e) })
+
+
+class RegisterView(LoginRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+
+        return render(request, 'account/signup.html')
+
+    def post(self, request, pk, *args, **kwargs):
+        
+        form = RegisterForm(request.POST)
+        
+
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.author = request.user
+            new_comment.post = post
+            new_comment.save()
+
+       
+
+
+
+        comments = Comment.objects.filter(post=post).order_by('-created_on')
+        
+
+        context = {
+            'post': post,
+            'form': form,
+            'comments' : comments,
+
+        }
+
+        return render(request, 'social/post_detail.html', context)

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, UserProfile
+from django.db import models
 
 AGE_CHOICES =(
     ("Todas as idades", "Todas as idades"),
@@ -87,7 +88,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title','city','body','music','date','age','image','url']
+        fields = ['title','city','body','music','date','age','image','url','public']
 
 class CommentForm(forms.ModelForm):
     comment = forms.CharField(
@@ -100,6 +101,16 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+
+class RegisterForm(forms.ModelForm):
+
+    birth = models.DateField(default="2002-09-03",blank=False,null=False)
+
+    class Meta:
+        model = UserProfile
+        fields = ['birth','city']
+
 
 
 

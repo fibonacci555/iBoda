@@ -1,7 +1,7 @@
 
 from django.urls import path
-from .views import ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
-urlpatterns = [
+from .views import StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/edit/<int:pk>/', PostEditView.as_view(), name='post-edit'),
@@ -26,6 +26,17 @@ urlpatterns = [
 
     path('search/', AllSearch.as_view(), name='all-search'),
     
+    
+    
+
+
+    #path('create-payment-intent/<pk>/', StripeIntentView.as_view(), name='create-payment-intent'),
+    #path('webhooks/stripe/', stripe_webhook, name='stripe-webhook'),
+    #path('cancel/', CancelView.as_view(), name='cancel'),
+    #path('success/', SuccessView.as_view(), name='success'),
+    #path('products/', ProductLandingView.as_view(), name='landing-page'),
+    #path('create-checkout-session/<pk>/', CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
+
 
 
     
