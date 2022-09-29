@@ -614,3 +614,57 @@ class RegisterView(LoginRequiredMixin, View):
         }
 
         return render(request, 'social/post_detail.html', context)
+
+
+
+class NotificationsView(View):
+    def get(self,request,*args,**kwargs):
+        return render(request, 'social/notifications.html')
+
+class FriendsView(View):
+    def get(self,request,pk,*args,**kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+
+        followers = profile.followers.all()
+        
+
+        context = {
+            
+            'followers' : followers,
+        }
+        
+        return render(request, 'social/friends.html' , context)
+
+class FriendsSearch(View):
+    def get(self,request,*args,**kwargs):
+        name = self.request.GET.get('name')
+        is_user_profile = False
+        is_user = False
+
+
+        if name == "":
+            user_list = []
+
+
+
+        elif list(name)[0] == "@":
+            name = name.replace("@","")
+            user_list = User.objects.filter(Q(username__icontains=name)).order_by('-username')
+            is_user = True
+            
+        else:
+            print(name)
+            user_list = User.objects.filter(Q(profile__name__icontains=name)).order_by('-username')
+            print(user_list)
+            is_user_profile = True
+
+
+
+
+        context = {
+            'user_list' : user_list,
+            'is_user' : is_user,
+            'is_user_profile': is_user_profile,
+        }
+        
+        return render(request, 'social/friends_search.html' , context)

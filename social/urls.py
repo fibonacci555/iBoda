@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import FriendsSearch , NotificationsView, FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -25,6 +25,11 @@ urlpatterns = [
     path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-follower'),
 
     path('search/', AllSearch.as_view(), name='all-search'),
+
+    path('friends/',FriendsView.as_view(), name='friends'),
+    path('friends/<int:pk>/search/', FriendsSearch.as_view(), name='friends-search'),
+
+    path('notifications/', NotificationsView.as_view(), name='notifications'),
     
     
     

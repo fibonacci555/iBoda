@@ -103,13 +103,13 @@ class CommentForm(forms.ModelForm):
         fields = ['comment']
 
 
-class RegisterForm(forms.ModelForm):
+#class RegisterForm(forms.ModelForm):
 
-    birth = models.DateField(default="2002-09-03",blank=False,null=False)
+#    birth = models.DateField(default="2002-09-03",blank=False,null=False)
 
-    class Meta:
-        model = UserProfile
-        fields = ['birth','city']
+#    class Meta:
+#        model = UserProfile
+#        fields = ['birth','city']
 
 
 

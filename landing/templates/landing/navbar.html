@@ -11,7 +11,7 @@
 
 
 <nav class="site" style="background-color: lightgray " >
-    <span class="header"></span> <a href="/social/" style="text-decoration:none; margin-left: 8%; margin-right: 5%;"><h2>[ iBoda ]</h2></a>
+    <span class="header"></span> <a href="/social/" style="align-self: center;text-decoration:none; margin-left: 8%; margin-right: 10%;"><h2>[ iBoda ]</h2></a>
     <div id="search" style="margin: auto">
         <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="margin: auto">
         <div class="input-group" >
@@ -75,6 +75,8 @@
     {% if user.is_authenticated %}
     <div> 
       <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
+      <a title="Amigos" href="{% url 'friends' request.user.profile.pk%}"><i class="fa-solid fa-user-group" style="color:black"></i></a>
+      <a title="Notificações" href="{% url 'notifications'  %}"><i class="fa-solid fa-bell" style="color:black"></i></a>
       <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
