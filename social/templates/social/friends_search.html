@@ -9,7 +9,7 @@
 <nav class="site" style="background-color: lightgray " >
     <span class="header"></span> <a href="/social/" style="align-self: center;text-decoration:none; margin-left: 8%; margin-right: 10%;"><h2>[ iBoda ]</h2></a>
     <div id="search" style="margin: auto">
-        <form class="d-flex" method="GET" action="{% url 'friends-search' %}" style="margin: auto">
+        <form class="d-flex" method="GET" action="{% url 'friends-search' request.user.profile.pk%}" style="margin: auto">
         <div class="input-group" >
           <input  style=" "class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" type="text" name="name" value="{{ request.GET.name }}">
           <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>
@@ -20,7 +20,7 @@
     <div> 
       <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
       <a title="Eventos Populares" href="{% url 'friends' request.user.profile.pk%}"><i class="fa-solid fa-user-group" style="color:black"></i></a>
-      <a title="Eventos Populares" href="{% url 'notifications' %}"><i class="fa-solid fa-bell" style="color:black"></i></a>
+      <a title="Eventos Populares" href="#"><i class="fa-solid fa-bell" style="color:black"></i></a>
       <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>
@@ -51,7 +51,7 @@
                 <a href="{% url 'profile' user1.pk %}" class="post-link"><img class="rounded-circle post-img" height="60" width="60" src="{{ user1.profile.picture.url }}" /></a>
                 <a href="{% url 'profile' user1.pk %}" class="post-link"><h5 class="mt-3">@{{ user1.username }}</a> - {{user1.profile.name}}</h5>
                 
-                <button class="btn btn-outline-success" type="submit"><a href="{% url 'profile' user1.pk %}" class="post-link"><h5 class="mt-3">Visit Profile</a></button>
+                <a href="{% url 'profile' user1.pk %}" class="post-link"><h5 class="mt-3"><button class="btn btn-outline-success" type="submit">Visit Profile</button></a>
 
                 
             </div>

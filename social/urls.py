@@ -26,13 +26,16 @@ urlpatterns = [
 
     path('search/', AllSearch.as_view(), name='all-search'),
 
-    path('friends/',FriendsView.as_view(), name='friends'),
+    path('friends/<int:pk>',FriendsView.as_view(), name='friends'),
     path('friends/<int:pk>/search/', FriendsSearch.as_view(), name='friends-search'),
+    #path('notifications/', FriendsSearch.as_view(), name='friends-search'),
 
-    path('notifications/', NotificationsView.as_view(), name='notifications'),
     
     
     
+    #path('notification/<int:notification_pk>/post/<int:post_pk>', PostNotification.as_view(), name='post-notification'),
+    #path('notification/<int:notification_pk>/profile/<int:profile_pk>', FollowNotification.as_view(), name='follow-notification'),
+    #path('notification/delete/<int:notification_pk>', RemoveNotification.as_view(), name='notification-delete'),
 
 
     #path('create-payment-intent/<pk>/', StripeIntentView.as_view(), name='create-payment-intent'),
