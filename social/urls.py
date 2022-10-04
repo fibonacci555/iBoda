@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import FriendsSearch , NotificationsView, FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import RemoveFollowerView, RejectFollowerView, AcceptFollowerView, FollowRequestsView, FriendsSearch , NotificationsView, FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -23,6 +23,7 @@ urlpatterns = [
     path('profile/<int:pk>/followers/', ListFollowers.as_view(), name='list-followers'),
     path('profile/<int:pk>/followers/add', AddFollower.as_view(), name='add-follower'),
     path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-follower'),
+    path('profile/<int:pk>/followers/remove-follower', RemoveFollowerView.as_view(), name='remove-followers'),
 
     path('search/', AllSearch.as_view(), name='all-search'),
 
@@ -30,8 +31,9 @@ urlpatterns = [
     path('friends/<int:pk>/search/', FriendsSearch.as_view(), name='friends-search'),
     #path('notifications/', FriendsSearch.as_view(), name='friends-search'),
 
-    
-    
+    path('friend/<int:pk>/friend-requests/', FollowRequestsView.as_view(), name='follow-requests'),
+    path('friend/<int:receiver_pk>/friend-requests/accept/<int:sender_pk>', AcceptFollowerView.as_view(), name='accept'),
+    path('friend/<int:receiver_pk>/friend-requests/reject/<int:sender_pk>', RejectFollowerView.as_view(), name='reject'),
     
     #path('notification/<int:notification_pk>/post/<int:post_pk>', PostNotification.as_view(), name='post-notification'),
     #path('notification/<int:notification_pk>/profile/<int:profile_pk>', FollowNotification.as_view(), name='follow-notification'),

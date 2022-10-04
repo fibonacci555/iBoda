@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, UserProfile
+from .models import Post, Comment, UserProfile, FollowRequest
 from django.db import models
 
 AGE_CHOICES =(
@@ -101,6 +101,10 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+
+
+
 
 
 #class RegisterForm(forms.ModelForm):

@@ -51,15 +51,32 @@
                     {% if user == request.user %}
                     
                     {% elif is_following%}
-                    <form method="POST" action="{% url 'remove-follower' profile.pk %}" class="col-md-2 col-sm-1">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-danger" type="submit">Unfollow</button>
-                    </form>
+                        {% if is_requesting == False%}
+                            <form method="POST" action="{% url 'remove-follower' profile.pk %}" class="col-md-2 col-sm-1">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-danger" type="submit">Unfollow</button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{% url 'add-follower' profile.pk %}" class="col-md-2 col-sm-1">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-info" type="submit">Pending</button>
+                            </form>
+                        {% endif %}
+
                     {% else %}
-                    <form method="POST" action="{% url 'add-follower' profile.pk %}">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-success" type="submit">Follow</button>
-                    </form>
+                        {% if is_requesting == False %}
+                            <form method="POST" action="{% url 'add-follower' profile.pk %}">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-success" type="submit">Follow</button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{% url 'add-follower' profile.pk %}" class="col-md-2 col-sm-1">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-info" type="submit">Pending</button>
+                            </form>
+                        {% endif %}
+
+
                     {% endif %}
                 </div>
 

@@ -85,11 +85,16 @@ class UserProfile(models.Model):
     favs_count = models.PositiveIntegerField(default = 0)
     birth = models.DateField(default="2002-09-03",blank=False,null=False)
     city = models.CharField(default="",max_length=40)
+    follow_requests = models.PositiveIntegerField(default=0)
 
     
     def calculate_age(self):
         import datetime
         return int((datetime.datetime.now().date() - self.birth).days / 365.25  )
+
+
+    
+
 
     age = property(calculate_age)
 
@@ -104,8 +109,7 @@ class UserProfile(models.Model):
     def save_user_profile(sender,instance, **kwargs):
         instance.profile.save()
 
-    def __str__(self):
-        return self.name
+    
 
 
 """class Notification(models.Model):
@@ -120,8 +124,17 @@ class UserProfile(models.Model):
 
 
 
+class FollowRequest(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    is_active = models.BooleanField(blank=True,null=False,default=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-        
+    def __str__(self):
+        return self.sender.username
+
+    
+
  
     
 

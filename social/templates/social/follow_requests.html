@@ -1,5 +1,4 @@
 {% load static %}
-
 <link href="{% static 'navbar.css' %}" rel="stylesheet">
 <link href="{% static 'style.css' %}" rel="stylesheet">
 
@@ -29,32 +28,52 @@
     <div> 
       <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
       <a title="Eventos Populares" href="{% url 'friends' request.user.profile.pk%}"><i class="fa-solid fa-user-group" style="color:black"></i></a>
-      <a title="Eventos Populares" href="{% url 'follow-requests' request.user.profile.pk%}"><i class="fa-solid fa-bell" style="color:black"></i></a>
+      <a title="Notificações" href="{% url 'follow-requests' request.user.profile.pk%}"><i class="fa-solid fa-bell" style="color:black"></i></a>
       <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
-      
       <span id="span-nav"></span>
       <a title="Eventos Favoritos" href="{% url 'fav-posts' request.user.profile.pk %}"><i style="color:yellow ;" class="fas fa-star"></i></a>
       <a title="Eventos Guardados" href="{% url 'saved-posts' request.user.profile.pk %}"><i style="color:black"class="fa fa-bookmark-o"></i></a>
       <a title="Eventos Que Fui" href="{% url 'liked-posts' request.user.profile.pk %}"><i class="fa-solid fa-circle-check" style="color:green"></i></a><a title="Log Out" href="/accounts/logout"><i class="fa-solid fa-right-from-bracket" style="color:black"></i></a>
       <a title="Perfil" href="{% url 'profile' request.user.profile.pk %}"><i  style="color:black" class="fa fa-user-o"></i></a>
-
-      
     </div>
     {% endif %}
 </nav>
 
-<body>
-  <h1 style="text-align: center; margin-top: 4%"><strong>Lista de amigos</strong> </h1>
-    {% for follower in followers %}
-    <div class="row justify-content-center">
-        <div class="col-md-5 col-sm-12 position-relative my-3">
-            <a href="{% url 'profile' follower.profile.pk %}" class="post-link"><img class="rounded-circle post-img" height="60" width="60" src="{{ follower.profile.picture.url }}" /></a>
-            <a href="{% url 'profile' follower.profile.pk %}" class="post-link"><h5 class="mt-3">@{{ follower.username }}</h5></a>
-            <a href="{% url 'profile' follower.profile.pk %}" class="post-link"><h5 class="mt-3"><button class="btn btn-outline-success" type="submit">Visit Profile</button></a>
-
-        </div>
-    </div>
-    {% endfor %}
+<body >
+	<h1 style="text-align: center; margin-top: 4%"><strong>Pedidos de Amizade - {{ count }}</strong></h1>
 
 
+	{% if count != 0%}
+  		{% for frequest in requests %}
+        {% if frequest.is_active %}
+           <div class="row justify-content-center">
+              <div class="col-md-5 col-sm-12 position-relative my-3" style=" display: flex;">
+                  <a href="{% url 'profile' frequest.sender.pk %}" class="post-link"><img class="rounded-circle post-img" height="60" width="60" src="{{ frequest.sender.profile.picture.url }}" /></a>
+                  <a href="{% url 'profile' frequest.sender.pk %}" style="text-decoration: none" class="post-link"><h5 class="mt-3">@{{ frequest.sender.username }}</h5></a>
+                  
+
+                  <form onclick="console.log({{ frequest.sender.pk }})"method="POST" action="{% url 'accept' request.user.pk frequest.sender.pk %}" class="col-md-2 col-sm-1">
+                        {% csrf_token %}
+                        <button class="btn btn-success" type="submit">Accept</button>
+                  </form>
+
+                  <form onclick="console.log({{ frequest.sender.pk }})"method="POST" action="{% url 'reject' request.user.pk frequest.sender.pk %}" class="col-md-2 col-sm-1">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Decline</button>
+                  </form>
+                
+                  
+                  
+              </div>
+              <hr style="display:flex">
+          </div>
+
+      {% endif %}
+		{% endfor %}
+	{% endif %}
 </body>
+
+
+
+
+

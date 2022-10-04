@@ -76,7 +76,7 @@
     <div> 
       <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
       <a title="Amigos" href="{% url 'friends' request.user.profile.pk%}"><i class="fa-solid fa-user-group" style="color:black"></i></a>
-      <a title="Notificações" href="#"><i class="fa-solid fa-bell" style="color:black"></i></a>
+      <a title="Notificações" href="{% url 'follow-requests' request.user.profile.pk%}"><i class="fa-solid fa-bell" style="color:black"></i></a>
       <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
       
       <span id="span-nav"></span>

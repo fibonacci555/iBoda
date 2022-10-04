@@ -4,7 +4,7 @@ from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views import View
-from .models import Post, Comment, UserProfile, Product
+from .models import Post, Comment, UserProfile, Product, FollowRequest
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
@@ -167,7 +167,14 @@ class ProfileView(View):
 
         posts = Post.objects.filter(author=user).order_by('-created_on')
 
+        frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
 
+        is_requesting = False
+
+
+        for req in frequests:
+            if req.sender == request.user and req.is_active:
+                is_requesting = True
 
 
         for post in posts:
@@ -196,6 +203,7 @@ class ProfileView(View):
             'followers' : followers,
             'is_following' : is_following,
             'fav_counter' : fav_counter,
+            'is_requesting' : is_requesting,
         }
 
         return render(request, 'social/profile.html', context)
@@ -217,10 +225,92 @@ class ProfileEditView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
 
 class AddFollower(LoginRequiredMixin, View):
     def post(self,request,pk,*args,**kwargs):
+        a = 0
+        user = User.objects.get(pk=pk)
+        frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
         profile = UserProfile.objects.get(pk=pk)
-        profile.followers.add(request.user)
+        if profile.public == True:
+            print('public')
+            profile.followers.add(request.user)
+        else:
+
+            for fr in frequests:
+                if fr.sender == request.user:
+                    fr.is_active = False
+                    fr.delete()
+                    
+                    a = 1
+            if a == 0:
+                new_post = FollowRequest()
+                new_post.sender = request.user
+                new_post.receiver = user
+                new_post.is_active = True
+                profile.follow_requests = profile.follow_requests+1
+                profile.save()
+                new_post.save()
+        
+
         
         return redirect('profile',pk=profile.pk)
+
+
+class FollowRequestsView(LoginRequiredMixin, View):
+    def get(self,request,pk,*args,**kwargs):
+        user = User.objects.get(pk=pk)
+        
+        frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
+
+        requests_count = len(frequests)
+
+        context = {
+            'count' : requests_count,
+            'requests' : frequests,
+        }
+        
+
+        return render(request, 'social/follow_requests.html', context)
+
+
+
+class AcceptFollowerView(LoginRequiredMixin,View):
+    def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
+        receiver = User.objects.get(pk=request.user.pk)
+        sender = User.objects.get(pk=sender_pk)
+
+        frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
+        
+        for r in frequests:
+            r.is_active = False
+            r.delete()
+
+        receiver.profile.followers.add(sender)
+        
+        return redirect('follow-requests',pk=receiver.pk)
+
+class RejectFollowerView(LoginRequiredMixin,View):
+    def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
+        receiver = User.objects.get(pk=request.user.pk)
+        sender = User.objects.get(pk=sender_pk)
+
+        frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
+        
+        for r in frequests:
+            r.is_active = False
+            r.delete()
+
+        
+        
+        return redirect('follow-requests',pk=receiver.pk)
+
+
+class RemoveFollowerView(LoginRequiredMixin, View):
+    def post(self,request,pk,*args,**kwargs):
+        user = User.objects.get(pk=request.user.pk)
+        to_remove = User.objects.get(pk=pk)
+        user.profile.followers.remove(to_remove)
+
+        return redirect('list-followers',pk=user.pk)
+
 
 class RemoveFollower(LoginRequiredMixin,View):
     def post(self,request,pk,*args,**kwargs):
