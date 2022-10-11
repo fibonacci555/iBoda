@@ -29,8 +29,6 @@ class Product(models.Model):
 
 
 
-
-
 class Post(models.Model):
     title = models.CharField(default="",max_length=70)
     city = models.CharField(default="",max_length=40)
@@ -49,6 +47,9 @@ class Post(models.Model):
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
     public = models.BooleanField(default=True)
+    
+    
+    
 
     
    

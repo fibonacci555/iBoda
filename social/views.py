@@ -35,8 +35,10 @@ class PostListView(View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         all_posts = Post.objects.all()
-
+        
         posts = all_posts
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
         if len(posts) != 0: 
             posts = Post.objects.all().order_by('-created_on')
@@ -46,6 +48,8 @@ class PostListView(View):
         context = {
             'post_list': posts,
             'form': form,
+            'frequests':frequests,
+            
         }
         return render(request, 'social/post_list.html', context)
 
@@ -85,6 +89,7 @@ class PostDetailView(LoginRequiredMixin, View):
         
 
         if form.is_valid():
+            
             new_comment = form.save(commit=False)
             new_comment.author = request.user
             new_comment.post = post
@@ -112,8 +117,10 @@ class CommentReplyView(LoginRequiredMixin, View):
         post = Post.objects.get(pk=post_pk)
         parent_comment = Comment.objects.get(pk=pk)
         form = CommentForm(request.POST)
+        
 
         if form.is_valid():
+            
             new_comment = form.save(commit=False)
             new_comment.author = request.user
             new_comment.post = post
@@ -152,6 +159,7 @@ class CommentDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
 
     def get_success_url(self):
         pk = self.kwargs['post_pk']
+        
         return reverse_lazy('post-detail',kwargs={'pk':pk})
 
     def test_func(self):
@@ -276,22 +284,26 @@ class AcceptFollowerView(LoginRequiredMixin,View):
     def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
         receiver = User.objects.get(pk=request.user.pk)
         sender = User.objects.get(pk=sender_pk)
-
+        print(receiver.profile.follow_requests)
         frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
+        receiver.profile.follow_requests = receiver.profile.follow_requests-1
+        print(receiver.profile.follow_requests)
         
         for r in frequests:
             r.is_active = False
             r.delete()
-
+        
         receiver.profile.followers.add(sender)
         
-        return redirect('follow-requests',pk=receiver.pk)
+        return redirect('post-list')
 
 class RejectFollowerView(LoginRequiredMixin,View):
     def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
         receiver = User.objects.get(pk=request.user.pk)
         sender = User.objects.get(pk=sender_pk)
-
+        print(receiver.profile.follow_requests)
+        receiver.profile.follow_requests = receiver.profile.follow_requests-1
+        print(receiver.profile.follow_requests)
         frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
         
         for r in frequests:
@@ -300,7 +312,7 @@ class RejectFollowerView(LoginRequiredMixin,View):
 
         
         
-        return redirect('follow-requests',pk=receiver.pk)
+        return redirect('post-list')
 
 
 class RemoveFollowerView(LoginRequiredMixin, View):
@@ -404,6 +416,9 @@ class AllSearch(View):
 
         if date != "" and city == "" and words != "" :
             post_list = Post.objects.filter(Q(date=date) and (Q(title__icontains=words) and Q(body__icontains=words)) ).order_by('-created_on')
+
+        if date == "" and city == "" and words == "":
+            post_list = Post.objects.filter( Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
 
 
         context = {

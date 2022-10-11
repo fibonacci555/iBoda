@@ -1,0 +1,272 @@
+{% load static %}
+
+<link href="{% static 'navbar.css' %}" rel="stylesheet">
+
+<script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
+
+
+
+<nav class="site" style="background-color: lightgray " >
+    <span class="header"></span> <a href="/social/" style="align-self: center;text-decoration:none; margin-left: 8%; margin-right: 10%;"><h2>[ iBoda ]</h2></a>
+    <div id="search" style="margin: auto">
+        <form class="d-flex" method="GET" action="{% url 'all-search' %}" style="margin: auto">
+        <div class="input-group" >
+          <input  style=" "class="form-control" placeholder="Artistas & Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
+          <input style="margin-left:5px; border-radius: 5px" class="form-control" placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
+          
+          <select style="margin-left:5px; background-color: rgb(238,238,238);border:none; border-radius:5px" id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
+            <option value="">Cidade</option>
+            <option value="Alcobaça">Alcobaça</option>
+            <option value="Almada">Almada</option>
+            <option value="Amadora">Amadora</option>
+            <option value="Aveiro">Aveiro</option>
+            <option value="Barreiro">Barreiro</option>
+            <option value="Beja">Beja</option>
+            <option value="Braga">Braga</option>
+            <option value="Bragança">Bragança</option>
+            <option value="Cartaxo">Cartaxo</option>
+            <option value="Chaves">Chaves</option>
+            <option value="Coimbra">Coimbra</option>
+            <option value="Elvas">Elvas</option>
+            <option value="Espinhos">Espinhos</option>
+            <option value="Évora">Évora</option>
+            <option value="Faro">Faro</option>
+            <option value="Fátima">Fátima</option>
+            <option value="Funchal">Funchal</option>
+            <option value="Fundão">Fundão</option>
+            <option value="Gouveia">Gouveia</option>
+            <option value="Guarda">Guarda</option>
+            <option value="Leiria">Leiria</option>
+            <option value="Lisboa">Lisboa</option>
+            <option value="Loures">Loures</option>
+            <option value="Maia">Maia</option>
+            <option value="Mirandela">Mirandela</option>
+            <option value="Moura">Moura</option>
+            <option value="Penafiel">Penafiel</option>
+            <option value="Pinhel">Pinhel</option>
+            <option value="Portalegre">Portalegre</option>
+            <option value="Portimão">Portimão</option>
+            <option value="Porto">Porto</option>
+            <option value="Praia da Vitória">Praia da Vitória</option>
+            <option value="Queluz">Queluz</option>
+            <option value="Ribeira Grande">Ribeira Grande</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+            <option value="Santana">Santana</option>
+            <option value="São Pedro do Sul">São Pedro do Sul</option>
+            <option value="Seia">Seia</option>
+            <option value="Setúbal">Setúbal</option>
+            <option value="Sintra">Sintra</option>
+            <option value="Tavira">Tavira</option>
+            <option value="Tomar">Tomar</option>
+            <option value="Trancoso">Trancoso</option>
+            <option value="Trofa">Trofa</option>
+            <option value="Viana do Castelo">Viana do Castelo</option>
+            <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+            <option value="Vila Real">Vila Real</option>
+          </select>
+          <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+    </div>
+    {% if user.is_authenticated %}
+    <div> 
+      <a title="Feed" href="/social/"><i style="color:black" class="fas fa-home"></i></a>
+      <a title="Amigos" href="{% url 'friends' request.user.profile.pk%}"><i class="fa-solid fa-user-group" style="color:black"></i></a>
+      <a title="Notificações" href="{% url 'follow-requests' request.user.profile.pk%}"><i class="fa-solid fa-bell" style="color:black"></i></a><span class="notification-count">{{ request.user.profile.follow_requests }}</span>
+      <a title="Eventos Populares" href="{% url 'popular-posts' %}"><i style="color:orangered;" class="fa-solid fa-fire"></i></a>
+      
+      <span id="span-nav"></span>
+      <a title="Eventos Favoritos" href="{% url 'fav-posts' request.user.profile.pk %}"><i style="color:yellow ;" class="fas fa-star"></i></a>
+      <a title="Eventos Guardados" href="{% url 'saved-posts' request.user.profile.pk %}"><i style="color:black"class="fa fa-bookmark-o"></i></a>
+      <a title="Eventos Que Fui" href="{% url 'liked-posts' request.user.profile.pk %}"><i class="fa-solid fa-circle-check" style="color:green"></i></a><a title="Log Out" href="/accounts/logout"><i class="fa-solid fa-right-from-bracket" style="color:black"></i></a>
+      <a title="Perfil" href="{% url 'profile' request.user.profile.pk %}"><i  style="color:black" class="fa fa-user-o"></i></a>
+
+      
+    </div>
+    {% endif %}
+</nav>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    // Botão de Fav
+    $(document).on('submit','#fav-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/fav",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-fav" + pkey).style.display == "none"){
+                    document.getElementById("no-fav" + pkey).style.display = "block"
+                    document.getElementById("faved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-fav" + pkey ).style.display = "none"
+                    document.getElementById("faved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Save
+
+    $(document).on('submit','#save-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/save",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-save" + pkey).style.display == "none"){
+                    document.getElementById("no-save" + pkey).style.display = "block"
+                    document.getElementById("saved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-save" + pkey ).style.display = "none"
+                    document.getElementById("saved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Report
+
+
+    $(document).on('submit','#report-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/report",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-report" + pkey).style.display == "none"){
+                    document.getElementById("no-report" + pkey).style.display = "block"
+                    document.getElementById("reported" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-report" + pkey ).style.display = "none"
+                    document.getElementById("reported" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Ir
+    
+    $(document).on('submit','#like-post',function(e){
+        e.preventDefault();
+        
+        
+        pkey = $(this).children('input')[2].value;
+        click_count = 0;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/like",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            success: function(response){
+                console.log('success');
+            },
+            error: function(response){
+                console.log('error');
+                
+            }
+        });
+
+    count = parseInt($(this).children('input')[3].value);
+    count1 = document.getElementById('count'+pkey);
+    count2 = document.getElementById('count'+pkey+'2');
+    newcount = count;
+    console.log(newcount)
+    
+    if (document.getElementById("no-like" + pkey).style.display == "none"){
+            
+            document.getElementById("no-like" + pkey).style.display = "flex"
+            document.getElementById("liked" + pkey).style.display = 'none';
+            count1.style.display = 'none';     
+            count2.style.display = 'flex';
+            console.log(newcount + ' -')
+            if (newcount-1 > 0){
+                if(newcount == 1){
+                    newcount = 1
+                }else{
+                    newcount = newcount - 1;
+                }
+                
+
+                if (newcount == count -2){
+                    newcount = newcount + 2
+            }
+            }else{
+                newcount = 0
+            }
+            count2.innerHTML = newcount
+            
+            
+            
+    } else {      
+            document.getElementById("no-like" + pkey ).style.display = "none";
+            document.getElementById("liked" + pkey).style.display = 'flex';     
+            count1.style.display = 'none';  
+            count2.style.display = 'flex';
+            console.log(newcount + ' +')
+            if (newcount == count +2){
+                newcount = newcount - 1
+            }
+            if(newcount == 1){
+                newcount = newcount+1
+            }
+            else{
+                newcount++;
+            }
+            count2.innerHTML = newcount
+            
+
+
+                       
+            
+            
+            
+        }
+
+    });
+
+
+
+</script>
+
+
+
