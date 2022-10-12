@@ -128,37 +128,37 @@
                 <span id="close-btn"><i class="uil uil-multiply"></i></span>
 
                 <!-------------------- SIDEBAR ------------------------->
-                <div class="sidebar">
+                <div class="sidebar" >
                     <a class="menu-item active" href="/social/">
                         <span><i class="uil uil-home"></i></span><h3>Home</h3>
                     </a>
-                    <a class="menu-item" href="{% url 'popular-posts' %}">
-                        <span><i class="uil uil-fire"></i></span><h3>Popular</h3>
+                    <a class="menu-item" href="{% url 'popular-posts' %}" style="color: aliceblue;">
+                        <span><i class="uil uil-fire"></i></span><h3 style="color: aliceblue;" >Popular</h3>
                     </a>
                     <a class="menu-item" href="{% url 'follow-requests' request.user.profile.pk%}" id="notifications">
-                        <span><i class="uil uil-bell">{% if request.user.profile.follow_requests != 0 %}<small class="notification-count">{{ request.user.profile.follow_requests }}</small>{% endif %}</i></span><h3>Notifications</h3>
+                        <span><i class="uil uil-bell"><small class="notification-count"></small></i></span><h3 style="color: aliceblue;">Notifications</h3>
                     </a>
                     <a class="menu-item" id="messages-notification" href="{% url 'friends' request.user.profile.pk%}">
-                        <span><i class="uil uil-users-alt"></i></span><h3>Amigos</h3>
+                        <span><i class="uil uil-users-alt"></i></span><h3 style="color: aliceblue;">Amigos</h3>
                     </a>
                     <a class="menu-item" href="{% url 'saved-posts' request.user.profile.pk %}">
-                        <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
+                        <span><i class="uil uil-bookmark"></i></span><h3 style="color: aliceblue;">Bookmarks</h3>
                     </a>
                     <a class="menu-item" href="{% url 'liked-posts' request.user.profile.pk %}">
-                        <span><i class="uil uil-check-circle"></i></span><h3>Eventos Idos</h3>
+                        <span><i class="uil uil-check-circle"></i></span><h3 style="color: aliceblue;">Eventos Idos</h3>
                     </a>
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
-                        <span><i class="uil uil-star"></i></span><h3>Favoritos</h3>
+                        <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
                     <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3>Log Out</h3>
+                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
                     </a>
-                    <a class="menu-item">
-                        <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
+                    <a class="menu-item" href="/accounts/logout">
+                        <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
                     </a>                        
                 </div>
                 <!------------------- END OF SIDEBAR -------------------->
-                <label for="create-post" class="btn btn-primary">Create Post</label>
+                
             </div>
             <!------------------- END OF LEFT -------------------->
 
@@ -166,14 +166,15 @@
 
             <!--======================== MIDDLE ==========================-->
             <div class="middle">
-            
+                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
 
                 <!------------------- FEEDS --------------------->
                 <div class="feeds">
                     <!------------------- FEED 1 --------------------->
-                    {% for post in post_list %}
+                    {% for post in priv_posts %}
                         {% if post.approved %}
-                            {% if request.user in post.author.profile.followers or request.user == post.author%}
+                            
+                                
                                 <div class="feed">
                                     <div class="head">
                                         <div class="user">
@@ -181,7 +182,7 @@
                                                 <img src="{{ post.author.profile.picture.url }}">
                                             </div>
                                             <div class="ingo">
-                                                <h3>{{ post.author.profile.name }}</h3>
+                                                <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }}</h3></a>
                                                 <small>{{ post.created_on }}</small>
                                             </div>
 
@@ -303,7 +304,7 @@
                                             
                                             
                                             
-                                            <a href="{% url 'post-detail' post.pk %}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
+                                            <a href="{% url 'post-detail' post.pk%}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
                                         </div>
                                         
                                     </div>
@@ -316,7 +317,8 @@
                                     
                                     
                                 </div>
-                            {% endif %}
+                                
+                            
                         {% endif %}
                     {% endfor %}
                     <!---------------- END OF FEED ----------------->
@@ -332,30 +334,36 @@
                 <div class="friend-requests">
                     <h4>Requests</h4>
                     <!----- REQUEST 1----->
-                    {% for frequest in frequests%}
-                    <div class="request">
-                        <div class="info">
-                            <div class="profile-photo">
-                                <img src="{{ frequest.sender.profile.picture.url }}">
+                    {% if frequests%}
+                        {% for frequest in frequests%}
+                        <div class="request">
+                            <div class="info">
+                                <div class="profile-photo">
+                                    <img src="{{ frequest.sender.profile.picture.url }}">
+                                </div>
+                                <div>
+                                    <h5>{{ frequest.sender.profile.name }}</h5>
+                                    <p class="text-muted">{{ frequest.sender.username }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h5>{{ frequest.sender.profile.name }}</h5>
-                                <p class="text-muted">{{ frequest.sender.username }}</p>
-                            </div>
-                        </div>
-                        <div class="action">
-                            <form method="POST" action="{% url 'accept' request.user.pk frequest.sender.pk %}">
+                            <div class="action">
+                                <form method="POST" action="{% url 'accept' request.user.pk frequest.sender.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary" type="submit">Accept</button>
+                                </form>
+                                <form method="POST" action="{% url 'reject' request.user.pk frequest.sender.pk %}">
                                 {% csrf_token %}
-                                <button class="btn btn-primary" type="submit">Accept</button>
-                            </form>
-                            <form method="POST" action="{% url 'reject' request.user.pk frequest.sender.pk %}">
-                            {% csrf_token %}
-                            <button class="btn" type="submit">Decline</button>
-                            </form>
-                            
+                                <button class="btn" type="submit">Decline</button>
+                                </form>
+                                
+                            </div>
                         </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="request">
+                        No requests
                     </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
                 </div>
             </div>

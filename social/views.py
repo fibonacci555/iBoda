@@ -4,7 +4,7 @@ from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views import View
-from .models import Post, Comment, UserProfile, Product, FollowRequest
+from .models import Post, Comment, UserProfile, Product, FollowRequest, Notification
 from .forms import PostForm, CommentForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
@@ -23,10 +23,55 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 
+# type 1 = sender vai ao evento
+# type 2 = sender comentou o evento
+# type 3 = sender criou um post
 
 
+class CreatePostView(View, LoginRequiredMixin):
+    def get(self, request, *args, **kwargs):
+        logged_in_user = request.user
+        
 
 
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
+        
+
+        form = PostForm()
+
+        context = {
+            'form': form,
+            
+        }
+        return render(request, 'social/create_post.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = PostForm(request.POST, request.FILES)
+
+        if form.is_valid():
+                new_post = form.save(commit=False)
+                new_post.author = request.user
+                new_post.save()
+        log_user = User.objects.get(username=request.user.username)
+        followers = log_user.profile.followers.all()
+
+        for follower in followers:
+            new_notification = Notification()
+            new_notification.sender = log_user
+            new_notification.receiver = follower
+            new_notification.type = 3
+            new_notification.post = new_post
+            new_notification.save()
+
+        
+
+
+        context = {
+                'form': form,
+            }
+        return render(request, 'social/create_post.html', context)
 
 
 
@@ -40,33 +85,31 @@ class PostListView(View):
 
         frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
-        if len(posts) != 0: 
-            posts = Post.objects.all().order_by('-created_on')
+        priv_posts = Post.objects.filter(approved=True,public=False).order_by('-created_on')
 
+        for post in posts:
+            followers = post.author.followers.all()
+            print(followers)
+            if ( logged_in_user in followers) or ( logged_in_user == post.author):
+                pass
+            else:
+                priv_posts.exclude(id=post.id)
+        
+        pub_posts = Post.objects.filter(approved=True,public=True).order_by('-created_on')
+            
+        
         form = PostForm()
 
         context = {
             'post_list': posts,
             'form': form,
             'frequests':frequests,
+            'pub_posts':pub_posts,
+            'priv_posts':priv_posts,
             
         }
         return render(request, 'social/post_list.html', context)
 
-    def post(self, request, *args, **kwargs):
-        posts = Post.objects.all().order_by('-created_on')
-        form = PostForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            new_post = form.save(commit=False)
-            new_post.author = request.user
-            new_post.save()
-
-        context = {
-            'post_list': posts,
-            'form': form,
-        }
-        return render(request, 'social/post_list.html', context)
 
 class PostDetailView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
@@ -95,6 +138,16 @@ class PostDetailView(LoginRequiredMixin, View):
             new_comment.post = post
             new_comment.save()
 
+        log_user = User.objects.get(username=request.user.username)
+       
+
+        
+        new_notification = Notification()
+        new_notification.sender = log_user
+        new_notification.receiver = post.author
+        new_notification.type = 2
+        new_notification.post = post
+        new_notification.save()
        
 
 
@@ -118,6 +171,16 @@ class CommentReplyView(LoginRequiredMixin, View):
         parent_comment = Comment.objects.get(pk=pk)
         form = CommentForm(request.POST)
         
+        log_user = User.objects.get(username=request.user.username)
+       
+
+        
+        new_notification = Notification()
+        new_notification.sender = log_user
+        new_notification.receiver = post.author
+        new_notification.type = 2
+        new_notification.post = post
+        new_notification.save()
 
         if form.is_valid():
             
@@ -240,6 +303,7 @@ class AddFollower(LoginRequiredMixin, View):
         if profile.public == True:
             print('public')
             profile.followers.add(request.user)
+            request.user.profile.following.add(user)
         else:
 
             for fr in frequests:
@@ -262,17 +326,17 @@ class AddFollower(LoginRequiredMixin, View):
         return redirect('profile',pk=profile.pk)
 
 
-class FollowRequestsView(LoginRequiredMixin, View):
+class NotificationsView(LoginRequiredMixin, View):
     def get(self,request,pk,*args,**kwargs):
         user = User.objects.get(pk=pk)
         
-        frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
+        notis = Notification.objects.filter(receiver=user).order_by('-timestamp')
 
-        requests_count = len(frequests)
+        requests_count = len(notis)
 
         context = {
             'count' : requests_count,
-            'requests' : frequests,
+            'notifications' : notis,
         }
         
 
@@ -293,6 +357,7 @@ class AcceptFollowerView(LoginRequiredMixin,View):
             r.is_active = False
             r.delete()
         
+        sender.profile.following.add(receiver)
         receiver.profile.followers.add(sender)
         
         return redirect('post-list')
@@ -320,6 +385,7 @@ class RemoveFollowerView(LoginRequiredMixin, View):
         user = User.objects.get(pk=request.user.pk)
         to_remove = User.objects.get(pk=pk)
         user.profile.followers.remove(to_remove)
+        to_remove.user.profile.following.remove(user)
 
         return redirect('list-followers',pk=user.pk)
 
@@ -328,6 +394,7 @@ class RemoveFollower(LoginRequiredMixin,View):
     def post(self,request,pk,*args,**kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.followers.remove(request.user)
+        request.user.profile.following.remove(profile)
 
         return redirect('profile',pk=profile.pk)
 
@@ -335,7 +402,19 @@ class RemoveFollower(LoginRequiredMixin,View):
 class AddLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
- 
+
+
+        log_user = User.objects.get(username=request.user.username)
+       
+
+        
+        new_notification = Notification()
+        new_notification.sender = log_user
+        new_notification.receiver = post.author
+        new_notification.type = 1
+        new_notification.post = post
+        new_notification.save()
+
 
         is_like = False
 
@@ -596,12 +675,12 @@ class ProductLandingView(TemplateView):
 
 class SuccessView(View):
     def get(self,request,*args,**kwargs):
-        return render(request, 'social/success.html', context)
+        return render(request, 'social/success.html')
 
 
 class  CancelView(View):
     def get(self,request,*args,**kwargs):
-        return render(request, 'social/cancel.html', context)
+        return render(request, 'social/cancel.html')
 
 
 
@@ -669,7 +748,7 @@ def stripe_webhook(request):
 class StripeIntentView(View):
     def post(self, request, *args, **kwargs):
         try:
-            req_json = json.loads(request.body)
+            req_json = (request.body)
             customer = stripe.Customer.create(email=req_json['email'])
             product_id = self.kwargs["pk"]
             product = Product.objects.get(id=product_id)
@@ -688,43 +767,10 @@ class StripeIntentView(View):
             return JsonResponse({ 'error': str(e) })
 
 
-class RegisterView(LoginRequiredMixin, View):
-    def get(self, request, pk, *args, **kwargs):
-
-        return render(request, 'account/signup.html')
-
-    def post(self, request, pk, *args, **kwargs):
-        
-        form = RegisterForm(request.POST)
-        
-
-        if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.author = request.user
-            new_comment.post = post
-            new_comment.save()
-
-       
 
 
 
-        comments = Comment.objects.filter(post=post).order_by('-created_on')
-        
 
-        context = {
-            'post': post,
-            'form': form,
-            'comments' : comments,
-
-        }
-
-        return render(request, 'social/post_detail.html', context)
-
-
-
-class NotificationsView(View):
-    def get(self,request,*args,**kwargs):
-        return render(request, 'social/notifications.html')
 
 class FriendsView(View):
     def get(self,request,pk,*args,**kwargs):

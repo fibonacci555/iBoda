@@ -1,148 +1,157 @@
-<div class="container" >
+
+
+{% load static %}
+
+<!DOCTYPE html>
+
+<link href="{% static 'style_new.css' %}" rel="stylesheet">
+<link href="{% static 'style.css' %}" rel="stylesheet">
+<script src="{% static 'index.js' %}" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
+
+{% block content %}
+
+
         
 
-    <div class="row justify-content-center mt-5 mb-10">
-        <div class="col-md-6 col-sm-12" >
-            {% if user.is_authenticated %}
-            <button id="modal-button" > <span>Criar um evento!</span></button>
-            {% else %}
-            <button id="modal-button-no-login" onclick="window.location.href='/accounts/signup'">Criar um evento!</button>
-            {% endif %}
-            <form method="POST" class="post-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; display: none;">
-                {% csrf_token %}
-                
-                
+ 
+          <form method="POST" class="post-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; ">
+            {% csrf_token %}
+            
+            
 
-                <label id="post-label">
-                <input id ="post-input"  type="text" placeholder="Título do Evento" name="title"/>
+            <label id="post-label">
+            <input id ="post-input"  type="text" placeholder="Título do Evento" name="title"/>
+            </label>
+
+            <label id="post-label"> 
+            <textarea name="body" id="post-input" style="height: 170px; border-radius:7px" form="post-form" placeholder="Descrição do Evento"></textarea>
+            
+            </label>
+
+            <label id="post-label" id="post-input-dropdown">
+                <p style=" content: '\25b6'"><strong>Selecione uma cidade:</strong></p>
+              <select name="city" placeholder="Local do Evento" id="post-input-dropdown" >
+                <option value="Alcobaça">Alcobaça</option>
+                <option value="Almada">Almada</option>
+                <option value="Amadora">Amadora</option>
+                <option value="Aveiro">Aveiro</option>
+                <option value="Barreiro">Barreiro</option>
+                <option value="Beja">Beja</option>
+                <option value="Braga">Braga</option>
+                <option value="Bragança">Bragança</option>
+                <option value="Cartaxo">Cartaxo</option>
+                <option value="Chaves">Chaves</option>
+                <option value="Coimbra">Coimbra</option>
+                <option value="Elvas">Elvas</option>
+                <option value="Espinhos">Espinhos</option>
+                <option value="Évora">Évora</option>
+                <option value="Faro">Faro</option>
+                <option value="Fátima">Fátima</option>
+                <option value="Funchal">Funchal</option>
+                <option value="Fundão">Fundão</option>
+                <option value="Gouveia">Gouveia</option>
+                <option value="Guarda">Guarda</option>
+                <option value="Leiria">Leiria</option>
+                <option value="Lisboa">Lisboa</option>
+                <option value="Loures">Loures</option>
+                <option value="Maia">Maia</option>
+                <option value="Mirandela">Mirandela</option>
+                <option value="Moura">Moura</option>
+                <option value="Penafiel">Penafiel</option>
+                <option value="Pinhel">Pinhel</option>
+                <option value="Portalegre">Portalegre</option>
+                <option value="Portimão">Portimão</option>
+                <option value="Porto">Porto</option>
+                <option value="Praia da Vitória">Praia da Vitória</option>
+                <option value="Queluz">Queluz</option>
+                <option value="Ribeira Grande">Ribeira Grande</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Santana">Santana</option>
+                <option value="São Pedro do Sul">São Pedro do Sul</option>
+                <option value="Seia">Seia</option>
+                <option value="Setúbal">Setúbal</option>
+                <option value="Sintra">Sintra</option>
+                <option value="Tavira">Tavira</option>
+                <option value="Tomar">Tomar</option>
+                <option value="Trancoso">Trancoso</option>
+                <option value="Trofa">Trofa</option>
+                <option value="Viana do Castelo">Viana do Castelo</option>
+                <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+                <option value="Vila Real">Vila Real</option>
+              </select>
+            </label>
+
+            <label id="post-label" id="post-input-dropdown">
+                <p><strong>Selecione um grupo de idades do público alvo: </strong></p>
+              <select name="age" placeholder="Idade do Público Alvo"  id="post-input-dropdown">
+                <option value="Todas as idades">Todas as idades</option>
+                <option value="+18">+18</option>
+                <option value="+25">+25</option>
+                <option value="+40">+40</option>
+              </select>
+            </label>
+
+            <label id="post-label" id="post-input-dropdown">
+                <p><strong>Selecione um tipo de música: </strong></p>
+              <select name="music" placeholder="Tipo de Música do Evento"  id="post-input-dropdown">
+                <option value="Todos os géneros">Todos os géneros</option>
+                <option value="Techno">Techno</option>
+                <option value="Jazz">Jazz</option>
+                <option value="80's">80's</option>
+                <option value="Hip-Hop">Hip-Hop</option>
+                <option value="Funk">Funk</option>
+              </select>
+            </label>
+
+            <label id="post-label">
+            <input id ="post-input"  type="file" placeholder="Foto do Cartaz" name="image"/>
+            </label>
+
+            <label id="post-label">
+            <input id ="post-input"  type="url" placeholder="URL para compra de bilhetes" name="url"/>
+            </label>
+
+            <label  id="post-label"style="margin-bottom: 10 % ;">
+            <input id ="post-input"  type="date" placeholder="Data do Evento" name="date"/>
+            </label>
+
+            
+            
+            
+            <label id="post-label" style="margin-bottom: 100px; text-align: center" title="Público/Privado">
+                <input id="inpLock" type="checkbox" name="public"/>
+                <label class="btn-lock" for="inpLock">
+                  <svg width="36" height="40" viewBox="0 0 36 40">
+                    <path class="lockb" d="M27 27C27 34.1797 21.1797 40 14 40C6.8203 40 1 34.1797 1 27C1 19.8203 6.8203 14 14 14C21.1797 14 27 19.8203 27 27ZM15.6298 26.5191C16.4544 25.9845 17 25.056 17 24C17 22.3431 15.6569 21 14 21C12.3431 21 11 22.3431 11 24C11 25.056 11.5456 25.9845 12.3702 26.5191L11 32H17L15.6298 26.5191Z"></path>
+                    <path class="lock" d="M6 21V10C6 5.58172 9.58172 2 14 2V2C18.4183 2 22 5.58172 22 10V21"></path>
+                    <path class="bling" d="M29 20L31 22"></path>
+                    <path class="bling" d="M31.5 15H34.5"></path>
+                    <path class="bling" d="M29 10L31 8"></path>
+                  </svg>
                 </label>
-
-                <label id="post-label"> 
-                <textarea name="body" id="post-input" style="height: 170px; border-radius:7px" form="post-form" placeholder="Descrição do Evento"></textarea>
-                
-                </label>
-
-                <label id="post-label" id="post-input-dropdown">
-                    <p style=" content: '\25b6'"><strong>Selecione uma cidade:</strong></p>
-                  <select name="city" placeholder="Local do Evento" id="post-input-dropdown" >
-                    <option value="Alcobaça">Alcobaça</option>
-                    <option value="Almada">Almada</option>
-                    <option value="Amadora">Amadora</option>
-                    <option value="Aveiro">Aveiro</option>
-                    <option value="Barreiro">Barreiro</option>
-                    <option value="Beja">Beja</option>
-                    <option value="Braga">Braga</option>
-                    <option value="Bragança">Bragança</option>
-                    <option value="Cartaxo">Cartaxo</option>
-                    <option value="Chaves">Chaves</option>
-                    <option value="Coimbra">Coimbra</option>
-                    <option value="Elvas">Elvas</option>
-                    <option value="Espinhos">Espinhos</option>
-                    <option value="Évora">Évora</option>
-                    <option value="Faro">Faro</option>
-                    <option value="Fátima">Fátima</option>
-                    <option value="Funchal">Funchal</option>
-                    <option value="Fundão">Fundão</option>
-                    <option value="Gouveia">Gouveia</option>
-                    <option value="Guarda">Guarda</option>
-                    <option value="Leiria">Leiria</option>
-                    <option value="Lisboa">Lisboa</option>
-                    <option value="Loures">Loures</option>
-                    <option value="Maia">Maia</option>
-                    <option value="Mirandela">Mirandela</option>
-                    <option value="Moura">Moura</option>
-                    <option value="Penafiel">Penafiel</option>
-                    <option value="Pinhel">Pinhel</option>
-                    <option value="Portalegre">Portalegre</option>
-                    <option value="Portimão">Portimão</option>
-                    <option value="Porto">Porto</option>
-                    <option value="Praia da Vitória">Praia da Vitória</option>
-                    <option value="Queluz">Queluz</option>
-                    <option value="Ribeira Grande">Ribeira Grande</option>
-                    <option value="Santa Cruz">Santa Cruz</option>
-                    <option value="Santana">Santana</option>
-                    <option value="São Pedro do Sul">São Pedro do Sul</option>
-                    <option value="Seia">Seia</option>
-                    <option value="Setúbal">Setúbal</option>
-                    <option value="Sintra">Sintra</option>
-                    <option value="Tavira">Tavira</option>
-                    <option value="Tomar">Tomar</option>
-                    <option value="Trancoso">Trancoso</option>
-                    <option value="Trofa">Trofa</option>
-                    <option value="Viana do Castelo">Viana do Castelo</option>
-                    <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
-                    <option value="Vila Real">Vila Real</option>
-                  </select>
-                </label>
-
-                <label id="post-label" id="post-input-dropdown">
-                    <p><strong>Selecione um grupo de idades do público alvo: </strong></p>
-                  <select name="age" placeholder="Idade do Público Alvo"  id="post-input-dropdown">
-                    <option value="Todas as idades">Todas as idades</option>
-                    <option value="+18">+18</option>
-                    <option value="+25">+25</option>
-                    <option value="+40">+40</option>
-                  </select>
-                </label>
-
-                <label id="post-label" id="post-input-dropdown">
-                    <p><strong>Selecione um tipo de música: </strong></p>
-                  <select name="music" placeholder="Tipo de Música do Evento"  id="post-input-dropdown">
-                    <option value="Todos os géneros">Todos os géneros</option>
-                    <option value="Techno">Techno</option>
-                    <option value="Jazz">Jazz</option>
-                    <option value="80's">80's</option>
-                    <option value="Hip-Hop">Hip-Hop</option>
-                    <option value="Funk">Funk</option>
-                  </select>
-                </label>
-
-                <label id="post-label">
-                <input id ="post-input"  type="file" placeholder="Foto do Cartaz" name="image"/>
-                </label>
-
-                <label id="post-label">
-                <input id ="post-input"  type="url" placeholder="URL para compra de bilhetes" name="url"/>
-                </label>
-
-                <label  id="post-label"style="margin-bottom: 10 % ;">
-                <input id ="post-input"  type="date" placeholder="Data do Evento" name="date"/>
-                </label>
-
-                
-                
-                
-                <label id="post-label" style="margin-bottom: 100px; text-align: center" title="Público/Privado">
-                    <input id="inpLock" type="checkbox" name="public"/>
-                    <label class="btn-lock" for="inpLock">
-                      <svg width="36" height="40" viewBox="0 0 36 40">
-                        <path class="lockb" d="M27 27C27 34.1797 21.1797 40 14 40C6.8203 40 1 34.1797 1 27C1 19.8203 6.8203 14 14 14C21.1797 14 27 19.8203 27 27ZM15.6298 26.5191C16.4544 25.9845 17 25.056 17 24C17 22.3431 15.6569 21 14 21C12.3431 21 11 22.3431 11 24C11 25.056 11.5456 25.9845 12.3702 26.5191L11 32H17L15.6298 26.5191Z"></path>
-                        <path class="lock" d="M6 21V10C6 5.58172 9.58172 2 14 2V2C18.4183 2 22 5.58172 22 10V21"></path>
-                        <path class="bling" d="M29 20L31 22"></path>
-                        <path class="bling" d="M31.5 15H34.5"></path>
-                        <path class="bling" d="M29 10L31 8"></path>
-                      </svg>
-                    </label>
-                </label>
+            </label>
 
 
-                
-                <div class="d-grid gap-2">
-                    <button id="post-button" style="color:#666;
-                                                  height:50px;
-                                                  width:100%;
-                                                  font-size: 13px;
-                                                  margin-bottom: 20px;
-                                                  border-radius: 50px;
-                                                  border:0;
-                                                  box-shadow: 0px 3px 8px #aaa,
-                                                  inset 5px 5px 15px 2px #fff,
-                                                  inset -3px -5px 10px  #aaa,
-                                                  0px -5px 10px 3px #fff;
-                                                  background-color: #f2f2f2;
-                                                  outline: none;
-                                                  border: none;">Criar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+            
+            <div class="d-grid gap-2">
+                <button id="post-button" style="color:#666;
+                                              height:50px;
+                                              width:100%;
+                                              font-size: 13px;
+                                              margin-bottom: 20px;
+                                              border-radius: 50px;
+                                              border:0;
+                                              box-shadow: 0px 3px 8px #aaa,
+                                              inset 5px 5px 15px 2px #fff,
+                                              inset -3px -5px 10px  #aaa,
+                                              0px -5px 10px 3px #fff;
+                                              background-color: #f2f2f2;
+                                              outline: none;
+                                              border: none;">Criar</button>
+            </div>
+        </form>
+ 
+
+{% endblock %}

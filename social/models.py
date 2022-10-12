@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -47,6 +48,7 @@ class Post(models.Model):
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
     public = models.BooleanField(default=True)
+    comments = models.PositiveIntegerField(default=0)
     
     
     
@@ -87,6 +89,7 @@ class UserProfile(models.Model):
     birth = models.DateField(default="2002-09-03",blank=False,null=False)
     city = models.CharField(default="",max_length=40)
     follow_requests = models.PositiveIntegerField(default=0)
+    following = models.ManyToManyField(User,blank=True,related_name='following')
 
     
     def calculate_age(self):
@@ -113,14 +116,7 @@ class UserProfile(models.Model):
     
 
 
-"""class Notification(models.Model):
-    notification_type = models.IntegerField()
-    to_user = models.ForeignKey(User, related_name='notification_to', on_delete=models.CASCADE, null=True)
-    from_user = models.ForeignKey(User, related_name='notification_from', on_delete=models.CASCADE, null=True)
-    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
-    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
-    date = models.DateTimeField(default=timezone.now)
-    user_has_seen = models.BooleanField(default=False)"""
+
 
 
 
@@ -133,6 +129,19 @@ class FollowRequest(models.Model):
 
     def __str__(self):
         return self.sender.username
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="not_sender")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="not_receiver")
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
+    is_active = models.BooleanField(blank=True,null=False,default=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    type = models.PositiveIntegerField(default=0)
+
+    
+
+
 
     
 
