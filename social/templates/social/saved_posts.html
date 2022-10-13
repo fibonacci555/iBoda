@@ -1,200 +1,831 @@
 {% load static %}
-{% include 'landing/navbar.html' %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-<link href="{% static 'style.css' %}" rel="stylesheet">
-<script src="https://kit.fontawesome.com/9765a82189.js" crossorigin="anonymous"></script>
-{%block content%}
-<div class="container">
-	<div class="row mt-5">
-        <div class="col-md-3 col-sm-6">
-            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
-        </div>
-    </div>
-<body id="post-list-bg">
-    {% if is_user == True %}
-    	{%for profile in profile_list%}
-    		   <div class="row justify-content-center mt-3">
-    		       <div class="col-md-5 col-sm-12 border-bottom position-relative">
-    		          	<p><a style="text-decoration: none;" class="text-primary" href="{% url 'profile' profile.pk %}">
-    		            @{{profile.user}}</a></p>
-    		            {%if profile.location%}<p>{{profile.location}}</p>{%endif%}       
-    		            <p>Followers:{{profile.followers.all.count}}</p>
-    		            <div class="mb-3">
-                    	{% if n_followers != 1 %}
-                    	<p><strong>{{ n_followers }} Followers </strong></p>
-                    	{% else %}
-                    	<p><strong>{{ n_followers }} Follower </strong></p>
-                    	{% endif %}
-                    	{% if user == request.user %}
-                    
-                    	{% elif is_following%}
-                    		<form method="POST" action="{% url 'remove-follower' profile.pk %}">
-                        		{% csrf_token %}
-                        		<button class="btn btn-outline-danger" type="submit">Unfollow</button>
-                    		</form>
-                    	{% else %}
-                    		<form method="POST" action="{% url 'add-follower' profile.pk %}">
-                        		{% csrf_token %}
-                        		<button class="btn btn-outline-success" type="submit">Follow</button>
-                    		</form>
-                    	{% endif %}
-    		        </div>
-    		    </div>      
-    		</div>
-    	{%endfor%}
+<!DOCTYPE html>
 
+<link href="{% static 'style_new.css' %}" rel="stylesheet">
 
-    {% else %}
-    	 {% for post in post_list %}
-            {% if request.user in post.saves.all %}
-                {% if post.approved %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iBoda</title>
+    <!-- ICONSCOUT CDN -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
+    <!-- STYLESHEET -->
+    <link rel="stylesheet" href="./style_new.css">
+</head>
+<body> 
+    <nav>
+        <div class="container">
+            <h2 class="log">
+                [ iBoda ]
+            </h2>
+            
                 
-                <div class="row justify-content-center mt-10 " style="margin-top: 25px;">
-                    <div class="col-md-5 col-sm-12 position-relative" style="border-radius: 21px;
-                                                                            background: #ebecf0;
-                                                                            box-shadow:  -14px 14px 95px #868789,
-                                                                                         14px -14px 95px #ffffff;">
-                        <div style="margin-top: 20px">
-                            <a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none"><img style="float: left; margin-right: 6px; border-radius: 50%" class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"></a>
-                        </div>
-                        <p><strong>{{ post.title }}</strong> - {{ post.city }}
-                        
-                            
-                        </p>
-                        <p><strong>Data do evento: </strong>  {{ post.date }}</p>
-                        <p><strong>Tipo de Música: </strong>  {{ post.music }}</p>
-                        <p><strong>Idade recomendada: </strong>  {{ post.age }}</p>
+                <form class="d-flex" method="GET" action="{% url 'all-search' %}">
+                    
+                      <input  class="form-control"  placeholder="Artistas & Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
+                    
+                      <input  class="form-control"  placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
+                    
+                      <select  id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
+                        <option value="">Cidade</option>
+                        <option value="Alcobaça">Alcobaça</option>
+                        <option value="Almada">Almada</option>
+                        <option value="Amadora">Amadora</option>
+                        <option value="Aveiro">Aveiro</option>
+                        <option value="Barreiro">Barreiro</option>
+                        <option value="Beja">Beja</option>
+                        <option value="Braga">Braga</option>
+                        <option value="Bragança">Bragança</option>
+                        <option value="Cartaxo">Cartaxo</option>
+                        <option value="Chaves">Chaves</option>
+                        <option value="Coimbra">Coimbra</option>
+                        <option value="Elvas">Elvas</option>
+                        <option value="Espinhos">Espinhos</option>
+                        <option value="Évora">Évora</option>
+                        <option value="Faro">Faro</option>
+                        <option value="Fátima">Fátima</option>
+                        <option value="Funchal">Funchal</option>
+                        <option value="Fundão">Fundão</option>
+                        <option value="Gouveia">Gouveia</option>
+                        <option value="Guarda">Guarda</option>
+                        <option value="Leiria">Leiria</option>
+                        <option value="Lisboa">Lisboa</option>
+                        <option value="Loures">Loures</option>
+                        <option value="Maia">Maia</option>
+                        <option value="Mirandela">Mirandela</option>
+                        <option value="Moura">Moura</option>
+                        <option value="Penafiel">Penafiel</option>
+                        <option value="Pinhel">Pinhel</option>
+                        <option value="Portalegre">Portalegre</option>
+                        <option value="Portimão">Portimão</option>
+                        <option value="Porto">Porto</option>
+                        <option value="Praia da Vitória">Praia da Vitória</option>
+                        <option value="Queluz">Queluz</option>
+                        <option value="Ribeira Grande">Ribeira Grande</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                        <option value="Santana">Santana</option>
+                        <option value="São Pedro do Sul">São Pedro do Sul</option>
+                        <option value="Seia">Seia</option>
+                        <option value="Setúbal">Setúbal</option>
+                        <option value="Sintra">Sintra</option>
+                        <option value="Tavira">Tavira</option>
+                        <option value="Tomar">Tomar</option>
+                        <option value="Trancoso">Trancoso</option>
+                        <option value="Trofa">Trofa</option>
+                        <option value="Viana do Castelo">Viana do Castelo</option>
+                        <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+                        <option value="Vila Real">Vila Real</option>
+                      </select>
+                   
+                    <button class="button-search" type="submit"><i class="uil uil-search"></i></button>
+                    
+                  </form>
+                  
 
-                            
-                                
-                                
-                        <div class="position-relative">
-                                <p>{{ post.body }}</p>
-                                {% if post.image %}
-                                <img class="modal-content" id="img01" src="{{ post.image.url }}" style="max-width: 100%; height: auto; border-radius: 10px;margin-bottom: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" />
-                                {% endif %}
-                                <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
-                                
-                                <br><small><strong><a href="{% url 'profile' post.author.profile.pk %}" style=" text-decoration: none">~{{ post.author }}</a>
-                                    {% if post.author.profile.verified  %}
-                                    <i class="fa-solid fa-certificate" style="color:gold;" text="verified"></i>
+
+
+
+
+            
+            <div class="create">
+                <label class="btn btn-primary" for="create-post">Create</label>
+                <a href="{% url 'profile' request.user.profile.pk %}">
+                    <div class="profile-photo">
+                        <img src="{{ request.user.profile.picture.url }}">
+                    </div>
+                </a>
+                <!-- menu button to show sidebar -->
+                <button id="menu-btn"><i class="uil uil-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!------------------------- MAIN -------------------------->
+    <main>
+        <div class="container">
+            <!--======================== LEFT ==========================-->
+            <div class="left">
+                <a class="profile" href="{% url 'profile' request.user.profile.pk %}">
+                    <div class="profile-photo">
+                        <img src="{{ request.user.profile.picture.url }}">
+                    </div>
+                    <div class="handle">
+                        <h4>{{ request.user.profile.name }}</h4>
+                        <p class="text-muted">
+                            @{{ request.user.username }}
+                        </p>
+                    </div>
+                </a>
+
+                <!-- close button -->
+                <span id="close-btn"><i class="uil uil-multiply"></i></span>
+
+                <!-------------------- SIDEBAR ------------------------->
+                <div class="sidebar" >
+                    <a class="menu-item" href="/social/" style="color: aliceblue;">
+                        <span><i class="uil uil-home"></i></span><h3>Home</h3>
+                    </a>
+                    <a class="menu-item " href="{% url 'popular-posts' %}" style="color: aliceblue;">
+                        <span><i class="uil uil-fire"></i></span><h3 style="color: aliceblue;" >Popular</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'follow-requests' request.user.profile.pk%}" id="notifications">
+                        <span><i class="uil uil-bell">{%if notis != 0%}<small class="notification-count">{{notis}}</small>{%endif%}</i></span><h3 style="color: aliceblue;">Notifications</h3>
+                    </a>
+                    <a class="menu-item" id="messages-notification" href="{% url 'friends' request.user.profile.pk%}">
+                        <span><i class="uil uil-users-alt"></i></span><h3 style="color: aliceblue;">Amigos</h3>
+                    </a>
+                    <a class="menu-item active" href="{% url 'saved-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-bookmark"></i></span><h3 style="color: aliceblue;">Bookmarks</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'liked-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-check-circle"></i></span><h3 style="color: aliceblue;">Eventos Idos</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
+                    </a>
+                    <a class="menu-item" id="theme">
+                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/logout">
+                        <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
+                    </a>                        
+                </div>
+                <!------------------- END OF SIDEBAR -------------------->
+                
+            </div>
+            <!------------------- END OF LEFT -------------------->
+
+
+
+            <!--======================== MIDDLE ==========================-->
+            <div class="middle">
+                <!------------------- FEEDS --------------------->
+                <div class="feeds">
+                    <!------------------- FEED 1 --------------------->
+                    
+
+                <div id="pub">
+                    {% for post in post_list %}
+                            {% if request.user in post.saves.all %}
+                                <div class="feed">
+                                    <div class="head">
+                                        <div class="user">
+                                            <div class="profile-photo">
+                                                <img src="{{ post.author.profile.picture.url }}">
+                                            </div>
+                                            <div class="ingo">
+                                                <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }} {% if post.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h3></a>
+                                                <small>{{ post.created_on }}</small>
+                                            </div>
+                                            
+
+                                        </div>
+                                        {%if post.author == request.user%}
+                                            <span class="edit">
+                                                <a href="{% url 'post-delete' post.pk %}"><i class="uil uil-trash-alt" style="color: red;"></i></a>
+                                            </span>
+                                        {% else %}
+                                            <div class="bookmark">
+                                                <form method="POST" id="report-post" style="display: inline-block;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                                    <input type="hidden" name="pk" value="{{ post.pk }}">
+                        
+                                                    <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                        
+                                                                
+                        
+                                                    {% if request.user in post.reports.all %}
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    {% else %}
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-exclamation-circle"></i>
+                                                    {% endif %}
+                                                    </button>        
+                                            </form>
+                                            </div>
+                                        {% endif %}
+                                        </div>
+
+                                    
+                                        <div class="caption">
+                                            <br>
+                                            <h2>{{post.title}}</h2>
+                                            <br>
+                                            <p><u>Localidade:</u> <strong>{{ post.city }} - {{ post.date }}</strong></p>
+                                            <p><u>Idade:</u> <strong>{{ post.age }}</strong></p>
+                                            <p><u>Tipo de música:</u><strong> {{ post.music }}</strong></p><br><br>
+                                            <p><b>@{{ post.author.username }} -</b> {{post.body}} </p>
+                                        </div>
+                                    {% if post.image %}
+                                        <div class="photo">
+                                            <img src="{{ post.image.url }}">
+                                        </div>
                                     {% endif %}
                                     
-                                </small></strong><br><br>
 
-                        </div>
-                            
-
-                        <div class="d-flex flex-row" style="justify-content: space-between;">
-                    <form method="POST"  id="like-post" style="margin-left:2%" style="justify-content: space-between;">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="pk" value="{{ post.pk }}">
-                            <input type="hidden" name="like-count" value="{{ post.likes_count }}">
-                            
-                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
-
-                            
-                            {% if request.user in post.likes.all %}
-                            
-                            <i id="no-like{{ post.pk }}" style="color:gray ;display: none;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
-                            <i id="liked{{ post.pk }}" style="color:green ;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
-                            {% else %}
-                            
-                            <i id="liked{{ post.pk }}" style="color:green ;display: none;flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
-                            <i id="no-like{{ post.pk }}" style="color:gray ; flex-direction: row;justify-content: right" class="fa-solid fa-champagne-glasses"></i>
-                            {% endif %}
-
-                            <div>
-                                <span style="display: left; justify-content:center;" id="count{{ post.pk }}" >{{ post.likes_count }}</span>
-                                <span style="display: none; justify-content:center;" id="count{{ post.pk }}2" ></span>
-                            </div>
-
-
-
-                            </button>
-                    </form>
-
-                    <form method="POST" id="report-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="pk" value="{{ post.pk }}">
-
-                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
-
-                                           
-
-                            {% if request.user in post.reports.all %}
-                            <i id="no-report{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-flag"></i>
-                            <i id="reported{{ post.pk }}" style="color:darkred ;" class="fa-solid fa-flag"></i>
-                            {% else %}
-                            <i id="reported{{ post.pk }}" style="color:darkred ;display: none;" class="fa-solid fa-flag"></i>
-                            <i id="no-report{{ post.pk }}" style="color:gray ; " class="fa-solid fa-flag"></i>
-                            {% endif %}
-                            </button>        
-                    </form>
-
-                    <form method="POST" id="save-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="pk" value="{{ post.pk }}">
-
-                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
-                                           
-
-                            {% if request.user in post.saves.all %}
-                            <i id="no-save{{ post.pk }}" style="color:gray ;display: none;" class="fa-solid fa-bookmark"></i>
-                            <i id="saved{{ post.pk }}" style="color:gold ;" class="fa-solid fa-bookmark"></i>
-                            {% else %}
-                            <i id="saved{{ post.pk }}" style="color:gold ;display: none;" class="fa-solid fa-bookmark"></i>
-                            <i id="no-save{{ post.pk }}" style="color:gray ; " class="fa-solid fa-bookmark"></i>
-                            {% endif %}
-                            </button>
-                    </form>
-
-                    <form method="POST"  id="fav-post">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="pk" value="{{ post.pk }}">
-
-                            <button style="background-color: transparent;outline: none; border: none; box-shadow: none;" type="submit">
-
-                            {% if request.user in post.favs.all %}
-                            <i id="no-fav{{ post.pk }}" style="color:gray ;display: none;" class="fas fa-star"></i>
-                            <i id="faved{{ post.pk }}" style="color:gold ;" class="fas fa-star"></i>
-                            {% else %}
-                            <i id="faved{{ post.pk }}" style="color:gold ;display: none;" class="fas fa-star"></i>
-                            <i id="no-fav{{ post.pk }}" style="color:gray ; " class="fas fa-star"></i>
-                            {% endif %}
-                            
-                            </button>
-                    </form>
-                    {% if post.url %}
-                    
-                            
-                            
-                            <button id="bilhetes" title="Bilhetes" style="border: none;outline: none;background-color: transparent; color: orange; margin-bottom:auto;" onclick="window.location.href='{{ post.url }}'">
-                                           
-                            <i class="fa-solid fa-ticket"></i>
-                            </button>
-                    
-                    {% endif %}
-
-                    
-                </div>
+                                    <div class="action-buttons">
+                                        <div class="interaction-buttons" style="display: inline-block;">
+                                                <form method="POST"  id="like-post" style="display: inline-block; color: aliceblue;" >
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                                    <input type="hidden" name="pk" value="{{ post.pk }}">
+                                                    <input type="hidden" name="like-count" value="{{ post.likes_count }}">
+                                                    
+                                                    <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
                         
-                    </div>
+                                                    
+                                                    {% if request.user in post.likes.all %}
+                                                    
+                                                    <i id="no-like{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    <i id="liked{{ post.pk }}" style="color:green ;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    {% else %}
+                                                    
+                                                    <i id="liked{{ post.pk }}" style="color:green ;display: none;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    <i id="no-like{{ post.pk }}" style="color:gray ;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    {% endif %}
+                        
+                                                    <div>
+                                                        
+                                                        
+                                                    </div>
+                        
+                        
+                        
+                                                    </button>
+                                                </form>
+                               
                     
+                                        
+                    
+                                        <form method="POST" id="save-post" style="display: inline-block;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                <input type="hidden" name="pk" value="{{ post.pk }}">
+                    
+                                                <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                                                               
+                    
+                                                {% if request.user in post.saves.all %}
+                                                <i id="no-save{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                <i id="saved{{ post.pk }}" style="color:gold ;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                {% else %}
+                                                <i id="saved{{ post.pk }}" style="color:gold ;display: none;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                <i id="no-save{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-bookmark-full"></i>
+                                                {% endif %}
+                                                </button>
+                                        </form>
+                    
+                                        <form method="POST"  id="fav-post" style="display: inline-block;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                <input type="hidden" name="pk" value="{{ post.pk }}">
+                    
+                                                <button style="background-color: transparent;outline: none; border: none; box-shadow: none; cursor: pointer;" type="submit">
+                    
+                                                {% if request.user in post.favs.all %}
+                                                <i id="no-fav{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-star"></i>
+                                                <i id="faved{{ post.pk }}" style="color:gold ;font-size: 200%;" class="uil uil-star"></i>
+                                                {% else %}
+                                                <i id="faved{{ post.pk }}" style="color:gold ;display: none;font-size: 200%;" class="uil uil-star"></i>
+                                                <i id="no-fav{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-star"></i>
+                                                {% endif %}
+                                                
+                                                </button>
+                                        </form>
+
+
+                                            
+                                            
+                                            
+                                            
+                                            <a href="{% url 'post-detail' post.pk%}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="liked-by">
+                                        
+                                        <p><b>{% if post.likes_count > 0 %}{{ post.likes_count }}{% endif %}</b>{% if post.likes_count > 1 %} Pessoas vão {% elif post.likes_count == 1%} Pessoa vai {% else %}{% endif %}</p>
+                                        
+                                    </div> 
+                                    
+                                    
+                                </div>
+                                
+                            
+                        {% endif %}
+                    {% endfor %}
+
+
                 </div>
-                
-                {% endif %}
-            {% endif %}
-            {% endfor %}
+                    <!---------------- END OF FEED ----------------->
+                </div>
+                <!------------------------------- END OF FEEDS ------------------------------------>
+            </div>
+            <!--======================== END OF MIDDLE ==========================-->
+
+
+            <!--======================== RIGHT ==========================-->
+            <div class="right">
+                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                <!------------ FRIEND REQUESTS -------------->
+                <div class="friend-requests">
+                    <h4>Requests</h4>
+                    <!----- REQUEST 1----->
+                    {% if frequests%}
+                        {% for frequest in frequests%}
+                        <div class="request">
+                            <div class="info">
+                                <div class="profile-photo">
+                                    <img src="{{ frequest.sender.profile.picture.url }}">
+                                </div>
+                                <div>
+                                    <h5>{{ frequest.sender.profile.name }}</h5>
+                                    <p class="text-muted">{{ frequest.sender.username }}</p>
+                                </div>
+                            </div>
+                            <div class="action">
+                                <form method="POST" action="{% url 'accept' request.user.pk frequest.sender.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary" type="submit">Accept</button>
+                                </form>
+                                <form method="POST" action="{% url 'reject' request.user.pk frequest.sender.pk %}">
+                                {% csrf_token %}
+                                <button class="btn" type="submit">Decline</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="request">
+                        No requests
+                    </div>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+            <!--====================== END OF RIGHT ==========================-->
         </div>
-    {% endif %}
+    </main>
+
+ <!--================================================ THEME CUSTOMIZATION =============================================-->
+ <div class="customize-theme">
+    <div class="card">
+        <h2>Customize your view</h2>
+        <p class="text-muted">Manage your font size, color, and background.</p>
+
+        <!------------ FONT SIZES ------------->
+        <div class="font-size">
+            <h4>Font Size</h4>
+            <div>
+                <h6>Aa</h6>
+            <div class="choose-size">
+                <span class="font-size-1"></span>
+                <span class="font-size-2"></span>
+                <span class="font-size-3"></span>
+                <span class="font-size-4"></span>
+                <span class="font-size-5"></span>
+            </div>
+            <h3>Aa</h3>
+            </div>
+        </div>
+
+        <!------------ PRIMARY COLORS ------------->
+        <div class="color">
+            <h4>Color</h4>
+            <div class="choose-color">
+            <span class="color-1 active"></span>
+            <span class="color-2"></span>
+            <span class="color-3"></span>
+            <span class="color-4"></span>
+            <span class="color-5"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'index.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'pila.js' %}"></script>
+<script>
+
+
+
+    // Botão de Fav
+    $(document).on('submit','#fav-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/fav",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-fav" + pkey).style.display == "none"){
+                    document.getElementById("no-fav" + pkey).style.display = "block"
+                    document.getElementById("faved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-fav" + pkey ).style.display = "none"
+                    document.getElementById("faved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Save
+
+    $(document).on('submit','#save-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/save",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-save" + pkey).style.display == "none"){
+                    document.getElementById("no-save" + pkey).style.display = "block"
+                    document.getElementById("saved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-save" + pkey ).style.display = "none"
+                    document.getElementById("saved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Report
+
+
+    $(document).on('submit','#report-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/report",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-report" + pkey).style.display == "none"){
+                    document.getElementById("no-report" + pkey).style.display = "block"
+                    document.getElementById("reported" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-report" + pkey ).style.display = "none"
+                    document.getElementById("reported" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Ir
+    
+    $(document).on('submit','#like-post',function(e){
+        e.preventDefault();
+        
+        
+        pkey = $(this).children('input')[2].value;
+        click_count = 0;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/like",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            success: function(response){
+                console.log('success');
+            },
+            error: function(response){
+                console.log('error');
+                
+            }
+        });
+
+    count = parseInt($(this).children('input')[3].value);
+    count1 = document.getElementById('count'+pkey);
+    count2 = document.getElementById('count'+pkey+'2');
+    newcount = count;
+    console.log(newcount)
+    
+    if (document.getElementById("no-like" + pkey).style.display == "none"){
+            
+            document.getElementById("no-like" + pkey).style.display = "flex"
+            document.getElementById("liked" + pkey).style.display = 'none';
+            count1.style.display = 'none';     
+            count2.style.display = 'flex';
+            console.log(newcount + ' -')
+            if (newcount-1 > 0){
+                if(newcount == 1){
+                    newcount = 1
+                }else{
+                    newcount = newcount - 1;
+                }
+                
+
+                if (newcount == count -2){
+                    newcount = newcount + 2
+            }
+            }else{
+                newcount = 0
+            }
+            count2.innerHTML = newcount
+            
+            
+            
+    } else {      
+            document.getElementById("no-like" + pkey ).style.display = "none";
+            document.getElementById("liked" + pkey).style.display = 'flex';     
+            count1.style.display = 'none';  
+            count2.style.display = 'flex';
+            console.log(newcount + ' +')
+            if (newcount == count +2){
+                newcount = newcount - 1
+            }
+            if(newcount == 1){
+                newcount = newcount+1
+            }
+            else{
+                newcount++;
+            }
+            count2.innerHTML = newcount
+            
+
+
+                       
+            
+            
+            
+        }
+
+    });
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+<script>
+
+    
 
 
 
 
-{%endblock content%}
+
+
+
+// SIDEBAR 
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    
+    // THEME
+    const theme = document.querySelector('#theme');
+    const themeModal = document.querySelector('.customize-theme');
+    const fontSizes = document.querySelectorAll('.choose-size span');
+    var root = document.querySelector(':root');
+    const colorPalette = document.querySelectorAll('.choose-color span');
+    const Bg1 = document.querySelector('.bg-1');
+    const Bg2 = document.querySelector('.bg-2');
+    const Bg3 = document.querySelector('.bg-3');
+    
+    
+    
+    // ================ SIDEBAR ===============
+    
+    // remove active class from all menu items
+    const changeActiveItem = () => {
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+        })
+    }
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            changeActiveItem();
+            item.classList.add('active');
+            if(item.id != 'notifications'){
+                document.querySelector('.notifications-popup').style.display = 'none';
+            } else{
+                document.querySelector('.notifications-popup').style.display = 'block';
+                document.querySelector('#notifications .notification-count').style.display = 'none';
+            }
+        })
+    })
+    
+    
+   
+    
+
+    
+    
+    
+    // THEME/DISPLAY CUSTOMIZATION
+    
+    // opens modal
+    const openThemeModal = () => {
+        themeModal.style.display = 'grid';
+    }
+    
+    // closes modal
+    const closeThemeModal = (e) => {
+        if(e.target.classList.contains('customize-theme')){
+            themeModal.style.display = 'none';
+        }
+    }
+    
+    // close modal
+    themeModal.addEventListener('click', closeThemeModal);
+    
+    theme.addEventListener('click', openThemeModal);
+    
+    
+    
+    
+    // ======================== FONTS =========================
+    
+    // remove active class from spans or font size selectors
+    const removeSizeSelector = () => {
+        fontSizes.forEach(size => {
+            size.classList.remove('active');
+        })
+    }
+    
+    fontSizes.forEach(size => {
+        size.addEventListener('click', () => {
+            removeSizeSelector();
+            let fontSize;
+            size.classList.toggle('active');
+    
+            if(size.classList.contains('font-size-1')){
+                fontSize = '10px';
+                root.style.setProperty('----sticky-top-left', '5.4rem');
+                root.style.setProperty('----sticky-top-right', '5.4rem');
+            } else if(size.classList.contains('font-size-2')){
+                fontSize = '13px';
+                root.style.setProperty('----sticky-top-left', '5.4rem');
+                root.style.setProperty('----sticky-top-right', '-7rem');
+            } else if(size.classList.contains('font-size-3')){
+                fontSize = '16px';
+                root.style.setProperty('----sticky-top-left', '-2rem');
+                root.style.setProperty('----sticky-top-right', '-17rem');
+            } else if(size.classList.contains('font-size-4')){
+                fontSize = '19px';
+                root.style.setProperty('----sticky-top-left', '-5rem');
+                root.style.setProperty('----sticky-top-right', '-25rem');
+            } else if(size.classList.contains('font-size-5')){
+                fontSize = '22px';
+                root.style.setProperty('----sticky-top-left', '-12rem');
+                root.style.setProperty('----sticky-top-right', '-35rem');
+            }
+    
+            // change font size of the root html element
+        document.querySelector('html').style.fontSize = fontSize;
+        })
+        
+    })
+    
+    
+    
+    // remove active class from colors
+    const changeActiveColorClass = () => {
+        colorPalette.forEach(colorPicker => {
+            colorPicker.classList.remove('active');
+        })
+    }
+    
+    // change primary colors
+    colorPalette.forEach(color => {
+        color.addEventListener('click', () => {
+            let primary;
+            // remove active class from colors
+            changeActiveColorClass();
+    
+            if(color.classList.contains('color-1')){
+                primaryHue = 252;
+            } else if(color.classList.contains('color-2')){
+                primaryHue = 52;
+            } else if(color.classList.contains('color-3')){
+                primaryHue = 352;
+            } else if(color.classList.contains('color-4')){
+                primaryHue = 152;
+            } else if(color.classList.contains('color-5')){
+                primaryHue = 202;
+            }
+            color.classList.add('active');
+    
+            root.style.setProperty('--primary-color-hue', primaryHue);
+        })
+    })
+    
+    
+    
+    
+    
+    
+    // theme BACKGROUND values
+    let lightColorLightness;
+    let whiteColorLightness;
+    let darkColorLightness;
+    
+    // changes background color
+    const changeBG = () => {
+        root.style.setProperty('--light-color-lightness', lightColorLightness);
+        root.style.setProperty('--white-color-lightness', whiteColorLightness);
+        root.style.setProperty('--dark-color-lightness', darkColorLightness);
+    }
+    
+    
+    // change background colors
+    Bg1.addEventListener('click', () => {
+        // add active class
+        Bg1.classList.add('active');
+        // remove active class from the others
+        Bg2.classList.remove('active');
+        Bg3.classList.remove('active');
+        // remove customized changes from local storage
+        window.location.reload();
+    });
+    
+    Bg2.addEventListener('click', () => {
+        darkColorLightness = '95%';
+        whiteColorLightness = '20%';
+        lightColorLightness = '15%';
+        
+        // add active class
+        Bg2.classList.add('active');
+        // remove active class from the others
+        Bg1.classList.remove('active');
+        Bg3.classList.remove('active');
+        changeBG();
+    });
+    
+    Bg3.addEventListener('click', () => {
+        darkColorLightness = '95%';
+        whiteColorLightness = '10%';
+        lightColorLightness = '0%';
+    
+        // add active class
+        Bg3.classList.add('active');
+        // remove active class from others
+        Bg1.classList.remove('active');
+        Bg2.classList.remove('active');
+        changeBG();
+    })
+    
+    
+    
+    
+    // show sidebar
+    const menuBtn = document.querySelector('#menu-btn');
+    menuBtn.addEventListener('click', () => {
+        document.querySelector('.left').style.display = 'block';
+    })
+    
+    // hide sidebar
+    const closeBtn = document.querySelector('#close-btn');
+    closeBtn.addEventListener('click', () => {
+        document.querySelector('.left').style.display = 'none';
+    })
+    
+    
+    
+    
+    // THE END</script>
+</body>
+</html>
+

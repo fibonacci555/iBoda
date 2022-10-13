@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <link href="{% static 'style_new.css' %}" rel="stylesheet">
-<script src="{% static 'index.js' %}" crossorigin="anonymous"></script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
@@ -129,14 +129,14 @@
 
                 <!-------------------- SIDEBAR ------------------------->
                 <div class="sidebar" >
-                    <a class="menu-item active" href="/social/">
+                    <a class="menu-item active" href="/social/" style="color: aliceblue;">
                         <span><i class="uil uil-home"></i></span><h3>Home</h3>
                     </a>
                     <a class="menu-item" href="{% url 'popular-posts' %}" style="color: aliceblue;">
                         <span><i class="uil uil-fire"></i></span><h3 style="color: aliceblue;" >Popular</h3>
                     </a>
                     <a class="menu-item" href="{% url 'follow-requests' request.user.profile.pk%}" id="notifications">
-                        <span><i class="uil uil-bell"><small class="notification-count"></small></i></span><h3 style="color: aliceblue;">Notifications</h3>
+                        <span><i class="uil uil-bell">{%if notis != 0%}<small class="notification-count">{{notis}}</small>{%endif%}</i></span><h3 style="color: aliceblue;">Notifications</h3>
                     </a>
                     <a class="menu-item" id="messages-notification" href="{% url 'friends' request.user.profile.pk%}">
                         <span><i class="uil uil-users-alt"></i></span><h3 style="color: aliceblue;">Amigos</h3>
@@ -166,15 +166,15 @@
 
             <!--======================== MIDDLE ==========================-->
             <div class="middle">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
-
+                <a><label for="create-post" style="border-style: solid;border-color: beige;"class="btn btn-primary" id="pub-btn">Público</label></a>
+                <a><label for="create-post" style=""class="btn btn-primary" id="priv-btn">Amigos</label></a>
                 <!------------------- FEEDS --------------------->
                 <div class="feeds">
                     <!------------------- FEED 1 --------------------->
+                    <div id="priv" style="display: none">
                     {% for post in priv_posts %}
                         {% if post.approved %}
                             
-                                
                                 <div class="feed">
                                     <div class="head">
                                         <div class="user">
@@ -182,7 +182,7 @@
                                                 <img src="{{ post.author.profile.picture.url }}">
                                             </div>
                                             <div class="ingo">
-                                                <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }}</h3></a>
+                                                <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }} {% if post.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h3></a>
                                                 <small>{{ post.created_on }}</small>
                                             </div>
 
@@ -218,8 +218,11 @@
                                     
                                     <div class="caption">
                                         <br>
-                                        <p><b>Idade:</b> {{ post.age }}</p>
-                                        <p><b>Tipo de música:</b> {{ post.music }}</p><br><br>
+                                        <h2>{{post.title}}</h2>
+                                        <br>
+                                        <p>Localidade: <strong>{{ post.city }} - {{ post.date }}</strong></p>
+                                        <p>Idade: <strong>{{ post.age }}</strong></p>
+                                        <p>Tipo de música:<strong> {{ post.music }}</strong></p><br><br>
                                         <p><b>@{{ post.author.username }} -</b> {{post.body}} </p>
                                     </div>
                                     {% if post.image %}
@@ -321,6 +324,164 @@
                             
                         {% endif %}
                     {% endfor %}
+                    </div>
+
+                <div id="pub">
+                    {% for post in pub_posts %}
+                        {% if post.approved %}
+                                <div class="feed">
+                                    <div class="head">
+                                        <div class="user">
+                                            <div class="profile-photo">
+                                                <img src="{{ post.author.profile.picture.url }}">
+                                            </div>
+                                            <div class="ingo">
+                                                <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }} {% if post.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h3></a>
+                                                <small>{{ post.created_on }}</small>
+                                            </div>
+                                            
+
+                                        </div>
+                                        {%if post.author == request.user%}
+                                            <span class="edit">
+                                                <a href="{% url 'post-delete' post.pk %}"><i class="uil uil-trash-alt" style="color: red;"></i></a>
+                                            </span>
+                                        {% else %}
+                                            <div class="bookmark">
+                                                <form method="POST" id="report-post" style="display: inline-block;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                                    <input type="hidden" name="pk" value="{{ post.pk }}">
+                        
+                                                    <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                        
+                                                                
+                        
+                                                    {% if request.user in post.reports.all %}
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    {% else %}
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-exclamation-circle"></i>
+                                                    {% endif %}
+                                                    </button>        
+                                            </form>
+                                            </div>
+                                        {% endif %}
+                                        </div>
+
+                                    
+                                        <div class="caption">
+                                            <br>
+                                            <h2>{{post.title}}</h2>
+                                            <br>
+                                            <p><u>Localidade:</u> <strong>{{ post.city }} - {{ post.date }}</strong></p>
+                                            <p><u>Idade:</u> <strong>{{ post.age }}</strong></p>
+                                            <p><u>Tipo de música:</u><strong> {{ post.music }}</strong></p><br><br>
+                                            <p><b>@{{ post.author.username }} -</b> {{post.body}} </p>
+                                        </div>
+                                    {% if post.image %}
+                                        <div class="photo">
+                                            <img src="{{ post.image.url }}">
+                                        </div>
+                                    {% endif %}
+                                    
+
+                                    <div class="action-buttons">
+                                        <div class="interaction-buttons" style="display: inline-block;">
+                                                <form method="POST"  id="like-post" style="display: inline-block; color: aliceblue;" >
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                                    <input type="hidden" name="pk" value="{{ post.pk }}">
+                                                    <input type="hidden" name="like-count" value="{{ post.likes_count }}">
+                                                    
+                                                    <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                        
+                                                    
+                                                    {% if request.user in post.likes.all %}
+                                                    
+                                                    <i id="no-like{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    <i id="liked{{ post.pk }}" style="color:green ;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    {% else %}
+                                                    
+                                                    <i id="liked{{ post.pk }}" style="color:green ;display: none;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    <i id="no-like{{ post.pk }}" style="color:gray ;font-size: 200%;" class="uil uil-user-check"></i>
+                                                    {% endif %}
+                        
+                                                    <div>
+                                                        
+                                                        
+                                                    </div>
+                        
+                        
+                        
+                                                    </button>
+                                                </form>
+                               
+                    
+                                        
+                    
+                                        <form method="POST" id="save-post" style="display: inline-block;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                <input type="hidden" name="pk" value="{{ post.pk }}">
+                    
+                                                <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                                                               
+                    
+                                                {% if request.user in post.saves.all %}
+                                                <i id="no-save{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                <i id="saved{{ post.pk }}" style="color:gold ;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                {% else %}
+                                                <i id="saved{{ post.pk }}" style="color:gold ;display: none;font-size: 200%;" class="uil uil-bookmark-full"></i>
+                                                <i id="no-save{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-bookmark-full"></i>
+                                                {% endif %}
+                                                </button>
+                                        </form>
+                    
+                                        <form method="POST"  id="fav-post" style="display: inline-block;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                <input type="hidden" name="pk" value="{{ post.pk }}">
+                    
+                                                <button style="background-color: transparent;outline: none; border: none; box-shadow: none; cursor: pointer;" type="submit">
+                    
+                                                {% if request.user in post.favs.all %}
+                                                <i id="no-fav{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-star"></i>
+                                                <i id="faved{{ post.pk }}" style="color:gold ;font-size: 200%;" class="uil uil-star"></i>
+                                                {% else %}
+                                                <i id="faved{{ post.pk }}" style="color:gold ;display: none;font-size: 200%;" class="uil uil-star"></i>
+                                                <i id="no-fav{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-star"></i>
+                                                {% endif %}
+                                                
+                                                </button>
+                                        </form>
+
+
+                                            
+                                            
+                                            
+                                            
+                                            <a href="{% url 'post-detail' post.pk%}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="liked-by">
+                                        
+                                        <p><b>{% if post.likes_count > 0 %}{{ post.likes_count }}{% endif %}</b>{% if post.likes_count > 1 %} Pessoas vão {% elif post.likes_count == 1%} Pessoa vai {% else %}{% endif %}</p>
+                                        
+                                    </div> 
+                                    
+                                    
+                                </div>
+                                
+                            
+                        {% endif %}
+                    {% endfor %}
+
+
+                </div>
                     <!---------------- END OF FEED ----------------->
                 </div>
                 <!------------------------------- END OF FEEDS ------------------------------------>
@@ -330,6 +491,7 @@
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
+                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>
@@ -404,29 +566,14 @@
             <span class="color-5"></span>
             </div>
         </div>
-
-        <!---------- BACKGROUND COLORS ------------>
-        <div class="background">
-            <h4>Background</h4>
-            <div class="choose-bg">
-                <div class="bg-1 active">
-                    <span></span>
-                    <h5 for="bg-1">Light</h5>
-                </div>
-                <div class="bg-2">
-                    <span></span>
-                    <h5>Dim</h5>
-                </div>
-                <div class="bg-3">
-                    <span></span>
-                    <h5 for="bg-3">Lights Out</h5>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
-
+<script src="{% static 'index.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'pila.js' %}"></script>
 <script>
+
+
+
     // Botão de Fav
     $(document).on('submit','#fav-post',function(e){
         e.preventDefault();
@@ -607,7 +754,17 @@
 
 {% endblock %}
 
-<script src="text/JavaScript">// SIDEBAR 
+<script>
+
+    
+
+
+
+
+
+
+
+// SIDEBAR 
     const menuItems = document.querySelectorAll('.menu-item');
     
     

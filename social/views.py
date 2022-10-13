@@ -1,3 +1,4 @@
+import pkgutil
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.db.models import Q, Count, F
@@ -87,14 +88,24 @@ class PostListView(View):
 
         priv_posts = Post.objects.filter(approved=True,public=False).order_by('-created_on')
 
-        for post in posts:
-            followers = post.author.followers.all()
-            print(followers)
-            if ( logged_in_user in followers) or ( logged_in_user == post.author):
-                pass
+        following_users = request.user.profile.following.all()
+       
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
+        for post in priv_posts:
+            
+            if post.author not in following_users and request.user != post.author:
+                post_id = int(post.id)
+                priv_posts = priv_posts.exclude(id=post_id)
+                
             else:
-                priv_posts.exclude(id=post.id)
+                pass
+                
+            
         
+    
         pub_posts = Post.objects.filter(approved=True,public=True).order_by('-created_on')
             
         
@@ -106,6 +117,7 @@ class PostListView(View):
             'frequests':frequests,
             'pub_posts':pub_posts,
             'priv_posts':priv_posts,
+            'notis':notifications,
             
         }
         return render(request, 'social/post_list.html', context)
@@ -117,11 +129,17 @@ class PostDetailView(LoginRequiredMixin, View):
         form = CommentForm()
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+        
 
         context = {
             'post': post,
             'form': form,
             'comments' : comments,
+            'notis':notifications,'frequests':frequests,
         }
 
         return render(request, 'social/post_detail.html', context)
@@ -173,6 +191,7 @@ class CommentReplyView(LoginRequiredMixin, View):
         
         log_user = User.objects.get(username=request.user.username)
        
+        
 
         
         new_notification = Notification()
@@ -211,6 +230,7 @@ class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
     model = Post
     template_name = 'social/post_delete.html'
     success_url = reverse_lazy('post-list')
+    
 
     def test_func(self):
         post = self.get_object()
@@ -249,7 +269,7 @@ class ProfileView(View):
 
 
         for post in posts:
-            print(post.favs.all())
+            
             for user in post.favs.all():
 
                 profile.favs_count = profile.favs_count + 1
@@ -266,6 +286,15 @@ class ProfileView(View):
             else:
                 is_following = False
         fav_counter = profile.favs_count
+
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
+
         context = {
             'user' : user,
             'profile' : profile,
@@ -275,6 +304,7 @@ class ProfileView(View):
             'is_following' : is_following,
             'fav_counter' : fav_counter,
             'is_requesting' : is_requesting,
+            'notis':notifications,'frequests':frequests,
         }
 
         return render(request, 'social/profile.html', context)
@@ -301,7 +331,6 @@ class AddFollower(LoginRequiredMixin, View):
         frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
         profile = UserProfile.objects.get(pk=pk)
         if profile.public == True:
-            print('public')
             profile.followers.add(request.user)
             request.user.profile.following.add(user)
         else:
@@ -348,10 +377,10 @@ class AcceptFollowerView(LoginRequiredMixin,View):
     def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
         receiver = User.objects.get(pk=request.user.pk)
         sender = User.objects.get(pk=sender_pk)
-        print(receiver.profile.follow_requests)
+        
         frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
         receiver.profile.follow_requests = receiver.profile.follow_requests-1
-        print(receiver.profile.follow_requests)
+        
         
         for r in frequests:
             r.is_active = False
@@ -366,9 +395,9 @@ class RejectFollowerView(LoginRequiredMixin,View):
     def post(self,request,receiver_pk, sender_pk ,*args,**kwargs):
         receiver = User.objects.get(pk=request.user.pk)
         sender = User.objects.get(pk=sender_pk)
-        print(receiver.profile.follow_requests)
+       
         receiver.profile.follow_requests = receiver.profile.follow_requests-1
-        print(receiver.profile.follow_requests)
+       
         frequests = FollowRequest.objects.filter(receiver=receiver, is_active=True, sender= sender).order_by('-timestamp')
         
         for r in frequests:
@@ -380,7 +409,7 @@ class RejectFollowerView(LoginRequiredMixin,View):
         return redirect('post-list')
 
 
-class RemoveFollowerView(LoginRequiredMixin, View):
+class RemoveFollowerView(LoginRequiredMixin, View): #remove follower
     def post(self,request,pk,*args,**kwargs):
         user = User.objects.get(pk=request.user.pk)
         to_remove = User.objects.get(pk=pk)
@@ -390,13 +419,26 @@ class RemoveFollowerView(LoginRequiredMixin, View):
         return redirect('list-followers',pk=user.pk)
 
 
-class RemoveFollower(LoginRequiredMixin,View):
+class RemoveFollower(LoginRequiredMixin,View): # unfollow
     def post(self,request,pk,*args,**kwargs):
         profile = UserProfile.objects.get(pk=pk)
         profile.followers.remove(request.user)
         request.user.profile.following.remove(profile)
 
         return redirect('profile',pk=profile.pk)
+
+
+
+class RemoveNotificationView(LoginRequiredMixin,View):
+    def post(self,request,noti_pk,*args,**kwargs):
+
+        Notification.objects.get(id=noti_pk).delete()
+        
+        
+
+        return redirect('follow-requests', pk=request.user.pk)
+        
+
 
 
 class AddLike(LoginRequiredMixin, View):
@@ -439,8 +481,7 @@ class AddLike(LoginRequiredMixin, View):
 class AddReport(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
-        print((post.reports.all()))
-        print(post.approved)
+        
         if len(post.reports.all())>=25:
             post.approved=False
             post.save()
@@ -458,7 +499,7 @@ class AddReport(LoginRequiredMixin, View):
 
         if is_reported:
             post.reports.remove(request.user)
-        print(post.reports.all())
+        
 
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
@@ -499,10 +540,17 @@ class AllSearch(View):
         if date == "" and city == "" and words == "":
             post_list = Post.objects.filter( Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
 
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
 
         context = {
             'post_list' : post_list,
              'is_user' : user,
+             'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/search.html' , context)
@@ -512,10 +560,17 @@ class ListFollowers(View):
     def get(self,request,pk,*args, **kwargs):
         profile = UserProfile.objects.get(pk=pk)
         followers = profile.followers.all()
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
 
         context = {
         'profile': profile,
         'followers':followers,
+        'notis':notifications,'frequests':frequests,
         }
 
         return render(request , 'social/followers_list.html',context)
@@ -526,11 +581,16 @@ class ListSavedPosts(LoginRequiredMixin, View):
         profile = UserProfile.objects.get(pk=pk)
         posts = Post.objects.all().order_by('-created_on')
 
+        notis = Notification.objects.filter(receiver=request.user)
 
+        notifications = len(notis)
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
 
         context = {
             'post_list' : posts,
+            'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/saved_posts.html' , context)
@@ -540,11 +600,15 @@ class ListLikedPosts(LoginRequiredMixin,View):
         profile = UserProfile.objects.get(pk=pk)
         posts = Post.objects.all().order_by('-created_on')
 
+        notis = Notification.objects.filter(receiver=request.user)
 
+        notifications = len(notis)
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
 
         context = {
-            'post_list' : posts,
+            'post_list' : posts,'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/liked_posts.html' , context)
@@ -577,7 +641,7 @@ class AddFav(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
  
-        print(post.favs.all())
+        
         is_fav = False
 
         for fav in post.favs.all():
@@ -603,24 +667,34 @@ class ListFavPosts(LoginRequiredMixin,View):
         posts = Post.objects.all().order_by('-created_on')
 
 
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+        
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
 
         context = {
-            'post_list' : posts,
+            'post_list' : posts,'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/fav_posts.html' , context)
 
 class ListPopularPosts(View):
     def get(self,request,*args,**kwargs):
-        
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
 
 
         posts = Post.objects.all().order_by('-likes_count')
-        print(posts)
+       
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
 
         context = {
-            'post_list' : posts,
+            'post_list' : posts,'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/popular_posts.html' , context)
@@ -777,11 +851,19 @@ class FriendsView(View):
         profile = UserProfile.objects.get(pk=pk)
 
         followers = profile.followers.all()
-        
+        if len(followers) == 0:
+            followers = profile.following.all()
+
+        notis = Notification.objects.filter(receiver=request.user)
+
+        notifications = len(notis)
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
 
         context = {
             
-            'followers' : followers,
+            'followers' : followers,'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/friends.html' , context)
@@ -804,49 +886,27 @@ class FriendsSearch(View):
             is_user = True
             
         else:
-            print(name)
+            
             user_list = User.objects.filter(Q(profile__name__icontains=name)).order_by('-username')
-            print(user_list)
+            
             is_user_profile = True
 
+        notis = Notification.objects.filter(receiver=request.user)
 
+        notifications = len(notis)
+
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
 
 
         context = {
             'user_list' : user_list,
             'is_user' : is_user,
-            'is_user_profile': is_user_profile,
+            'is_user_profile': is_user_profile,'notis':notifications,'frequests':frequests,
         }
         
         return render(request, 'social/friends_search.html' , context)
 
 
 
-"""class PostNotification(View):
-    def get(self, request, notification_pk, post_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
-        post = Post.objects.get(pk=post_pk)
 
-        notification.user_has_seen = True
-        notification.save()
-
-        return redirect('post-detail', pk=post_pk)
-
-class FollowNotification(View):
-    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
-        profile = UserProfile.objects.get(pk=profile_pk)
-
-        notification.user_has_seen = True
-        notification.save()
-
-        return redirect('profile', pk=profile_pk)
-
-class RemoveNotification(View):
-    def delete(self, request, notification_pk, *args, **kwargs):
-        notification = Notification.objects.get(pk=notification_pk)
-
-        notification.user_has_seen = True
-        notification.save()
-
-        return HttpResponse('Success', content_type='text/plain')"""

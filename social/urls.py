@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import RemoveNotificationView,CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -33,6 +33,7 @@ urlpatterns = [
     #path('notifications/', FriendsSearch.as_view(), name='friends-search'),
 
     path('friend/<int:pk>/notifications/', NotificationsView.as_view(), name='follow-requests'),
+    path('friend/<int:pk>/notifications/remove-notification/<int:noti_pk>', RemoveNotificationView.as_view(), name='remove-noti'),
     path('friend/<int:receiver_pk>/friend-requests/accept/<int:sender_pk>', AcceptFollowerView.as_view(), name='accept'),
     path('friend/<int:receiver_pk>/friend-requests/reject/<int:sender_pk>', RejectFollowerView.as_view(), name='reject'),
     
