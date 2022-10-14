@@ -47,7 +47,7 @@ class Post(models.Model):
     saves = models.ManyToManyField(User, blank=True, related_name='saves')
     favs = models.ManyToManyField(User, blank=True, related_name='favs')
     likes_count = models.PositiveIntegerField(default=0)
-    public = models.BooleanField(default=True)
+    public = models.BooleanField(default=False)
     comments = models.PositiveIntegerField(default=0)
     
     

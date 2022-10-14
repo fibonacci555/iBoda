@@ -95,7 +95,7 @@
 
             
             <div class="create">
-                <label class="btn btn-primary" for="create-post">Create</label>
+                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
                 <a href="{% url 'profile' request.user.profile.pk %}">
                     <div class="profile-photo">
                         <img src="{{ request.user.profile.picture.url }}">
@@ -167,7 +167,7 @@
             <!--======================== MIDDLE ==========================-->
             <div class="middle">
                 <a><label for="create-post" style="border-style: solid;border-color: beige;"class="btn btn-primary" id="pub-btn">Público</label></a>
-                <a><label for="create-post" style=""class="btn btn-primary" id="priv-btn">Amigos</label></a>
+                <a><label for="create-post" class="btn btn-primary" id="priv-btn">Amigos</label></a>
                 <!------------------- FEEDS --------------------->
                 <div class="feeds">
                     <!------------------- FEED 1 --------------------->
@@ -209,8 +209,8 @@
                                                     <i id="reported{{ post.pk }}" style="color:darkred ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
                                                     <i id="no-report{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-exclamation-circle"></i>
                                                     {% endif %}
-                                                    </button>        
-                                            </form>
+                                                 </button>        
+                                               </form>
                                             </div>
                                         {% endif %}
                                         </div>

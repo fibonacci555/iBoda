@@ -95,7 +95,7 @@
 
             
             <div class="create">
-                <label class="btn btn-primary" for="create-post">Create</label>
+                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
                 <a href="{% url 'profile' request.user.profile.pk %}">
                     <div class="profile-photo">
                         <img src="{{ request.user.profile.picture.url }}">

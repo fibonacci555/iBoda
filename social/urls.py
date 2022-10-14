@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import RemoveNotificationView,CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import ListFollowing,RemoveNotificationView,CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
@@ -22,6 +22,8 @@ urlpatterns = [
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('profile/edit/<int:pk>/', ProfileEditView.as_view(), name='profile-edit'),
     path('profile/<int:pk>/followers/', ListFollowers.as_view(), name='list-followers'),
+    path('profile/<int:pk>/following/', ListFollowing.as_view(), name='list-following'),
+
     path('profile/<int:pk>/followers/add', AddFollower.as_view(), name='add-follower'),
     path('profile/<int:pk>/followers/remove', RemoveFollower.as_view(), name='remove-follower'),
     path('profile/<int:pk>/followers/remove-follower', RemoveFollowerView.as_view(), name='remove-followers'),
