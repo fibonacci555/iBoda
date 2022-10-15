@@ -95,11 +95,11 @@ body {
 }
 
 .profile-photo {
-  width: 2.7rem;
-  height: 2.7rem;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  display: fill;
+  object-fit: cover;
 }
 
 img {

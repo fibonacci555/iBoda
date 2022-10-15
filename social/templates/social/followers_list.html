@@ -93,7 +93,7 @@
 
             
             <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
+                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
                 <a href="{% url 'profile' request.user.profile.pk %}">
                     <div class="profile-photo">
                         <img src="{{ request.user.profile.picture.url }}">
@@ -148,8 +148,8 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    <a class="menu-item " href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
                         <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
@@ -173,10 +173,17 @@
                     <div class="feed">
                     <div class="ingo">
                         <div class="ingo">
-                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><img class="profile-photo" height="60" width="60" src="{{ follower.profile.picture.url }}" /><h1 style="color: aliceblue;">{{ follower.profile.name }}</h1></a>
+                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><img class="profile-photo" height="60" width="60" src="{{ follower.profile.picture.url }}" /><h1 style="color: aliceblue;">{{ follower.profile.name }}</a>{% if follower.profile.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h1>
   
-                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><h3 style="color: rgb(184, 188, 191);">@{{ follower.username }}</h5></a>
+                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><h3 style="color: rgb(184, 188, 191);">@{{ follower.username }}</h5></a><br>
                             <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><h5 ><button class="btn" type="submit">Visit Profile</button></a>
+                                
+                                  {% if request.user.profile == profile %}
+                                  <form method="POST" action="{% url 'remove-followers' follower.pk %}" class="col-md-2 col-sm-1">
+                                              {% csrf_token %}<br>
+                                              <button class="btn" style="align-self: auto;  background-color: red;  size: 200%;" type="submit"><i style="margin: auto;"class="uil uil-times"></i></button>
+                                  </form>
+                                  {% endif %}
 
                         </div>
                     </div></div>
@@ -194,7 +201,7 @@
                 
 
                     
-                  </div>
+                  
                     <!---------------- END OF FEED ----------------->
                 </div>
                 <!------------------------------- END OF FEEDS ------------------------------------>
@@ -204,7 +211,7 @@
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>

@@ -1,24 +1,698 @@
-{% extends 'landing/base.html' %}
 
+
+{% load static %}
+
+<!DOCTYPE html>
+
+<link href="{% static 'style_new.css' %}" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
 {% block content %}
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-md-3 col-sm-6">
-                <a href="{% url 'post-detail' object.post.pk %}" class="btn btn-light">Back  to Feed</a>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iBoda</title>
+    <!-- ICONSCOUT CDN -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
+    <!-- STYLESHEET -->
+    <link rel="stylesheet" href="./style_new.css">
+</head>
+<body> 
+    <nav>
+        <div class="container">
+            <h2 class="log">
+                [ iBoda ]
+            </h2>
+            
+                
+                <form class="d-flex" method="GET" action="{% url 'all-search' %}">
+                    
+                      <input  class="form-control"  placeholder="Artistas & Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
+                    
+                      <input  class="form-control"  placeholder="Data" aria-label="Username" aria-describedby="basic-addon1" type="date" name="date" value="{{ request.GET.date }}">
+                    
+                      <select  id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local" aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
+                        <option value="">Cidade</option>
+                        <option value="Alcobaça">Alcobaça</option>
+                        <option value="Almada">Almada</option>
+                        <option value="Amadora">Amadora</option>
+                        <option value="Aveiro">Aveiro</option>
+                        <option value="Barreiro">Barreiro</option>
+                        <option value="Beja">Beja</option>
+                        <option value="Braga">Braga</option>
+                        <option value="Bragança">Bragança</option>
+                        <option value="Cartaxo">Cartaxo</option>
+                        <option value="Chaves">Chaves</option>
+                        <option value="Coimbra">Coimbra</option>
+                        <option value="Elvas">Elvas</option>
+                        <option value="Espinhos">Espinhos</option>
+                        <option value="Évora">Évora</option>
+                        <option value="Faro">Faro</option>
+                        <option value="Fátima">Fátima</option>
+                        <option value="Funchal">Funchal</option>
+                        <option value="Fundão">Fundão</option>
+                        <option value="Gouveia">Gouveia</option>
+                        <option value="Guarda">Guarda</option>
+                        <option value="Leiria">Leiria</option>
+                        <option value="Lisboa">Lisboa</option>
+                        <option value="Loures">Loures</option>
+                        <option value="Maia">Maia</option>
+                        <option value="Mirandela">Mirandela</option>
+                        <option value="Moura">Moura</option>
+                        <option value="Penafiel">Penafiel</option>
+                        <option value="Pinhel">Pinhel</option>
+                        <option value="Portalegre">Portalegre</option>
+                        <option value="Portimão">Portimão</option>
+                        <option value="Porto">Porto</option>
+                        <option value="Praia da Vitória">Praia da Vitória</option>
+                        <option value="Queluz">Queluz</option>
+                        <option value="Ribeira Grande">Ribeira Grande</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                        <option value="Santana">Santana</option>
+                        <option value="São Pedro do Sul">São Pedro do Sul</option>
+                        <option value="Seia">Seia</option>
+                        <option value="Setúbal">Setúbal</option>
+                        <option value="Sintra">Sintra</option>
+                        <option value="Tavira">Tavira</option>
+                        <option value="Tomar">Tomar</option>
+                        <option value="Trancoso">Trancoso</option>
+                        <option value="Trofa">Trofa</option>
+                        <option value="Viana do Castelo">Viana do Castelo</option>
+                        <option value="Vila Nova de Gaia">Vila Nova de Gaia</option>
+                        <option value="Vila Real">Vila Real</option>
+                      </select>
+                   
+                    <button class="button-search" type="submit"><i class="uil uil-search"></i></button>
+                    
+                  </form>
+                  
+
+
+
+
+
+            
+                  <div class="create">
+                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
+                    <a href="{% url 'profile' request.user.profile.pk %}">
+                        <div class="profile-photo">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </div>
+                    </a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
+        </div>
+    </nav>
+
+    <!------------------------- MAIN -------------------------->
+    <main>
+        <div class="container">
+            <!--======================== LEFT ==========================-->
+            <div class="left">
+                <a class="profile" href="{% url 'profile' request.user.profile.pk %}">
+                    <div class="profile-photo">
+                        <img src="{{ request.user.profile.picture.url }}">
+                    </div>
+                    <div class="handle">
+                        <h4>{{ request.user.profile.name }}</h4>
+                        <p class="text-muted">
+                            @{{ request.user.username }}
+                        </p>
+                    </div>
+                </a>
+
+                <!-- close button -->
+                <span id="close-btn"><i class="uil uil-multiply"></i></span>
+
+                <!-------------------- SIDEBAR ------------------------->
+                <div class="sidebar" >
+                    <a class="menu-item" href="/social/" style="color: aliceblue;">
+                        <span><i class="uil uil-home"></i></span><h3>Home</h3>
+                    </a>
+                    <a class="menu-item " href="{% url 'popular-posts' %}" style="color: aliceblue;">
+                        <span><i class="uil uil-fire"></i></span><h3 style="color: aliceblue;" >Popular</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'follow-requests' request.user.profile.pk%}" id="notifications">
+                        <span><i class="uil uil-bell"></i></span><h3 style="color: aliceblue;">Notifications</h3>
+                    </a>
+                    <a class="menu-item" id="messages-notification" href="{% url 'friends' request.user.profile.pk%}">
+                        <span><i class="uil uil-users-alt"></i></span><h3 style="color: aliceblue;">Amigos</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'saved-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-bookmark"></i></span><h3 style="color: aliceblue;">Bookmarks</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'liked-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-check-circle"></i></span><h3 style="color: aliceblue;">Eventos Idos</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
+                        <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
+                    </a>
+                    <a class="menu-item" href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/logout">
+                        <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
+                    </a>                        
+                </div>
+                <!------------------- END OF SIDEBAR -------------------->
+                
+            </div>
+            <!------------------- END OF LEFT -------------------->
+
+
+
+            <!--======================== MIDDLE ==========================-->
+            <div class="middle">
+                <!------------------- FEEDS --------------------->
+                <div class="feeds">
+                    <!------------------- FEED 1 --------------------->
+                    
+
+                    <div class="container">
+                        <div class="row justify-content-center mt-3 mb-5">
+                            <div class="col-md-5 col-sm-12">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <h2>Are you sure?</h2>
+                                    <a>You are about to delete the comment, this cannot be undone. </a><br><br>
+                                    <div >
+                                        <button class="btn btn-primary" style="background-color: red;">Delete</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+
+                
+                    <!---------------- END OF FEED ----------------->
+                </div>
+                <!------------------------------- END OF FEEDS ------------------------------------>
+            </div>
+            <!--======================== END OF MIDDLE ==========================-->
+
+
+            <!--======================== RIGHT ==========================-->
+            <div class="right">
+                
+                <!------------ FRIEND REQUESTS -------------->
+                <div class="friend-requests">
+                    <h4>Requests</h4>
+                    <!----- REQUEST 1----->
+                    {% if frequests%}
+                        {% for frequest in frequests%}
+                        <div class="request">
+                            <div class="info">
+                                <div class="profile-photo">
+                                    <img src="{{ frequest.sender.profile.picture.url }}">
+                                </div>
+                                <div>
+                                    <h5>{{ frequest.sender.profile.name }}</h5>
+                                    <p class="text-muted">{{ frequest.sender.username }}</p>
+                                </div>
+                            </div>
+                            <div class="action">
+                                <form method="POST" action="{% url 'accept' request.user.pk frequest.sender.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary" type="submit">Accept</button>
+                                </form>
+                                <form method="POST" action="{% url 'reject' request.user.pk frequest.sender.pk %}">
+                                {% csrf_token %}
+                                <button class="btn" type="submit">Decline</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="request">
+                        No requests
+                    </div>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+            <!--====================== END OF RIGHT ==========================-->
+        </div>
+    </main>
+
+ <!--================================================ THEME CUSTOMIZATION =============================================-->
+ <div class="customize-theme">
+    <div class="card">
+        <h2>Customize your view</h2>
+        <p class="text-muted">Manage your font size, color, and background.</p>
+
+        <!------------ FONT SIZES ------------->
+        <div class="font-size">
+            <h4>Font Size</h4>
+            <div>
+                <h6>Aa</h6>
+            <div class="choose-size">
+                <span class="font-size-1"></span>
+                <span class="font-size-2"></span>
+                <span class="font-size-3"></span>
+                <span class="font-size-4"></span>
+                <span class="font-size-5"></span>
+            </div>
+            <h3>Aa</h3>
             </div>
         </div>
-        <div class="row justify-content-center mt-3 mb-5">
-            <div class="col-md-5 col-sm-12">
-                <form method="POST">
-                    {% csrf_token %}
-                    <h5>Are you sure?</h5>
-                    <a>You are about to delete the comment, this cannot be undone. </a>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-danger mt-3">Delete</button>
-                    </div>
-                </form>
+
+        <!------------ PRIMARY COLORS ------------->
+        <div class="color">
+            <h4>Color</h4>
+            <div class="choose-color">
+            <span class="color-1 active"></span>
+            <span class="color-2"></span>
+            <span class="color-3"></span>
+            <span class="color-4"></span>
+            <span class="color-5"></span>
             </div>
         </div>
     </div>
-{% endblock content %}
+</div>
+<script src="{% static 'index.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'pila.js' %}"></script>
+<script>
+
+
+
+    // Botão de Fav
+    $(document).on('submit','#fav-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/fav",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-fav" + pkey).style.display == "none"){
+                    document.getElementById("no-fav" + pkey).style.display = "block"
+                    document.getElementById("faved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-fav" + pkey ).style.display = "none"
+                    document.getElementById("faved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Save
+
+    $(document).on('submit','#save-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/save",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-save" + pkey).style.display == "none"){
+                    document.getElementById("no-save" + pkey).style.display = "block"
+                    document.getElementById("saved" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-save" + pkey ).style.display = "none"
+                    document.getElementById("saved" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Report
+
+
+    $(document).on('submit','#report-post',function(e){
+        e.preventDefault();
+        
+        pkey = $(this).children('input')[2].value;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/report",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                console.log(pkey);
+                if (document.getElementById("no-report" + pkey).style.display == "none"){
+                    document.getElementById("no-report" + pkey).style.display = "block"
+                    document.getElementById("reported" + pkey).style.display = 'none';
+
+                } else {
+                    document.getElementById("no-report" + pkey ).style.display = "none"
+                    document.getElementById("reported" + pkey).style.display = 'block';
+                }
+                
+            },
+            error: function(response){
+                console.log(pkey);
+            }
+        });
+    });
+
+    // Botão de Ir
+    
+    $(document).on('submit','#like-post',function(e){
+        e.preventDefault();
+        
+        
+        pkey = $(this).children('input')[2].value;
+        click_count = 0;
+        $.ajax({
+            type:'POST',
+            url:"/social/post/"+pkey+"/like",
+            data:{
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            
+            success: function(response){
+                console.log('success');
+            },
+            error: function(response){
+                console.log('error');
+                
+            }
+        });
+
+    count = parseInt($(this).children('input')[3].value);
+    count1 = document.getElementById('count'+pkey);
+    count2 = document.getElementById('count'+pkey+'2');
+    newcount = count;
+    console.log(newcount)
+    
+    if (document.getElementById("no-like" + pkey).style.display == "none"){
+            
+            document.getElementById("no-like" + pkey).style.display = "flex"
+            document.getElementById("liked" + pkey).style.display = 'none';
+            count1.style.display = 'none';     
+            count2.style.display = 'flex';
+            console.log(newcount + ' -')
+            if (newcount-1 > 0){
+                if(newcount == 1){
+                    newcount = 1
+                }else{
+                    newcount = newcount - 1;
+                }
+                
+
+                if (newcount == count -2){
+                    newcount = newcount + 2
+            }
+            }else{
+                newcount = 0
+            }
+            count2.innerHTML = newcount
+            
+            
+            
+    } else {      
+            document.getElementById("no-like" + pkey ).style.display = "none";
+            document.getElementById("liked" + pkey).style.display = 'flex';     
+            count1.style.display = 'none';  
+            count2.style.display = 'flex';
+            console.log(newcount + ' +')
+            if (newcount == count +2){
+                newcount = newcount - 1
+            }
+            if(newcount == 1){
+                newcount = newcount+1
+            }
+            else{
+                newcount++;
+            }
+            count2.innerHTML = newcount
+            
+
+
+                       
+            
+            
+            
+        }
+
+    });
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+<script>
+
+    
+
+
+
+
+
+
+
+// SIDEBAR 
+    const menuItems = document.querySelectorAll('.menu-item');
+    
+    
+    // THEME
+    const theme = document.querySelector('#theme');
+    const themeModal = document.querySelector('.customize-theme');
+    const fontSizes = document.querySelectorAll('.choose-size span');
+    var root = document.querySelector(':root');
+    const colorPalette = document.querySelectorAll('.choose-color span');
+    const Bg1 = document.querySelector('.bg-1');
+    const Bg2 = document.querySelector('.bg-2');
+    const Bg3 = document.querySelector('.bg-3');
+    
+    
+    
+    // ================ SIDEBAR ===============
+    
+    // remove active class from all menu items
+    const changeActiveItem = () => {
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+        })
+    }
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            changeActiveItem();
+            item.classList.add('active');
+            if(item.id != 'notifications'){
+                document.querySelector('.notifications-popup').style.display = 'none';
+            } else{
+                document.querySelector('.notifications-popup').style.display = 'block';
+                document.querySelector('#notifications .notification-count').style.display = 'none';
+            }
+        })
+    })
+    
+    
+   
+    
+
+    
+    
+    
+    // THEME/DISPLAY CUSTOMIZATION
+    
+    // opens modal
+    const openThemeModal = () => {
+        themeModal.style.display = 'grid';
+    }
+    
+    // closes modal
+    const closeThemeModal = (e) => {
+        if(e.target.classList.contains('customize-theme')){
+            themeModal.style.display = 'none';
+        }
+    }
+    
+    // close modal
+    themeModal.addEventListener('click', closeThemeModal);
+    
+    theme.addEventListener('click', openThemeModal);
+    
+    
+    
+    
+    // ======================== FONTS =========================
+    
+    // remove active class from spans or font size selectors
+    const removeSizeSelector = () => {
+        fontSizes.forEach(size => {
+            size.classList.remove('active');
+        })
+    }
+    
+    fontSizes.forEach(size => {
+        size.addEventListener('click', () => {
+            removeSizeSelector();
+            let fontSize;
+            size.classList.toggle('active');
+    
+            if(size.classList.contains('font-size-1')){
+                fontSize = '10px';
+                root.style.setProperty('----sticky-top-left', '5.4rem');
+                root.style.setProperty('----sticky-top-right', '5.4rem');
+            } else if(size.classList.contains('font-size-2')){
+                fontSize = '13px';
+                root.style.setProperty('----sticky-top-left', '5.4rem');
+                root.style.setProperty('----sticky-top-right', '-7rem');
+            } else if(size.classList.contains('font-size-3')){
+                fontSize = '16px';
+                root.style.setProperty('----sticky-top-left', '-2rem');
+                root.style.setProperty('----sticky-top-right', '-17rem');
+            } else if(size.classList.contains('font-size-4')){
+                fontSize = '19px';
+                root.style.setProperty('----sticky-top-left', '-5rem');
+                root.style.setProperty('----sticky-top-right', '-25rem');
+            } else if(size.classList.contains('font-size-5')){
+                fontSize = '22px';
+                root.style.setProperty('----sticky-top-left', '-12rem');
+                root.style.setProperty('----sticky-top-right', '-35rem');
+            }
+    
+            // change font size of the root html element
+        document.querySelector('html').style.fontSize = fontSize;
+        })
+        
+    })
+    
+    
+    
+    // remove active class from colors
+    const changeActiveColorClass = () => {
+        colorPalette.forEach(colorPicker => {
+            colorPicker.classList.remove('active');
+        })
+    }
+    
+    // change primary colors
+    colorPalette.forEach(color => {
+        color.addEventListener('click', () => {
+            let primary;
+            // remove active class from colors
+            changeActiveColorClass();
+    
+            if(color.classList.contains('color-1')){
+                primaryHue = 252;
+            } else if(color.classList.contains('color-2')){
+                primaryHue = 52;
+            } else if(color.classList.contains('color-3')){
+                primaryHue = 352;
+            } else if(color.classList.contains('color-4')){
+                primaryHue = 152;
+            } else if(color.classList.contains('color-5')){
+                primaryHue = 202;
+            }
+            color.classList.add('active');
+    
+            root.style.setProperty('--primary-color-hue', primaryHue);
+        })
+    })
+    
+    
+    
+    
+    
+    
+    // theme BACKGROUND values
+    let lightColorLightness;
+    let whiteColorLightness;
+    let darkColorLightness;
+    
+    // changes background color
+    const changeBG = () => {
+        root.style.setProperty('--light-color-lightness', lightColorLightness);
+        root.style.setProperty('--white-color-lightness', whiteColorLightness);
+        root.style.setProperty('--dark-color-lightness', darkColorLightness);
+    }
+    
+    
+    // change background colors
+    Bg1.addEventListener('click', () => {
+        // add active class
+        Bg1.classList.add('active');
+        // remove active class from the others
+        Bg2.classList.remove('active');
+        Bg3.classList.remove('active');
+        // remove customized changes from local storage
+        window.location.reload();
+    });
+    
+    Bg2.addEventListener('click', () => {
+        darkColorLightness = '95%';
+        whiteColorLightness = '20%';
+        lightColorLightness = '15%';
+        
+        // add active class
+        Bg2.classList.add('active');
+        // remove active class from the others
+        Bg1.classList.remove('active');
+        Bg3.classList.remove('active');
+        changeBG();
+    });
+    
+    Bg3.addEventListener('click', () => {
+        darkColorLightness = '95%';
+        whiteColorLightness = '10%';
+        lightColorLightness = '0%';
+    
+        // add active class
+        Bg3.classList.add('active');
+        // remove active class from others
+        Bg1.classList.remove('active');
+        Bg2.classList.remove('active');
+        changeBG();
+    })
+    
+    
+    
+    
+    // show sidebar
+    const menuBtn = document.querySelector('#menu-btn');
+    menuBtn.addEventListener('click', () => {
+        document.querySelector('.left').style.display = 'block';
+    })
+    
+    // hide sidebar
+    const closeBtn = document.querySelector('#close-btn');
+    closeBtn.addEventListener('click', () => {
+        document.querySelector('.left').style.display = 'none';
+    })
+    
+    
+    
+    
+    // THE END</script>
+</body>
+</html>
+
+
+

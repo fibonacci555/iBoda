@@ -95,7 +95,7 @@
 
             
             <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
+                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
                 <a href="{% url 'profile' request.user.profile.pk %}">
                     <div class="profile-photo">
                         <img src="{{ request.user.profile.picture.url }}">
@@ -150,8 +150,8 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    <a class="menu-item" href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
                         <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
@@ -167,6 +167,7 @@
             <!--======================== MIDDLE ==========================-->
             <div class="middle">
                 <!------------------- FEEDS --------------------->
+                <h1>Popular</h1>
                 <div class="feeds">
                     <!------------------- FEED 1 --------------------->
                     
@@ -336,7 +337,7 @@
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>

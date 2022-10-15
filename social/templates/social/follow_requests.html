@@ -96,16 +96,16 @@
 
 
             
-            <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
-                <a href="{% url 'profile' request.user.profile.pk %}">
-                    <div class="profile-photo">
-                        <img src="{{ request.user.profile.picture.url }}">
-                    </div>
-                </a>
-                <!-- menu button to show sidebar -->
-                <button id="menu-btn"><i class="uil uil-bars"></i></button>
-            </div>
+                  <div class="create">
+                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
+                    <a href="{% url 'profile' request.user.profile.pk %}">
+                        <div class="profile-photo">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </div>
+                    </a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
         </div>
     </nav>
 
@@ -152,8 +152,8 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    <a class="menu-item " href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
                         <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
@@ -168,13 +168,19 @@
 
             <!--======================== MIDDLE ==========================-->
             <div class="middle">
+                <h1 style="margin-bottom: 5%;">Notificações</h1><form method="POST" action="{% url 'remove-all-noti' request.user.pk %}">
+                    {% csrf_token %}
+                    <button class="btn" style="display: inline-block;  background-color: red; size: 200%;" type="submit">Remove All</button>
+                  </form>
                 <!------------------- FEEDS --------------------->
                 <div class="feeds">
-                  <div class="feed">
+                  
                     <!------------------- FEED 1 --------------------->
                     {% if count != 0%}
                       {% for noti in notifications %}
+                     
                         {% if noti.type == 1 %}
+                         <div class="feed">
                           <div>
                             <div style=" display: flex;" class="ingo">
                                 <a href="{% url 'profile' noti.sender.pk %}" class="post-link"><img style="margin-top: auto;"class="profile-photo" height="60" width="60" src="{{ noti.sender.profile.picture.url }}" /></a>
@@ -183,46 +189,76 @@
                                 <h2 style="margin-left: 3%;margin: auto;"><a href="{% url 'profile' noti.sender.pk %}"  class="post-link">@{{ noti.sender.username }}</a> vai ao teu <strong><a  href="{% url 'post-detail' noti.post.pk %}">evento</a><small> - {{noti.timestamp}}</small></strong></h2>
                                 <form method="POST" action="{% url 'remove-noti' request.user.pk noti.pk  %}">
                                   {% csrf_token %}
-                                  <button class="btn" style="float:right;margin: auto;  background-color: red; size: 200%;" type="submit"><i style="margin: auto;" class="uil uil-times"></i></button>
+                                  <button class="btn" style="float:right;margin: auto;  background-color: red; size: 200%;" type="submit"><i style="margin: auto; color: aliceblue;" class="uil uil-times"></i></button>
                                 </form>
                               </div>
                             <hr style="display:flex">
                           </div>
-
+                        </div>
 
 
                         {% elif noti.type == 2 %}
-
+                        <div class="feed">
                           <div >
                             <div  style=" display: flex;" class="ingo">
                                 <a href="{% url 'profile' noti.sender.pk %}" class="post-link"><img  style="margin-top: auto;"class="profile-photo" height="60" width="60" src="{{ noti.sender.profile.picture.url }}" /></a>
                                 <h2 style="margin-left: 3%;margin: auto;"><a href="{% url 'profile' noti.sender.pk %}"  class="post-link">@{{ noti.sender.username }}</a> comentou no teu <strong><a href="{% url 'post-detail' noti.post.pk %}">evento</a><small> - {{noti.timestamp}}</small></strong></h2>
                                 <form method="POST" action="{% url 'remove-noti' request.user.pk noti.pk  %}">
                                   {% csrf_token %}
-                                  <button class="btn" style="float:right;margin: auto;  background-color: red; size: 200%;" type="submit"><i  style="margin: auto;"class="uil uil-times"></i></button>
+                                  <button class="btn" style="float:right;margin: auto;  background-color: red; size: 200%;" type="submit"><i  style="margin: auto; color: aliceblue;"class="uil uil-times"></i></button>
                                 </form>
                               </div>
                             <hr style="display:flex">
                           </div>
-
+                        </div>
 
 
 
 
                         {% elif noti.type == 3 %}
+                        <div class="feed">
                           <div >
                             <div  style=" display: flex;" class="ingo">
                                 <a href="{% url 'profile' noti.sender.pk %}" class="post-link"><img style="margin-top: auto;"class="profile-photo" height="60" width="60" src="{{ noti.sender.profile.picture.url }}" /></a>
                                 <h2 style="margin-left: 3%;margin: auto;"><a href="{% url 'profile' noti.sender.pk %}"  class="post-link">@{{ noti.sender.username }}</a> criou um novo <strong><a   href="{% url 'post-detail' noti.post.pk %}">evento</a><small> - {{noti.timestamp}}</small></strong></h2>
                                 <form method="POST" action="{% url 'remove-noti' request.user.pk noti.pk  %}">
                                   {% csrf_token %}
-                                  <button class="btn" style="float:right;margin: auto;  background-color: red;  size: 200%;" type="submit"><i style="margin: auto;"class="uil uil-times"></i></button>
+                                  <button class="btn" style="float:right;margin: auto;  background-color: red;  size: 200%;" type="submit"><i style="margin: auto; color: aliceblue;"class="uil uil-times"></i></button>
                                 </form>
                               </div>
                             <hr style="display:flex">
                           </div>
-
+                        </div>
                         
+                        {% elif noti.type == 4 %}
+                        <div class="feed">
+                          <div >
+                            <div  style=" display: flex;" class="ingo">
+                                <a href="{% url 'profile' noti.sender.pk %}" class="post-link"><img style="margin-top: auto;"class="profile-photo" height="60" width="60" src="{{ noti.sender.profile.picture.url }}" /></a>
+                                <h2 style="margin-left: 3%;margin: auto;"><a href="{% url 'profile' noti.sender.pk %}"  class="post-link">@{{ noti.sender.username }}</a> já não vai ao teu <strong><a   href="{% url 'post-detail' noti.post.pk %}">evento</a><small> - {{noti.timestamp}}</small></strong></h2>
+                                <form method="POST" action="{% url 'remove-noti' request.user.pk noti.pk  %}">
+                                  {% csrf_token %}
+                                  <button class="btn" style="float:right;margin: auto;  background-color: red;  size: 200%;" type="submit"><i style="margin: auto; color: aliceblue;"class="uil uil-times"></i></button>
+                                </form>
+                              </div>
+                            <hr style="display:flex">
+                          </div>
+                        </div>
+
+                        {% elif noti.type == 5 %}
+                        <div class="feed">
+                          <div >
+                            <div  style=" display: flex;" class="ingo">
+                                <a href="{% url 'profile' noti.sender.pk %}" class="post-link"><img style="margin-top: auto;"class="profile-photo" height="60" width="60" src="{{ noti.sender.profile.picture.url }}" /></a>
+                                <h2 style="margin-left: 3%;margin: auto;"><a href="{% url 'profile' noti.sender.pk %}"  class="post-link">@{{ noti.sender.username }}</a> começou-te a seguir </h2>
+                                <form method="POST" action="{% url 'remove-noti' request.user.pk noti.pk  %}">
+                                  {% csrf_token %}
+                                  <button class="btn" style="float:right;margin: auto;  background-color: red;  size: 200%;" type="submit"><i style="margin: auto; color: aliceblue;"class="uil uil-times"></i></button>
+                                </form>
+                              </div>
+                            <hr style="display:flex">
+                          </div>
+                        </div>
 
 
 
@@ -238,12 +274,12 @@
                     {% endfor %}
                   {% endif %}
 
-                
-
-                    </div>
-                  </div>
-                    <!---------------- END OF FEED ----------------->
                 </div>
+
+                    
+                  
+                    <!---------------- END OF FEED ----------------->
+                
                 <!------------------------------- END OF FEEDS ------------------------------------>
             </div>
             <!--======================== END OF MIDDLE ==========================-->
@@ -251,7 +287,7 @@
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>

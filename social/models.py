@@ -139,6 +139,10 @@ class Notification(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     type = models.PositiveIntegerField(default=0)
 
+class Feedback(models.Model):
+    name = models.CharField(max_length = 30, blank=True, null=True)
+    email = models.EmailField()
+    body = models.TextField()
     
 
 

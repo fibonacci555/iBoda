@@ -94,19 +94,21 @@
 
 
             
-            <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
-                <a href="{% url 'profile' request.user.profile.pk %}">
-                    <div class="profile-photo">
-                        <img src="{{ request.user.profile.picture.url }}">
-                    </div>
-                </a>
-                <!-- menu button to show sidebar -->
-                <button id="menu-btn"><i class="uil uil-bars"></i></button>
-            </div>
+                  <div class="create">
+                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
+                    <a href="{% url 'profile' request.user.profile.pk %}">
+                        <div class="profile-photo">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </div>
+                    </a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
         </div>
     </nav>
 
+
+    
     <!------------------------- MAIN -------------------------->
     <main>
         <div class="container">
@@ -150,8 +152,8 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    <a class="menu-item" href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
                         <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
@@ -190,6 +192,7 @@
                                         {%if post.author == request.user%}
                                             <span class="edit">
                                                 <a href="{% url 'post-delete' post.pk %}"><i class="uil uil-trash-alt" style="color: red;"></i></a>
+                                                
                                             </span>
                                         {% else %}
                                             <div class="bookmark">
@@ -201,7 +204,7 @@
                                                     <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
                         
                                                                 
-                        
+                         
                                                     {% if request.user in post.reports.all %}
                                                     <i id="no-report{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
                                                     <i id="reported{{ post.pk }}" style="color:darkred ;font-size: 200%;" class="uil uil-exclamation-circle"></i>
@@ -343,9 +346,10 @@
 
                                         </div>
                                         {%if post.author == request.user%}
-                                            <span class="edit">
-                                                <a href="{% url 'post-delete' post.pk %}"><i class="uil uil-trash-alt" style="color: red;"></i></a>
-                                            </span>
+                                        <span class="edit">
+                                            <a href="{% url 'post-delete' post.pk %}"><i class="uil uil-trash-alt" style="color: red;"></i></a>
+                                            
+                                        </span>
                                         {% else %}
                                             <div class="bookmark">
                                                 <form method="POST" id="report-post" style="display: inline-block;">
@@ -485,13 +489,14 @@
                     <!---------------- END OF FEED ----------------->
                 </div>
                 <!------------------------------- END OF FEEDS ------------------------------------>
+                
             </div>
             <!--======================== END OF MIDDLE ==========================-->
 
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>
@@ -531,6 +536,8 @@
             </div>
             <!--====================== END OF RIGHT ==========================-->
         </div>
+        
+        
     </main>
 
  <!--================================================ THEME CUSTOMIZATION =============================================-->

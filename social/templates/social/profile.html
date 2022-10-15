@@ -20,7 +20,7 @@
     <!-- ICONSCOUT CDN -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
     <!-- STYLESHEET -->
-    <link rel="stylesheet" href="./style_new.css">
+    
 </head>
 <body> 
     <nav>
@@ -97,16 +97,16 @@
 
 
             
-            <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
-                <a href="{% url 'profile' request.user.profile.pk %}">
-                    <div class="profile-photo">
-                        <img src="{{ request.user.profile.picture.url }}">
-                    </div>
-                </a>
-                <!-- menu button to show sidebar -->
-                <button id="menu-btn"><i class="uil uil-bars"></i></button>
-            </div>
+                  <div class="create">
+                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
+                    <a href="{% url 'profile' request.user.profile.pk %}">
+                        <div class="profile-photo">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </div>
+                    </a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
         </div>
     </nav>
 
@@ -153,8 +153,8 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" id="theme">
-                        <span><i class="uil uil-palette"></i></span><h3 style="color: aliceblue;">Theme</h3>
+                    <a class="menu-item" href="{% url 'feedback' %}">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
                         <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
@@ -194,6 +194,19 @@
                 <div class="feeds" >
                     <div class="feed" id="back-profile" style="background-color: violet;">
                     <div >
+                        {% if request.user == user %}
+                                <a href="{% url 'profile-edit' profile.pk %}"  class="text-right" >
+                                <img src= "{{ profile.picture.url }}" style="height: 120px;
+                        width: 120px;
+                        border-radius: 50%;
+                        align-self:center;
+                        margin:auto;
+                        
+                        border: 1px solid #1f1a32;
+                        padding: 7px;
+                        background: #292343;
+                        " /></a>
+                        {% else %}
                         <img src= "{{ profile.picture.url }}" style="height: 120px;
                         width: 120px;
                         border-radius: 50%;
@@ -204,8 +217,12 @@
                         padding: 7px;
                         background: #292343;
                         " />
+                        {% endif %}
+
+
+                        
                         <br>
-                        <h2>{{ profile.name }} - @{{ profile.user.username}}</h2>
+                        <h2>{{ profile.name }} - @{{ profile.user.username}}{% if profile.public %}{% else %}<i class="uil uil-lock"></i>{% endif %} {% if profile.city %}<br><small style="color: lightgray ;"> Cidade: <b>{{ profile.city }}</b></small>{% endif %}</h2>
                                 
                             
                         {% if request.user == user %}
@@ -217,6 +234,8 @@
                             {{ fav_counter }} Favs Recebidos
                         </h4>
                         {% endif %}
+
+                        
                         
                         
 
@@ -355,7 +374,7 @@
                                     <div class="head">
                                         <div class="user">
                                             <div class="profile-photo">
-                                                <img src="{{ post.author.profile.picture.url }}">
+                                                <a href="{% url 'profile-edit' profile.pk %}"  class="text-right" >Editar Perfil</a><img src="{{ post.author.profile.picture.url }}">
                                             </div>
                                             <div class="ingo">
                                                 <a href="{% url 'profile' post.author.profile.pk %}"><h3>{{ post.author.profile.name }} {% if post.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h3></a>
@@ -516,7 +535,7 @@
 
             <!--======================== RIGHT ==========================-->
             <div class="right">
-                <a href="{% url 'create-post' %}"><label for="create-post" style="align-self: center;"class="btn btn-primary">Create Post</label></a>
+                
                 <!------------ FRIEND REQUESTS -------------->
                 <div class="friend-requests">
                     <h4>Requests</h4>

@@ -5,8 +5,8 @@ from django.db.models import Q, Count, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views import View
-from .models import Post, Comment, UserProfile, Product, FollowRequest, Notification
-from .forms import PostForm, CommentForm
+from .models import Post, Comment, UserProfile, Product, FollowRequest, Notification, Feedback
+from .forms import PostForm, CommentForm, FeedbackForm
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -19,6 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from .models import Product
+from django.shortcuts import render
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -27,7 +28,51 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 # type 1 = sender vai ao evento
 # type 2 = sender comentou o evento
 # type 3 = sender criou um post
+# type 4 = sender já não vai ao evento
+# type 5 = sender começou a seguir
 
+
+
+def page_not_found_view(request,exception):
+    return render(request, 'social/404.html', status=404)
+
+
+
+class FeedbackView(View, LoginRequiredMixin):
+    def get(self, request, *args, **kwargs):
+        logged_in_user = request.user
+        
+
+
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+
+        logged_in_user = request.user
+        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+        notis = Notification.objects.filter(receiver=request.user)
+        notifications = len(notis)
+
+
+        form = FeedbackForm()
+
+        context = {
+            'form': form,
+            'frequests':frequests,
+            'notis':notifications,
+        }
+        return render(request, 'social/feedback.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = FeedbackForm(request.POST)
+
+        if form.is_valid():
+                new_post = form.save(commit=False)
+                new_post.save()
+
+        context = {
+                'form': form,
+            }
+        return render(request, 'social/feedback.html', context)
 
 class CreatePostView(View, LoginRequiredMixin):
     def get(self, request, *args, **kwargs):
@@ -168,13 +213,13 @@ class PostDetailView(LoginRequiredMixin, View):
         log_user = User.objects.get(username=request.user.username)
        
 
-        
-        new_notification = Notification()
-        new_notification.sender = log_user
-        new_notification.receiver = post.author
-        new_notification.type = 2
-        new_notification.post = post
-        new_notification.save()
+        if request.user != post.author:
+            new_notification = Notification()
+            new_notification.sender = log_user
+            new_notification.receiver = post.author
+            new_notification.type = 2
+            new_notification.post = post
+            new_notification.save()
        
 
 
@@ -323,7 +368,7 @@ class ProfileView(View):
 
 class ProfileEditView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model = UserProfile
-    fields = ['name','city','picture']
+    fields = ['name','city','picture','public']
     template_name = 'social/profile_edit.html'
 
     def get_success_url(self):
@@ -339,14 +384,20 @@ class AddFollower(LoginRequiredMixin, View):
     def post(self,request,pk,*args,**kwargs):
         a = 0
         user = User.objects.get(pk=pk)
+
+        
         
         frequests = FollowRequest.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
         profile = UserProfile.objects.get(pk=pk)
         if profile.public == True:
             profile.followers.add(request.user)
             request.user.profile.following.add(user)
+            new_notification = Notification()
+            new_notification.sender = request.user
+            new_notification.receiver = user
+            new_notification.type = 5
+            new_notification.save()
         else:
-
             for fr in frequests:
                 if fr.sender == request.user:
                     fr.is_active = False
@@ -371,7 +422,11 @@ class NotificationsView(LoginRequiredMixin, View):
     def get(self,request,pk,*args,**kwargs):
         user = User.objects.get(pk=pk)
         
-        notis = Notification.objects.filter(receiver=user).order_by('-timestamp')
+        notis = Notification.objects.filter(receiver=user, is_active=True).order_by('-timestamp')
+
+        for noti in notis:
+            if noti.sender == noti.receiver:
+                notis.exclude(id=noti.id)
 
         requests_count = len(notis)
 
@@ -426,7 +481,7 @@ class RemoveFollowerView(LoginRequiredMixin, View): #remove follower
         user = User.objects.get(pk=request.user.pk)
         to_remove = User.objects.get(pk=pk)
         user.profile.followers.remove(to_remove)
-        to_remove.user.profile.following.remove(user)
+        to_remove.profile.following.remove(request.user)
 
         return redirect('list-followers',pk=user.pk)
 
@@ -449,6 +504,17 @@ class RemoveNotificationView(LoginRequiredMixin,View):
         
 
         return redirect('follow-requests', pk=request.user.pk)
+
+class RemoveAllNotificationView(LoginRequiredMixin,View):
+    def post(self,request,*args,**kwargs):
+        
+        notis = Notification.objects.filter(receiver=request.user).delete()
+        
+        
+        
+        
+
+        return redirect('follow-requests', pk=request.user.pk)
         
 
 
@@ -461,13 +527,13 @@ class AddLike(LoginRequiredMixin, View):
         log_user = User.objects.get(username=request.user.username)
        
 
+        if request.user != post.author:
+            new_notification = Notification()
+            new_notification.sender = log_user
+            new_notification.receiver = post.author
+            
+            new_notification.post = post
         
-        new_notification = Notification()
-        new_notification.sender = log_user
-        new_notification.receiver = post.author
-        new_notification.type = 1
-        new_notification.post = post
-        new_notification.save()
 
 
         is_like = False
@@ -480,13 +546,21 @@ class AddLike(LoginRequiredMixin, View):
         if not is_like:
             post.likes.add(request.user)
             post.likes_count = F('likes_count') + 1
+            if request.user != post.author:
+                new_notification.type = 1
+                new_notification.save()
+            
+        
             
 
         if is_like:
             post.likes.remove(request.user)
             post.likes_count = F('likes_count') - 1
+            if request.user != post.author:
+                new_notification.type = 4
+                new_notification.save()
         post.save()
-
+        
         next = request.POST.get('next', '/')
         return HttpResponseRedirect(next)
 
@@ -883,8 +957,16 @@ class FriendsView(View):
         profile = UserProfile.objects.get(pk=pk)
 
         followers = profile.followers.all()
-        if len(followers) == 0:
-            followers = profile.following.all()
+        print(followers)
+        for follower in followers:
+            if follower in request.user.profile.following.all():
+                print("amigos")
+            else:
+                print("não amigos")
+                followers.exclude(pk=follower.pk)
+            print(follower)
+
+        
 
         notis = Notification.objects.filter(receiver=request.user)
 

@@ -1,7 +1,3 @@
-
-
-
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -99,16 +95,16 @@
 
 
             
-            <div class="create">
-                <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
-                <a href="{% url 'profile' request.user.profile.pk %}">
-                    <div class="profile-photo">
-                        <img src="{{ request.user.profile.picture.url }}">
-                    </div>
-                </a>
-                <!-- menu button to show sidebar -->
-                <button id="menu-btn"><i class="uil uil-bars"></i></button>
-            </div>
+                  <div class="create">
+                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create Post</label></a>
+                    <a href="{% url 'profile' request.user.profile.pk %}">
+                        <div class="profile-photo">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </div>
+                    </a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
         </div>
     </nav>
 
@@ -155,7 +151,7 @@
                     <a class="menu-item" href="{% url 'fav-posts' request.user.profile.pk %}">
                         <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
                     </a>
-                    <a class="menu-item" href="{% url 'feedback' %}">
+                    <a class="menu-item active" href="{% url 'feedback' %}">
                         <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
                     </a>
                     <a class="menu-item" href="/accounts/logout">
@@ -172,42 +168,33 @@
             <!--======================== MIDDLE ==========================-->
 
             <div class="middle">
-              <h1 style="margin-bottom: 5%;">Editar Evento - {{post.title}}</h1>
-                
+              <h1 style="margin-bottom: 5%;">Feedback</h1>
+              <h2 style="margin-bottom: 5%;">Agradecemos o seu feedback <i class="uil uil-heart"></i></h2>
+                <form method="POST" class="feedback-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; ">
+                    {% csrf_token %}
             
+                    
+
+                    <label id="post-label">
+                    <p><strong>Primeiro e último nome: </strong></p>
+                    <input id ="post-input"  type="text" placeholder="Nome..." name="name"/>
+                    </label>
+
+                    <label id="post-label">
+                        <p><strong>Email: </strong></p>
+                    <input id ="post-input"  type="email" placeholder="Email..." name="email"/>
+                    </label>
+
+                    <label id="post-label"> 
+                    <p><strong>Ajude-nos a melhorar: </strong></p>
+                    <textarea name="body" id="post-input" style="height: 170px; border-radius:7px" form="post-form" placeholder="Mensagem..."></textarea>
+                    
+                    </label>
             
-
-            
-            
-            <div class="row justify-content-center mt-3 mb-5">
-                <div class="col-md-5 col-sm-12">
-                   
-                    <form method="POST"  enctype="multipart/form-data">
-                        {% csrf_token %}
-
-
-
-                        <label id="post-label">
-                            <p><strong>Editar Título: </strong></p>
-                          <input id ="post-input"  type="text" placeholder="Titulo" name="title"/>
-                        </label>
-
-                        <label id="post-label">
-                            <p><strong>Editar Descrição: </strong></p>
-                          <input id ="post-input"  type="text" placeholder="Descrição" name="body"/>
-                        </label>
-
-                        <label id="post-label">
-                            <p><strong>Editar data do evento: </strong></p>
-                          <input id ="post-input"  type="date" placeholder="data" name="date"/>
-                        </label>
-                        
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-success mt-3">Submit!</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" style="margin-bottom: 20%; align-items: center; align-self: center; width: 100%;">Mandar</button>
             </div>
+        </form>
 
 
                 
@@ -712,7 +699,3 @@
     // THE END</script>
 </body>
 </html>
-
-
-
-

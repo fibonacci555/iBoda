@@ -1,8 +1,9 @@
 
 from django.urls import path
-from .views import ListFollowing,RemoveNotificationView,CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
+from .views import RemoveAllNotificationView, FeedbackView, ListFollowing,RemoveNotificationView,CreatePostView,RemoveFollowerView, RejectFollowerView, AcceptFollowerView, NotificationsView, FriendsSearch , FriendsView, StripeIntentView,stripe_webhook,SuccessView ,CancelView, ProductLandingView, CreateCheckoutSessionView, ListFavPosts, ListPopularPosts ,AddFav,ListLikedPosts, ListSavedPosts, AddSave, AddReport, CommentReplyView, PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AllSearch, ListFollowers
 urlpatterns = [ 
     path('', PostListView.as_view(), name='post-list'),
+    path('feedback', FeedbackView.as_view(), name='feedback'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/edit/<int:pk>/', PostEditView.as_view(), name='post-edit'),
     path('post/delete/<int:pk>/', PostDeleteView.as_view(), name='post-delete'),
@@ -36,6 +37,7 @@ urlpatterns = [
 
     path('friend/<int:pk>/notifications/', NotificationsView.as_view(), name='follow-requests'),
     path('friend/<int:pk>/notifications/remove-notification/<int:noti_pk>', RemoveNotificationView.as_view(), name='remove-noti'),
+    path('friend/<int:pk>/notifications/remove-all/', RemoveAllNotificationView.as_view(), name='remove-all-noti'),
     path('friend/<int:receiver_pk>/friend-requests/accept/<int:sender_pk>', AcceptFollowerView.as_view(), name='accept'),
     path('friend/<int:receiver_pk>/friend-requests/reject/<int:sender_pk>', RejectFollowerView.as_view(), name='reject'),
     

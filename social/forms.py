@@ -1,6 +1,6 @@
 from email.policy import default
 from django import forms
-from .models import Post, Comment, UserProfile, FollowRequest
+from .models import Post, Comment, Feedback
 from django.db import models
 
 AGE_CHOICES =(
@@ -103,7 +103,19 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['comment']
 
+class FeedbackForm(forms.ModelForm):
+    body = forms.CharField(
+        label='',
+        widget=forms.Textarea(
+            attrs={'rows': '3',
+                   'placeholder': 'Say Something...'}
+        ))
+    
+    
 
+    class Meta:
+        model = Feedback
+        fields = ['name', 'body', 'email']
 
 
 
