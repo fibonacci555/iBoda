@@ -26,6 +26,18 @@
   --sticky-top-right: -18rem;
 }
 
+*{
+  font-family: "Poppins", sans-serif;
+}
+
+body .container .log{
+  display:block;
+}
+
+body .container .logr{
+  display:none;
+}
+
 .form-control{
   font-family: "Poppins", sans-serif;
   background-color: hsl(252, 30%,20%);
@@ -737,7 +749,7 @@ MEDIA QUERIES FOR SMALL LAPTOPS AND BIG TABLETS
   .left {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     z-index: 10;
     background: var(--color-white);
     width: 18rem;
@@ -800,11 +812,17 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONES
   nav .search-bar {
     display: none;
   }
+  .container{
+    max-width: 90%;
+  }
 
-  nav .create label {
+  nav form{
     display: none;
   }
 
+  main .sidebar #form-responsive{
+    display: block;
+  }
   main .container {
     grid-template-columns: auto 0;
     gap: 0;
@@ -818,6 +836,8 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONES
     left: 80%;
   }
 
+  
+
   /* -------------- hide last two stories on mobile ------------ */
   main .middle .stories .story:nth-child(5),
   main .middle .stories .story:nth-child(6) {
@@ -826,6 +846,14 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONES
 
   main .container .right {
     display: none;
+  }
+
+  body .container .log{
+    display:none;
+  }
+
+  body .container .logr{
+    display:block;
   }
 
   .customize-theme .card {
