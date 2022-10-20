@@ -357,7 +357,7 @@
                                 <form method="POST" action="{% url 'add-follower' profile.pk %}" style="margin-top: 3%;">
                                     {% csrf_token %}
                                     <button class="bn54" style="background-color: rgb(15, 150, 15);" type="submit"><span class="bn54span">Follow</span></button>
-                                </form>
+                                </form>  
                             {% else %}
                                 <form method="POST" action="{% url 'add-follower' profile.pk %}" class="col-md-2 col-sm-1" style="margin-top: 3%;">
                                     {% csrf_token %}

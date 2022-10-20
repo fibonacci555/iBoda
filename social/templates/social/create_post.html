@@ -176,26 +176,28 @@
                 <form method="POST" class="post-form" id="post-form" enctype="multipart/form-data"style="margin-top: 10 %; border-radius: 20 px; ">
             {% csrf_token %}
             
-            
+            {% if form.errors %}
+                    <p style="color: red; margin-bottom: 5%;">Erro ao criar evento, verifique todos os campos e tente novamente!</p>
+            {% endif %}
 
             <label id="post-label">
-              <p><strong>Título do evento: </strong></p>
+              <p><strong>*Título do evento: </strong></p>
             <input id ="post-input"  type="text" placeholder="Título do Evento" name="title"/>
             </label>
 
             <label id="post-label"> 
-              <p><strong>Descrição do evento: </strong></p>
+              <p><strong>*Descrição do evento: </strong></p>
             <textarea name="body" id="post-input" style="height: 170px; border-radius:7px" form="post-form" placeholder="Descrição do Evento"></textarea>
             
             </label>
 
             <label  id="post-label"style="margin-bottom: 10 % ;">
-              <p><strong>Data do evento: </strong></p>
+              <p><strong>*Data do evento: </strong></p>
             <input id ="post-input"  type="date" placeholder="Data do Evento" name="date"/>
             </label>
 
             <label id="post-label" id="post-input-dropdown">
-                <p style=" content: '\25b6'"><strong>Selecione uma cidade:</strong></p>
+                <p style=" content: '\25b6'"><strong>*Selecione uma cidade:</strong></p>
               <select name="city" placeholder="Local do Evento" id="post-input-dropdown" >
                 <option value="Alcobaça">Alcobaça</option>
                 <option value="Almada">Almada</option>

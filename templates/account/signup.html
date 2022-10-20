@@ -70,12 +70,13 @@
         <div class="input-group" style="display: flex;flex-direction: column;margin: 10px 0;">
           <input type="password" id="login-user" placeholder="Password" id="text" name="password1" class="input-username" 
           style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
-          <small> * a password tem de ter pelo menos 8 caracteres e pelo menos 1 numero</small> 
+          <small> * a password tem de ter:<br> - mais de 8 caracteres<br> -  pelo menos 1 número</small> 
         </div>   
 
         <div id="input-group">
           <input id="login-pass" type="password" placeholder="Confirm Password" id="password" name="password2" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
         </div>
+        
 
         <!--<div id="input-group">
           <input id="login-pass" type="date" placeholder="Confirm Password" id="password" name="birth" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
@@ -84,6 +85,9 @@
         <div id="input-group">
           <input id="login-pass" type="text" placeholder="Cidade" id="password" name="city" class="input-password" style="font-size: 1.1rem;padding: 8px;text-align: center;background: hsl(264, 100%, 94%, 0.7);color:rgb(69,69,69);border: none;outline: none;border-radius: 25px;width: 80%;margin: 0 auto;font-weight: bold;">
         </div>-->
+        {% if form.errors %}
+        <p style="color: red;">*erro no register</p>    
+        {% endif %} 
 
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -98,3 +102,5 @@
   </div>
 </body>
 {% endblock %}
+
+<script></script>
