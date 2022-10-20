@@ -507,6 +507,7 @@
                                             
                                             
                                             <a href="{% url 'post-detail' post.pk%}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
+                                            {% if post.url %}<a href="{{ post.url }}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-ticket"></i></span></a>{% endif %}
                                         </div>
                                         
                                     </div>
