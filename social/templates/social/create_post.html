@@ -5,7 +5,7 @@
 
 <link href="{% static 'style_new.css' %}" rel="stylesheet">
 <link href="{% static 'style.css' %}" rel="stylesheet">
-
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'icon.png' %}" />
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iBoda</title>
+    <title>[ iBoda ]</title>
     <!-- ICONSCOUT CDN -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
     <!-- STYLESHEET -->
@@ -273,12 +273,13 @@
 
             <label id="post-label">
               <p><strong>Upload de um cartaz: </strong></p>
-            <input id ="post-input"  type="file" placeholder="Foto do Cartaz" name="image"/>
+              <p><small><small>Só aceitamos .png/.jpg/.jpeg/.gif</small></small></p>
+            <input id ="post-input" id type="file" placeholder="Foto do Cartaz" name="image" accept=".png,.jpeg,.jpg,.gif" class="file-input" style="color: black;"/>
             </label>
 
             <label id="post-label">
               <p><strong>Url para compra de bilhetes: </strong></p>
-            <input id ="post-input"  type="url" placeholder="URL para compra de bilhetes" name="url"/>
+            <input id ="post-input" id="file"  type="url" placeholder="URL para compra de bilhetes" name="url"/>
             </label>
 
             
@@ -399,6 +400,8 @@
 <script src="{% static 'pila.js' %}"></script>
 <script>
 
+        
+        
 
 
     // Botão de Fav
@@ -595,7 +598,18 @@
     })
     
     
-    
+    var uploadField = document.getElementById("file");
+
+        console.log(uploadField);
+        
+            uploadField.onchange = function() {
+                console.log("new")
+                if(this.files[0].size > 2200000){
+                        alert("File is too big!");
+                        this.value = "";
+            };
+        };
+        
     
     // THE END</script>
 </body>

@@ -4,8 +4,8 @@
 {% load account socialaccount %}
 
 
-
-
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'icon.png' %}" />
+<title>[ iBoda ]</title>
 <link href="{% static 'style.css' %}" rel="stylesheet">
 
 {% block content %}
@@ -96,7 +96,8 @@
         <button id="login-button" class="btn btn-dark primaryAction" type="submit" 
         style="cursor: pointer;font-size: .9rem;margin: 10px auto 0;padding: 12px 5px;width: 35%;border-radius: 100px;border: none;outline: none;color: white;background: linear-gradient(90deg, rgba(214,109,93,1) 0%, rgba(255,149,88,1) 71%);font-weight: bold; transition: 0.3s;"style="cursor: pointer;font-size: .9rem;margin: 10px auto 0;padding: 12px 5px;width: 35%;border-radius: 100px;border: none;outline: none;color: white;background: linear-gradient(90deg, rgba(214,129,93,1) 0%, rgba(255,149,88,1) 71%);font-weight: bold; transition:0.3s;">
           {% trans "Sign Up" %}</button>      
-        
+          <a href = "mailto: iboda.pt@gmail.com" class="forgot-password" style="text-align: center;margin: 20px auto 20px;text-decoration: none;color: rgb(69, 69, 69);">Tem um problema? Envie-nos um email
+          </a>  
       </form>    
     </div>
   </div>

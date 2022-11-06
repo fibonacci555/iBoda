@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 
 <link href="{% static 'style_new.css' %}" rel="stylesheet">
-
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'icon.png' %}" />
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iBoda</title>
+    <title>[ iBoda ]</title>
     <!-- ICONSCOUT CDN -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
     <!-- STYLESHEET -->
@@ -34,13 +34,30 @@
                 
 
 
-                  <form class="d-flex" method="GET" action="{% url 'friends-search' request.user.profile.pk %}">
-                    <div class="form-control" > 
-                      <input  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" type="text" name="name" value="{{ request.GET.name }}">
-                      
-                      <button class="button-search" type="submit"><i class="uil uil-search"></i></button>
+            <form class="d-flex" method="GET" action="{% url 'friends-search' request.user.profile.pk %}" style="display: flex; max-width: 50%;" >
+                <div class="form-control" >
+                  <input  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" type="text" name="name" value="{{ request.GET.name }}">
+
+                  <button class="button-search" type="submit"><i class="uil uil-search"></i></button>
+                </div>
+              </form>
+
+
+
+
+
+
+
+              <div class="create">
+
+                <a href="{% url 'profile' request.user.profile.pk %}">
+                    <div class="profile-photo">
+                        <img src="{{ request.user.profile.picture.url }}">
                     </div>
-                  </form>
+                </a>
+                <!-- menu button to show sidebar -->
+                <button id="menu-btn"><i class="uil uil-bars"></i></button>
+            </div>
                   
 
 
@@ -48,16 +65,7 @@
 
 
             
-                  <div class="create">
-                    <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
-                    <a href="{% url 'profile' request.user.profile.pk %}">
-                        <div class="profile-photo">
-                            <img src="{{ request.user.profile.picture.url }}">
-                        </div>
-                    </a>
-                    <!-- menu button to show sidebar -->
-                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
-                </div>
+                  
         </div>
     </nav>
 

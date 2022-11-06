@@ -195,7 +195,7 @@
  margin: 0;
  font-family: var(--main-font);
  background: var(--black);
- transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+ 
  scroll-behavior: smooth;
  display: flex;
  justify-content: center;
@@ -214,7 +214,7 @@
  margin: 0;
  font-family: var(--main-font);
  background: var(--black);
- transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+ 
  scroll-behavior: smooth;
  display: flex;
  justify-content: center;

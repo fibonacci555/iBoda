@@ -372,7 +372,7 @@ class ProfileEditView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model = UserProfile
     fields = ['name','city','picture','public']
     template_name = 'social/profile_edit.html'
-
+    
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse_lazy('profile', kwargs={'pk':pk})
@@ -629,18 +629,23 @@ class AllSearch(View):
         if date == "" and city == "" and words == "":
             post_list = Post.objects.filter( Q(title__icontains=words) and Q(body__icontains=words)).order_by('-created_on')
 
-        notis = Notification.objects.filter(receiver=request.user)
+        if request.user.is_authenticated:
+            notis = Notification.objects.filter(receiver=request.user)
 
         
-        logged_in_user = request.user
-        frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
-        notifications = len(notis) + len(frequests)
+            logged_in_user = request.user
+            frequests = FollowRequest.objects.filter(receiver=logged_in_user, is_active=True).order_by('-timestamp')
+            notifications = len(notis) + len(frequests)
 
-        context = {
-            'post_list' : post_list,
-             'is_user' : user,
-             'notis':notifications,'frequests':frequests,
-        }
+            context = {
+                'post_list' : post_list,
+                'is_user' : user,
+                'notis':notifications,'frequests':frequests,
+            }
+        else:
+            context = {
+                'post_list' : post_list,
+            }
         
         return render(request, 'social/search.html' , context)
 

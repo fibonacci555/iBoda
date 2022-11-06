@@ -87,7 +87,7 @@ class UserProfile(models.Model):
     public = models.BooleanField(default=True)
     favs_count = models.PositiveIntegerField(default = 0)
     birth = models.DateField(default="2002-09-03",blank=False,null=False)
-    city = models.CharField(default="",max_length=40)
+    city = models.CharField(default="",max_length=40, blank=True,null=True)
     follow_requests = models.PositiveIntegerField(default=0)
     following = models.ManyToManyField(User,blank=True,related_name='following')
 

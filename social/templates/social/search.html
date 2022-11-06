@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <link href="{% static 'style_new.css' %}" rel="stylesheet">
-
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'icon.png' %}" />
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iBoda</title>
+    <title>[ iBoda ]</title>
     <!-- ICONSCOUT CDN -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.6/css/unicons.css">
     <!-- STYLESHEET -->
@@ -29,7 +29,7 @@
                 iBoda
             </h2>
             
-                
+                 
                 <form class="d-flex" method="GET" action="{% url 'all-search' %}">
                     
                       <input  class="form-control"  placeholder="Artistas & Eventos..." aria-label="Username" aria-describedby="basic-addon1" type="text" name="words" value="{{ request.GET.words }}">
@@ -96,7 +96,7 @@
 
 
 
-            
+                  {% if user.is_authenticated %}
                   <div class="create">
                     <a href="{% url 'create-post' %}"><label class="btn btn-primary" for="create-post">Create</label></a>
                     <a href="{% url 'profile' request.user.profile.pk %}">
@@ -107,14 +107,23 @@
                     <!-- menu button to show sidebar -->
                     <button id="menu-btn"><i class="uil uil-bars"></i></button>
                 </div>
+                {% else %}
+                <div class="create">
+                    <a href="/accounts/login"><label class="btn btn-primary" for="create-post">Create</label></a>
+                    <a href="/accounts/login"><label class="btn btn-primary" for="create-post">Login</label></a>
+                    <!-- menu button to show sidebar -->
+                    <button id="menu-btn"><i class="uil uil-bars"></i></button>
+                </div>
+                {% endif %}
         </div>
     </nav>
-
+    {% if user.is_authenticated %}
     <!------------------------- MAIN -------------------------->
     <main>
         <div class="container">
             <!--======================== LEFT ==========================-->
             <div class="left">
+                
                 <a class="profile" href="{% url 'profile' request.user.profile.pk %}">
                     <div class="profile-photo">
                         <img src="{{ request.user.profile.picture.url }}">
@@ -126,6 +135,7 @@
                         </p>
                     </div>
                 </a>
+                
 
                 <!-- close button -->
                 <span id="close-btn"><i class="uil uil-multiply"></i></span>
@@ -381,6 +391,220 @@
             <!--====================== END OF RIGHT ==========================-->
         </div>
     </main>
+    {% else %}
+    <main>
+        <div class="container">
+            <!--======================== LEFT ==========================-->
+            <div class="left">
+                
+                <a class="profile" href="/accounts/login">
+                    
+                    Login
+                </a>
+                
+
+                <!-- close button -->
+                <span id="close-btn"><i class="uil uil-multiply"></i></span>
+
+                <!-------------------- SIDEBAR ------------------------->
+                <div class="sidebar" >
+                    <a class="menu-item" href="/accounts/login" style="color: aliceblue;">
+                        <span><i class="uil uil-home"></i></span><h3>Home</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login" style="color: aliceblue;">
+                        <span><i class="uil uil-fire"></i></span><h3 style="color: aliceblue;" >Popular</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login" id="notifications">
+                        <span><i class="uil uil-bell"></i></span><h3 style="color: aliceblue;">Notifications</h3>
+                    </a>
+                    <a class="menu-item" id="messages-notification" href="/accounts/login">
+                        <span><i class="uil uil-users-alt"></i></span><h3 style="color: aliceblue;">Amigos</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login">
+                        <span><i class="uil uil-bookmark"></i></span><h3 style="color: aliceblue;">Bookmarks</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login">
+                        <span><i class="uil uil-check-circle"></i></span><h3 style="color: aliceblue;">Eventos Idos</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login">
+                        <span><i class="uil uil-star"></i></span><h3 style="color: aliceblue;">Favoritos</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login">
+                        <span><i class="uil uil-feedback"></i></span><h3 style="color: aliceblue;">Feedback</h3>
+                    </a>
+                    <a class="menu-item" href="/accounts/login">
+                        <span><i class="uil uil-exit"></i></span><h3 style="color: aliceblue;">Log out</h3>
+                    </a>                        
+                </div>
+                <!------------------- END OF SIDEBAR -------------------->
+                
+            </div>
+            <!------------------- END OF LEFT -------------------->
+
+
+
+            <!--======================== MIDDLE ==========================-->
+            <div class="middle">
+                <!------------------- FEEDS --------------------->
+                <div class="feeds">
+                    <!------------------- FEED 1 --------------------->
+                    
+
+                <div id="pub">
+                    {% for post in post_list %}
+                        {% if post.public %}
+                                <div class="feed">
+                                    <div class="head">
+                                        <div class="user">
+                                            <div class="profile-photo">
+                                                <img src="{{ post.author.profile.picture.url }}" href="/accounts/login">
+                                            </div>
+                                            <div class="ingo">
+                                                <a href="/accounts/login"><h3>{{ post.author.profile.name }} {% if post.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h3></a>
+                                                <small>{{ post.created_on }}</small>
+                                            </div>
+                                            
+
+                                        </div>
+                                        
+                                            <div class="bookmark">
+                                                <form method="POST" id="report-post" style="display: inline-block;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                                    <input type="hidden" name="pk" value="{{ post.pk }}">
+                        
+                                                    <button style="background-color: transparent;outline: none; border: none; box-shadow: none;cursor: pointer;" type="submit">
+                        
+                                                                
+                        
+                                                    {% if request.user in post.reports.all %}
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    {% else %}
+                                                    <i id="reported{{ post.pk }}" style="color:darkred ;display: none;font-size: 200%;" class="uil uil-exclamation-circle"></i>
+                                                    <i id="no-report{{ post.pk }}" style="color:gray ;font-size: 200%; " class="uil uil-exclamation-circle"></i>
+                                                    {% endif %}
+                                                    </button>        
+                                            </form>
+                                            </div>
+                                       
+                                        </div>
+
+                                    
+                                        <div class="caption">
+                                            <br>
+                                            <h2>{{post.title}}</h2>
+                                            <br>
+                                            <p><u>Localidade:</u> <strong>{{ post.city }} - {{ post.date }}</strong></p>
+                                            <p><u>Idade:</u> <strong>{{ post.age }}</strong></p>
+                                            <p><u>Tipo de música:</u><strong> {{ post.music }}</strong></p><br><br>
+                                            <p><b>@{{ post.author.username }} -</b> {{post.body}} </p>
+                                        </div>
+                                    {% if post.image %}
+                                        <div class="photo">
+                                            <img src="{{ post.image.url }}">
+                                        </div>
+                                    {% endif %}
+                                    
+
+                                    <div class="action-buttons">
+                                        <div class="interaction-buttons" style="display: inline-block;">
+                                                <form method="POST"  id="like-post" style="display: inline-block; color: aliceblue;" href="/accounts/login" >
+                                                    
+                                                  
+                                                    
+                                                    
+                                                    <a href="/accounts/login"><i href="/accounts/login"  style="color:gray ;font-size: 200%;" class="uil uil-user-check"></i></a>
+                                                    
+                        
+                                                    <div>
+                                                        
+                                                        
+                                                    </div>
+                        
+                        
+                        
+                                                    </button>
+                                                </form>
+                               
+                    
+                                        
+                    
+                                        <form method="POST" id="save-post" style="display: inline-block;" href="/accounts/login">
+                                                
+                                                
+                                                               
+                    
+                                                
+                                                
+                                                <a href="/accounts/login"><i href="/accounts/login" style="color:gray ;font-size: 200%; " class="uil uil-bookmark-full"></i></a>
+                                                
+                                                </button>
+                                        </form>
+                    
+                                        <form method="POST"  id="fav-post" style="display: inline-block;" href="/accounts/login">
+                                                
+                                                
+                    
+                                                
+                                                <a href="/accounts/login"><i href="/accounts/login" style="color:gray ;font-size: 200%; " class="uil uil-star"></i></a>
+                                                
+                                                
+                                                </button>
+                                        </form>
+
+
+                                            
+                                            
+                                            
+                                            
+                                            <a href="/accounts/login" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-comment-dots"></i></span></a>
+                                        {% if post.url %}<a href="{{ post.url }}" style="color: gray;font-size: 200%; ;"><span><i class="uil uil-ticket"></i></span></a>{% endif %}
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="liked-by">
+                                        
+                                        <p><b>{% if post.likes_count > 0 %}{{ post.likes_count }}{% endif %}</b>{% if post.likes_count > 1 %} Pessoas vão {% elif post.likes_count == 1%} Pessoa vai {% else %}{% endif %}</p>
+                                        
+                                    </div> 
+                                    
+                                    
+                                </div>
+                                
+                            
+                        {% endif %}
+                    {% endfor %}
+
+
+                </div>
+                    <!---------------- END OF FEED ----------------->
+                </div>
+                <!------------------------------- END OF FEEDS ------------------------------------>
+            </div>
+            <!--======================== END OF MIDDLE ==========================-->
+
+
+            <!--======================== RIGHT ==========================-->
+            <div class="right">
+                
+                <!------------ FRIEND REQUESTS -------------->
+                <div class="friend-requests">
+                    <h4>Requests</h4>
+                    <!----- REQUEST 1----->
+                    
+                    <div class="request">
+                        Faça login para adicionar amigos
+                    </div>
+                    
+                </div>
+                </div>
+            </div>
+            <!--====================== END OF RIGHT ==========================-->
+        </div>
+    </main>
+    {% endif %}
 
  <!--================================================ THEME CUSTOMIZATION =============================================-->
  <div class="customize-theme">
