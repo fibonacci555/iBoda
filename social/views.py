@@ -309,7 +309,7 @@ class CommentDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
 
 class ProfileView(View):
     def get(self,request,pk,*args,**kwargs):
-        profile = UserProfile.objects.get(pk=request.user.pk)
+        profile = UserProfile.objects.get(pk=pk)
         user = profile.user
 
         posts = Post.objects.filter(author=user).order_by('-created_on')

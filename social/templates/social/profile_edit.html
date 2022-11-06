@@ -51,6 +51,7 @@
                 <select id="post-input-dropdown-nav" name="city" type="local" class="form-control" placeholder="Local"
                     aria-describedby="basic-addon1" name="city" value="{{ request.GET.city }}">
                     <option value="">Cidade</option>
+                    
                     <option value="Alcobaça">Alcobaça</option>
                     <option value="Almada">Almada</option>
                     <option value="Amadora">Amadora</option>
@@ -210,7 +211,7 @@
 
                                     
                                     <option value="{{ request.user.profile.city }}">Atual: {{ request.user.profile.city }}</option>
-                                    
+                                    <option value="">Nenhuma</option>
                                     <option value="Alcobaça" checked>Alcobaça</option>
                                     
                                     <option value="Almada">Almada</option>

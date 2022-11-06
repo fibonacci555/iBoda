@@ -178,8 +178,8 @@
                         <div class="ingo">
                             <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><img class="profile-photo" height="60" width="60" src="{{ follower.profile.picture.url }}" /><h1 style="color: aliceblue;">{{ follower.profile.name }}</a>{% if follower.profile.public %}{% else %}<i class="uil uil-lock"></i>{% endif %}</h1>
   
-                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><h3 style="color: rgb(184, 188, 191);">@{{ follower.username }}</h5></a><br>
-                            <a href="{% url 'profile' follower.profile.pk %}" class="ingo"><h5 ><button class="btn" type="submit">Visit Profile</button></a>
+                            <a href="{% url 'profile' follower.pk %}" class="ingo"><h3 style="color: rgb(184, 188, 191);">@{{ follower.username }}</h5></a><br>
+                            <a href="{% url 'profile' follower.profile.user.pk %}" class="ingo"><h5 ><button class="btn" type="submit">Visit Profile</button></a>
                                 
                                   {% if request.user.profile == profile %}
                                   <form method="POST" action="{% url 'remove-followers' follower.pk %}" class="col-md-2 col-sm-1">
